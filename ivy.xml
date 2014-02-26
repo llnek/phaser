@@ -1,6 +1,6 @@
 <ivy-module version="2.0">
 
-  <info organisation="comzotoh.egghead" module="egghead"/>
+  <info organisation="comzotohlabs.phaser" module="phaser"/>
 
   <configurations defaultconf="libjar">
     <conf name="libjar"  description="the core jar library"/>
@@ -8,7 +8,7 @@
   </configurations>
 
   <publications>
-    <artifact name="egghead" type="jar" conf="libjar" ext="jar"/>
+    <artifact name="phaser" type="jar" conf="libjar" ext="jar"/>
   </publications>
 
   <dependencies defaultconf="libjar">

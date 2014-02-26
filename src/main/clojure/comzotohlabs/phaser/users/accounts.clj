@@ -2,17 +2,17 @@
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  comzotoh.asterix.users.accounts )
+  comzotohlabs.phaser.users.accounts )
 
 
-(import '( com.zotoh.wflow
+(import '( com.zotohlabs.wflow
   If FlowPoint Activity Pipeline PipelineDelegate PTask Work))
-(import '(com.zotoh.gallifrey.io HTTPEvent HTTPResult))
-(import '(com.zotoh.wflow.core Job))
+(import '(com.zotohlabs.gallifrey.io HTTPEvent HTTPResult))
+(import '(com.zotohlabs.wflow.core Job))
 
 (use '[clojure.tools.logging :only (info warn error debug)])
-(use '[comzotohcljc.tardis.core.wfs])
-(use '[comzotohcljc.tardis.auth.core :only [maybeSignupTest
+(use '[comzotohlabscljc.tardis.core.wfs])
+(use '[comzotohlabscljc.tardis.auth.core :only [maybeSignupTest
                                             maybeLoginTest] ])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -37,7 +37,7 @@
 
 (deftype SignupHandler [] PipelineDelegate
   (getStartActivity [_  pipe]
-    (require 'comzotoh.asterix.users.accounts)
+    (require 'comzotohlabs.phaser.users.accounts)
     (debug "signup pipe-line - called.")
     (If. (maybeSignupTest) (doSignupOK) (doSignupFail)))
 
@@ -61,7 +61,7 @@
   (DefWFTask
     (perform [_ fw job arg]
       (let [ ^HTTPEvent evt (.event job)
-             ^comzotohcljc.tardis.io.ios.WebSession
+             ^comzotohlabscljc.tardis.io.ios.WebSession
              mvs (.getSession evt)
              ^HTTPResult res (.getResultObj evt) ]
         (.setStatus res 200)
@@ -71,7 +71,7 @@
 
 (deftype LoginHandler [] PipelineDelegate
   (getStartActivity [_  pipe]
-    (require 'comzotoh.asterix.users.accounts)
+    (require 'comzotohlabs.phaser.users.accounts)
     (debug "login pipe-line - called.")
     (If. (maybeLoginTest) (doLoginOK) (doLoginFail)))
 

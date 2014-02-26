@@ -1,39 +1,35 @@
-;;
+;; This library is distributed in  the hope that it will be useful but without
+;; any  warranty; without  even  the  implied  warranty of  merchantability or
+;; fitness for a particular purpose.
+;; The use and distribution terms for this software are covered by the Eclipse
+;; Public License 1.0  (http://opensource.org/licenses/eclipse-1.0.php)  which
+;; can be found in the file epl-v10.html at the root of this distribution.
+;; By using this software in any  fashion, you are agreeing to be bound by the
+;; terms of this license. You  must not remove this notice, or any other, from
+;; this software.
 ;; Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
-;;
-;; This library is distributed in the hope that it will be useful
-;; but without any warranty; without even the implied warranty of
-;; merchantability or fitness for a particular purpose.
-;;
-;; The use and distribution terms for this software are covered by the
-;; Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
-;; which can be found in the file epl-v10.html at the root of this distribution.
-;;
-;; By using this software in any fashion, you are agreeing to be bound by
-;; the terms of this license.
-;; You must not remove this notice, or any other, from this software.
-;;
+
 
 (ns  ^{ :doc ""
         :author "kenl" }
 
-  comzotoh.asterix.site.core )
+  comzotohlabs.phaser.site.core )
 
-(import '( com.zotoh.wflow
+(import '( com.zotohlabs.wflow
   FlowPoint Activity Pipeline PipelineDelegate PTask Work))
-(import '(com.zotoh.gallifrey.io HTTPEvent HTTPResult))
-(import '(com.zotoh.wflow.core Job))
+(import '(com.zotohlabs.gallifrey.io HTTPEvent HTTPResult))
+(import '(com.zotohlabs.wflow.core Job))
 (import '(java.util HashMap Map))
 
 (use '[clojure.tools.logging :only (info warn error debug)])
-(use '[comzotohcljc.tardis.core.constants])
-(use '[comzotohcljc.tardis.core.wfs])
+(use '[comzotohlabscljc.tardis.core.constants])
+(use '[comzotohlabscljc.tardis.core.wfs])
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (deftype MyAppMain []
-  comzotohcljc.tardis.impl.ext.CljAppMain
+  comzotohlabscljc.tardis.impl.ext.CljAppMain
   (contextualize [_ container]
     (info "My AppMain contextualized by container " container))
   (configure [_ options]
@@ -56,8 +52,8 @@
     (perform [_ fw job arg]
       (let [ ^HTTPEvent evt (.event job)
              ^HTTPResult res (.getResultObj evt)
-             ^com.zotoh.gallifrey.io.Emitter src (.emitter evt)
-             ^comzotohcljc.tardis.impl.ext.ContainerAPI co (.container src)
+             ^com.zotohlabs.gallifrey.io.Emitter src (.emitter evt)
+             ^comzotohlabscljc.tardis.impl.ext.ContainerAPI co (.container src)
              ^String tpl (:template (.getv job EV_OPTS))
              [rdata ct] (.loadTemplate co tpl (HashMap.)) ]
         (.setStatus res 200)
@@ -68,7 +64,7 @@
 (deftype LandingHandler [] PipelineDelegate
 
   (getStartActivity [_  pipe]
-    (require 'comzotoh.asterix.site.core)
+    (require 'comzotohlabs.phaser.site.core)
     (doShowLandingPage))
 
   (onStop [_ pipe]

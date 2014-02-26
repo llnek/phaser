@@ -1,6 +1,6 @@
-gallifrey.home=/wdrive/dev/builds/gallifrey/package
+skaro.home=/wdrive/dev/builds/skaro/package
 
-ivy.root=${gallifrey.home}/.ivyroot
+ivy.root=${skaro.home}/.ivyroot
 ivy.lcache.dir=${ivy.root}/cache
 ivy.lrepo.dir=${ivy.root}/repos
 
@@ -24,7 +24,8 @@ out.jar.dir=${pod.dir}/classes
 
 #jslang=typescript
 #jslang=clojurescript
-jslang=coffee
+#jslang=coffee
+jslang=js
 
 #csslang=less
 csslang=scss
