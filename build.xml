@@ -75,6 +75,8 @@
       <case value="coffee">
         <antcall target="compile-coffee"/>
       </case>
+      <case value="js">
+      </case>
     </switch>
     <antcall target="compile-js"/>
     <switch value="${csslang}">
@@ -285,7 +287,7 @@
     <mkdir dir="${basedir}/public/ig/lib/game"/>
     <mkdir dir="${basedir}/public/scripts"/>
     <switch value="${wappid}">
-      <case value="impact">
+      <case value="phaserio">
         <copy todir="${basedir}/public/ig/lib">
           <fileset dir="${build.dir}/web_scripts/${wappid}">
             <include name="**/*.js"/>
