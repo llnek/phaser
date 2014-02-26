@@ -10,7 +10,7 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this; var _ = global._;
-var asterix = global.ZotohLabs.Asterix;
+var phaser = global.ZotohLabs.Phaser;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
@@ -18,7 +18,7 @@ var echt = global.ZotohLabs.echt;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XConfig = ig.merge( asterix.XCfgBase, {
+phaser.XConfig = ig.merge( phaser.XCfgBase, {
 
   setGameSize: function(sz) {
     if (_.isString(sz)) {
@@ -124,7 +124,7 @@ asterix.XConfig = ig.merge( asterix.XCfgBase, {
   },
 
   camera:{
-    lightMask:"media/impact/game/lighting.png",
+    lightMask:"media/phaserio/game/lighting.png",
     trapSizeScale:{x:3, y:3},
     lookAhead:{x:0, y:0}
   },
@@ -134,24 +134,24 @@ asterix.XConfig = ig.merge( asterix.XCfgBase, {
   },
 
   sounds: {
-    death:"media/impact/sfx/Death.*",
-    elevatorBeep:"media/impact/sfx/ElvatorBeep.*",
-    outOfAmmo:"media/impact/sfx/Empty.*",
-    grenadeBounce:"media/impact/sfx/GrenadeBounce.*",
-    grenadeExplosion:"media/impact/sfx/GrenadeExplosion.*",
-    gunFire:"media/impact/sfx/GunFire.*",
-    hitHard:"media/impact/sfx/HitHard.*",
-    hitSoft:"media/impact/sfx/HitSoft.*",
-    jump:"media/impact/sfx/Jump.*",
-    machineGunFire:"media/impact/sfx/MachineGunFire.*",
-    mineBeep:"media/impact/sfx/MineBeep.*",
-    mineExplosion:"media/impact/sfx/MineExplosion.*",
-    openDoor:"media/impact/sfx/OpenDoor.*",
-    fallToDeath:"media/impact/sfx/PlayerMonsterFall.*",
-    powerUp:"media/impact/sfx/Powerup.*",
-    powerUp2:"media/impact/sfx/Powerup2.*",
-    shotgunFire:"media/impact/sfx/ShotgunFire.*",
-    startGame:"media/impact/sfx/StartGame.*"
+    death:"media/phaserio/sfx/Death.*",
+    elevatorBeep:"media/phaserio/sfx/ElvatorBeep.*",
+    outOfAmmo:"media/phaserio/sfx/Empty.*",
+    grenadeBounce:"media/phaserio/sfx/GrenadeBounce.*",
+    grenadeExplosion:"media/phaserio/sfx/GrenadeExplosion.*",
+    gunFire:"media/phaserio/sfx/GunFire.*",
+    hitHard:"media/phaserio/sfx/HitHard.*",
+    hitSoft:"media/phaserio/sfx/HitSoft.*",
+    jump:"media/phaserio/sfx/Jump.*",
+    machineGunFire:"media/phaserio/sfx/MachineGunFire.*",
+    mineBeep:"media/phaserio/sfx/MineBeep.*",
+    mineExplosion:"media/phaserio/sfx/MineExplosion.*",
+    openDoor:"media/phaserio/sfx/OpenDoor.*",
+    fallToDeath:"media/phaserio/sfx/PlayerMonsterFall.*",
+    powerUp:"media/phaserio/sfx/Powerup.*",
+    powerUp2:"media/phaserio/sfx/Powerup2.*",
+    shotgunFire:"media/phaserio/sfx/ShotgunFire.*",
+    startGame:"media/phaserio/sfx/StartGame.*"
   },
 
   setDeviceSizes: function (obj) {
@@ -216,18 +216,6 @@ asterix.XConfig = ig.merge( asterix.XCfgBase, {
 
 });
 
-
-ig.System.inject({
-
-  setDelegateEx: function(g,remeber) {
-    if (remeber === false) {} else {
-      g.previous = this.delegate;
-    }
-    this.setDelegate(g);
-    ig.game=g;
-  }
-
-});
 
 
 

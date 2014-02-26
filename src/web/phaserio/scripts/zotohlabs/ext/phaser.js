@@ -87,7 +87,7 @@ var Funcs= klass.extends({
 
 });
 
-global.ZotohLabs.Asterix = {
+global.ZotohLabs.Phaser = {
   fns: new Funcs(),
   Shell: {
     l10nInit: function(table) {

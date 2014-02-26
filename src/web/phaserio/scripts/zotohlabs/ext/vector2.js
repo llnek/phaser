@@ -10,7 +10,7 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this; var _ = global._ ;
-var asterix= global.ZotohLabs.Asterix;
+var phaser= global.ZotohLabs.Phaser;
 var loggr= global.ZotohLabs.logger;
 var klass= global.ZotohLabs.klass;
 var Vector2 = klass.extends({
@@ -23,7 +23,7 @@ var Vector2 = klass.extends({
     },
 
     rotate: function(cx, cy, deg) {
-      var rad = asterix.fns.degToRad(deg);
+      var rad = phaser.fns.degToRad(deg);
       var a= [ cx + (Math.cos(rad) * (this.x - cx) - Math.sin(rad) * (this.y - y0)),
         cy + (Math.sin(rad) * (this.x - cx) + Math.cos(rad) * (this.y - y0)) ];
       this.x= a[0];
@@ -59,7 +59,7 @@ var Vector2 = klass.extends({
 
   });
 
-  asterix.Vector2= Vector2;
+  phaser.Vector2= Vector2;
 
 
 
