@@ -19,19 +19,8 @@ var loggr = global.ZotohLabs.logger;
 
 sh.protos['Splash'] = asterix.XScreen.extends({
 
-  onCreate: function () {
-    var tween;
-
-    this.logo = this.add.sprite( this.game.world.centerX, this.game.world.centerY, 'zLogo');
-    this.logo.anchor.x = 0.5;
-    this.logo.anchor.y = 0.5;
-
-    tween = this.add.tween(this.logo);
-    tween.onComplete.add(function() {
-      sh.xcfg.smac.preload(sh.main);
-    }, this);
-
-    tween.to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None).start();
+  onUpdate: function () {
+     sh.xcfg.smac.preload(sh.main);
   }
 
 

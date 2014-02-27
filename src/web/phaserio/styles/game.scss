@@ -7,13 +7,18 @@ html,body {
     font-size: 12pt;
 }
 
+#game {
+}
+
 #game-container {
-    /*width: auto;*/
-    margin: auto auto;
-    margin-top: 40px;
-    height: 100% ;
-    /*border: 1px solid red;*/
-    text-align: center;
+  margin: auto auto;
+  margin-top: 100px;
+  height: 100% ;
+  text-align: center;
+}
+
+#game-container  canvas {
+  margin: auto;
 }
 
 #controls {
@@ -23,10 +28,7 @@ html,body {
     overflow: hidden;
 }
 
-#canvas {
-    /*width: 720px;
-    height: 480px;*/
-}
+
 
 <!--
 * {

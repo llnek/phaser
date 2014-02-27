@@ -18,7 +18,7 @@ var echt = global.ZotohLabs.echt;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XConfig = global.ZotohLabs.klass.merge( asterix.XCfgBase, {
+asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
 
@@ -134,7 +134,7 @@ asterix.XConfig = global.ZotohLabs.klass.merge( asterix.XCfgBase, {
   }
 
 
-});
+};
 
 
 

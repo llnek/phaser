@@ -22,28 +22,29 @@ sh.protos['Boot']  = asterix.XScreen.extends({
 
   onPreload: function () {
     this.load.image('loadingBar', 'media/phaserio/game/preloader_bar.png');
-    this.load.image('zLogo', 'media/main/logos/ZotohLabs_x320.png');
+    this.load.image('zLogo', 'media/main/logos/ZotohLabs_x200.png');
   },
 
   onCreate: function () {
     // unless you expect multi-touch, stick to 1
-    this.game.input.maxPointers = 1;
+    this.input.maxPointers = 1;
 
     // Phaser will automatically pause if the browser tab the game is in loses focus. 
     // You can disable that here:
-    //this.game.stage.disableVisibilityChange = true;
+    //this.stage.disableVisibilityChange = true;
 
-    this.game.stage.scale.pageAlignHorizontally = true;
+    this.stage.scale.pageAlignHorizontally = true;
     if (this.game.device.desktop) {
-      // any desktop specific settings, they can go in here
+      // any desktop specific settings
+      // they can go in here
     } else {
-      this.game.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
-      this.game.stage.scale.minHeight = sh.xcfg.game.size.height;
-      this.game.stage.scale.minWidth = sh.xcfg.game.size.width;
-      this.game.stage.scale.maxHeight = sh.xcfg.game.size.height * sh.xcfg.game.size.scale;
-      this.game.stage.scale.maxWidth = sh.xcfg.game.size.width * sh.xcfg.game.size.scale;
-      this.game.stage.scale.forceLandscape = sh.xcfg.game.landscape;
-      this.game.stage.scale.setScreenSize(true);
+      this.stage.scale.forceLandscape = sh.xcfg.game.landscape;
+      this.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
+      this.stage.scale.minHeight = sh.xcfg.game.size.height;
+      this.stage.scale.minWidth = sh.xcfg.game.size.width;
+      this.stage.scale.maxHeight = sh.xcfg.game.size.height * sh.xcfg.game.size.scale;
+      this.stage.scale.maxWidth = sh.xcfg.game.size.width * sh.xcfg.game.size.scale;
+      this.stage.scale.setScreenSize(true);
     }
   },
 

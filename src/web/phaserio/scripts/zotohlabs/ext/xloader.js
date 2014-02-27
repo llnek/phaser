@@ -21,18 +21,17 @@ var loggr= global.ZotohLabs.logger;
 sh.protos['Preloader']  = asterix.XScreen.extends({
 
   onPreload: function () {
+    var imgLogo= this.cache.getImage('zLogo');
+    var c= this.getCenter();
     var me= this;
 
-    this.load.baseUrl= sh.xcfg.urlPrefix;
+    this.gui = this.add.group();
 
-    this.logo = this.add.sprite( this.game.world.centerX, this.game.world.centerY, 'zLogo');
-    this.logo.anchor.x = 0.5;
-    this.logo.anchor.y = 0.5;
+    this.logo = this.add.sprite( c.x, c.y, 'zLogo', this.gui);
+    this.anchor(this.logo);
 
-    this.bar = this.add.sprite( this.game.world.centerX,
-      this.game.world.centerY +  256/2 + 10, 'loadingBar');
-    this.bar.anchor.x = 0.5;
-    this.bar.anchor.y = 0.5;
+    this.bar = this.add.sprite( c.x, c.y +  imgLogo.height/2 + 4, 'loadingBar', this.gui);
+    this.anchor(this.bar);
 
     //  This sets the preloadBar sprite as a loader sprite.
     //  What that does is automatically crop the sprite from 0 to full-width
@@ -58,7 +57,11 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
   },
 
   onUpdate: function () {
-    sh.xcfg.smac.reify(sh.main);
+    tween = this.add.tween(this.logo);
+    tween.onComplete.add(function() {
+       sh.xcfg.smac.reify(sh.main);
+    }, this);
+    tween.to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None).start();
   }
 
 
