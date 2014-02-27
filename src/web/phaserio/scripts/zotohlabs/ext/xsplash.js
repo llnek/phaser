@@ -17,33 +17,25 @@ var loggr = global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XSplashScreen = asterix.XGame.extend({
+sh.protos['Splash'] = asterix.XScreen.extends({
 
-  instructFont: new ig.Font('media/impact/fon/en/04b03.font.png'),
+  onCreate: function () {
+    var tween;
 
-  update: function () {
-    if (this.pressed('continue')) {
-      ig.system.setGame( sh.xcfg.game.proto);
-    }
-    this.parent();
-  },
+    this.logo = this.add.sprite( this.game.world.centerX, this.game.world.centerY, 'zLogo');
+    this.logo.anchor.x = 0.5;
+    this.logo.anchor.y = 0.5;
 
-  draw: function () {
-    this.parent();
-    //this.drawScreen();
-  },
+    tween = this.add.tween(this.logo);
+    tween.onComplete.add(function() {
+      sh.xcfg.smac.preload(sh.main);
+    }, this);
 
-  drawScreen: function() {
-    this.instructFont.draw( sh.xcfg.getStartInstruction(),
-      ig.system.width * 0.5, ig.system.height * 0.5, ig.Font.ALIGN.CENTER);
-  },
-
-  init: function () {
-    this.parent();
+    tween.to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None).start();
   }
 
-});
 
+});
 
 
 

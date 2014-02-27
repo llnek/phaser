@@ -28,7 +28,7 @@ var Circle = klass.extends({
     ctx.stroke();
   },
 
-  init: function(x, y, radius) {
+  ctor: function(x, y, radius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -50,7 +50,7 @@ var Line = klass.extends({
     ctx.stroke();
   },
 
-  init: function(x1, y1, x2, y2) {
+  ctor: function(x1, y1, x2, y2) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -60,14 +60,14 @@ var Line = klass.extends({
 });
 
 var Point = klass.extends({
-  init: function(x,y) {
+  ctor: function(x,y) {
     this.y=y;
     this.x=x;
   }
 });
 
 var Area = klass.extends({
-  init: function(x,y,w,h) {
+  ctor: function(x,y,w,h) {
     this.pos= new Point(x,y);
     this.height=h;
     this.width=w;
@@ -76,7 +76,7 @@ var Area = klass.extends({
 
 var TextStyle = klass.extends({
 
-  init: function() {
+  ctor: function() {
     this.font = "14px 'Architects Daughter'";
     this.fill = "#dddddd";
     this.align = "left";

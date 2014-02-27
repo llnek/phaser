@@ -19,17 +19,24 @@ var echt= global.ZotohLabs.echt;
 // main routine.
 //////////////////////////////////////////////////////////////////////////////
 
-//loggr.info("Loading resource bundle");
-//sh.l10nInit(sh.xcfg.l10n);
-
-loggr.info("About to call ig.main()");
-ig.main('#canvas', sh.xcfg.game.splash, 60,
+loggr.info("About to create Phaser.Game");
+sh.main = new Phaser.Game(
   sh.xcfg.game.size.width,
   sh.xcfg.game.size.height,
-  sh.xcfg.game.size.scale,
-  asterix.XLoader);
-loggr.info("Game loaded and running.");
+  Phaser.AUTO, sh.xcfg.game.canvasDiv);
+
+loggr.info("loading proto objects...");
+_.each(sh.protos, function(z,k) {
+  sh.main.state.add( k, z);
+  loggr.info("loaded proto object [" + k + "]");
+});
+
+loggr.info("Game loaded and running. OK");
 loggr.info(sh.xcfg);
+
+//loggr.info("register game start state - " + sh.xcfg.game.startState);
+//sh.main.state.start(sh.xcfg.game.startState);
+sh.xcfg.smac.genesis(sh.main);
 
 }).call(this);
 

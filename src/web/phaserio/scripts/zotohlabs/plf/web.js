@@ -20,26 +20,6 @@ var loggr= global.ZotohLabs.logger;
 
 sh.xcfg.setGameSize('default');
 
-if (ig.ua.mobile) {
-  ig.Sound.enabled = false;
-} else {
-  var controls = document.getElementById("controls");
-  if (controls) {
-    document.getElementById('game-container').removeChild(controls);
-  }
-}
-
-if (ig.ua.iPhone) {
-  sh.xcfg.setGameSize('iphone');
-}
-else if (ig.ua.android) {
-  sh.xcfg.setGameSize('android');
-}
-else if (ig.ua.iPad) {
-  sh.xcfg.setGameSize('ipad');
-}
-
-
 }).call(this, document);
 
 

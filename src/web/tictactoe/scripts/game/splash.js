@@ -20,47 +20,50 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+/*
 asterix.TicTacToe.MainMenu = asterix.XMainMenu.extend({
   appObj: ttt
 });
+*/
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
+/*
 var PlayBtnCtor= asterix.XButtonFactory.define({
   animSheet: new ig.AnimationSheet(sh.imgFile('tictactoe','gui','play_btn.png'), 194,58),
   size: { x: 194, y: 58 },
   clicker: function() { sh.xcfg.smac.play0(); }
 });
-
+*/
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.splash = asterix.XScreenFactory.define({
+sh.protos['Game'] =  asterix.XScreen.extends({
 
-  preStart: function() {
-    var y = ig.system.height - PlayBtnCtor.prototype.size.y - 20;
-    var x = (ig.system.width - PlayBtnCtor.prototype.size.x) / 2;
-    this.spawnEntity(PlayBtnCtor, x, y, {});
+  noPreload: function() {
   },
 
-  onStart: function() {
-    sh.xcfg.smac.genesis(this);
+  onCreate: function() {
+    var c= this.getCenter();
+    var s= this.getSize();
+
+    this.gui = this.game.add.group();
+    this.game.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
+    this.btn= this.game.add.button( c.x, s.y - 20, 'splash.play-btn', function() {
+      sh.xcfg.smac.play0();
+    }, this, 0,0,0,0,this.gui);
+    this.anchor(this.btn);
   },
 
-  update: function() {
-    this.parent();
-    if (this.pressed('continue')) {
+  onUpdate: function() {
+    if (this.game.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
+        this.game.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
       sh.xcfg.smac.play0();
     }
   },
 
-  init: function() {
-    this.parent();
-    this.start();
-  },
-
-  name: 'startscreen'
+  moniker: 'startscreen'
 
 });
 

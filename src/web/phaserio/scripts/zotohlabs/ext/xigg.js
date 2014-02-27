@@ -11,6 +11,7 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var sh= asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
 
@@ -18,93 +19,61 @@ var echt= global.ZotohLabs.echt;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-ig.Game.inject({
+asterix.XScreen = global.ZotohLabs.klass.extends({
 
-  displayCaption: function (value, delay) {
-    this.captionInst.show(value, delay ? delay : 2);
-  },
-
-  hideCaption: function () {
-    this.captionInst.hide();
-  },
-
-  captionInst: new ig.XCaption(),
-  flip: false,
-
-  // this field is used in layers but not defined?, so define it here
-  _pauseRun: false,
-  paused: false,
-  pauseDelayTimer: new ig.Timer(),
-  pauseButtonDelay: 0.3,
-
-  togglePause: function (override) {
-    if (this.pauseDelayTimer.delta() > this.pauseButtonDelay) {
-      this.paused = override != null ? override : !this.paused;
-      this._pauseRun = this.paused;
-      if (!this.paused) {
-        this.onResume();
-      } else {
-        this.onPause();
-      }
-      this.pauseDelayTimer.reset();
+  preload: function() {
+    if (! this.created_ok) {
+      this.load.baseURL = sh.xcfg.urlPrefix;
+      this.onPreload();
     }
   },
 
-  onResume: function () { },
-
-  onPause: function () { },
+  create: function() {
+    if (! this.created_ok) {
+      this.onCreate();
+      this.created_ok=true;
+    }
+  },
 
   update: function() {
-    if (this.paused) {} else {
-      this.parent();
-      this.frameUpdate();
-    }
+    this.onUpdate();
   },
 
-  frameUpdate: function() {
+  render: function() {
+    this.onRender();
   },
 
-  drawGui: function() {
+  anchor: function(obj, deltaX, deltaY) {
+    obj.anchor.y = deltaY || 0.5;
+    obj.anchor.x = deltaX || 0.5;
   },
-
-  draw: function() {
-    this.parent();
-    this.drawGui();
-    //this.captionInst.draw();
-  },
-
-  loadLevelByFileName: function (value, deferred) {
-    this.currentLevelName = value.replace(/^(Level)?(\w)(\w*)/,
-        function (m, l, a, b) {
-            return a.toUpperCase() + b;
-        }).replace(".js", "");
-    var levelData = ig.global['Level' + this.currentLevelName];
-    if (!levelData) {
-      throw new Error("Cannot find levelData: " + this.currentLevelName);
-    }
-    this[ deferred ? "loadLevelDeferred" : "loadLevel"](levelData);
-    loggr.debug("levelData", this.currentLevelName);
-  },
-
-  currentLevelName: null,
 
   getCenter: function() {
-    return { x: Math.floor( ig.system.width / 2), y: Math.floor( ig.system.height / 2) };
+    return { x: this.game.world.centerX, y: this.game.world.centerY };
   },
 
-  removeEntityTypes: function(ent) {
-    _.each(this.getEntitiesByType(ent), function(e) {
-      e.kill();
-    });
+  getSize: function() {
+    return { x: this.game.world.width, y: this.game.world.height };
   },
 
-  getTextSize: function(ft,msg) {
-    return [ ft.widthForString(msg), ft.heightForString(msg) ];
+  onPreload: function() {
   },
 
-  createLayerEx: function(layerid) {
-    this.createLayer(layerid, { clearOnLoad: true, entityLayer: true });
-  }
+  onCreate: function() {
+  },
+
+  onUpdate: function() {
+  },
+
+  onRender: function() {
+  },
+
+  ctor: function(g) {
+    this.game=g;
+  },
+
+  created_ok: false,
+  moniker: ''
 
 });
 

@@ -18,95 +18,51 @@ var loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.XLoader = ig.Loader.extend({
+sh.protos['Preloader']  = asterix.XScreen.extends({
 
-  end: function () {
-    // make sure all the usual stuff are all wrapped up.
-    this.parent();
-    // mark the time now, used for nice fade out.
-    this.endTime = Date.now();
-    ig.system.setDelegate(this);
+  onPreload: function () {
+    var me= this;
+
+    this.load.baseUrl= sh.xcfg.urlPrefix;
+
+    this.logo = this.add.sprite( this.game.world.centerX, this.game.world.centerY, 'zLogo');
+    this.logo.anchor.x = 0.5;
+    this.logo.anchor.y = 0.5;
+
+    this.bar = this.add.sprite( this.game.world.centerX,
+      this.game.world.centerY +  256/2 + 10, 'loadingBar');
+    this.bar.anchor.x = 0.5;
+    this.bar.anchor.y = 0.5;
+
+    //  This sets the preloadBar sprite as a loader sprite.
+    //  What that does is automatically crop the sprite from 0 to full-width
+    //  as the files below are loaded in.
+    this.load.setPreloadSprite(this.bar);
+
+    _.each(sh.xcfg.assets.images, function(v,k) {
+      me.load.image(k, sh.sanitizeUrl(v));
+    });
+
+    _.each(sh.xcfg.assets.sounds, function(v,k) {
+      me.load.audio(k, sh.sanitizeUrl(v));
+    });
+
+    _.each(sh.xcfg.assets.fonts, function(v,k) {
+      me.load.bitmapFont(k, sh.sanitizeUrl(v));
+    });
+
   },
 
-  endTime: 0,
-
-  run: function () {
-    var t = Date.now() - this.endTime;
-    var alpha = 1;
-    if (t > sh.xcfg.system.fadeToGameMillis) {
-      ig.system.setDelegate(ig.game);
-    } else {
-      if (t < sh.xcfg.system.fadeToWhiteMillis) {
-        this.draw();
-        alpha = t.map( 0, sh.xcfg.system.fadeToWhiteMillis, 0, 1);
-      }
-      else {
-        ig.game.run();
-        alpha = t.map( sh.xcfg.system.fadeToWhiteMillis, sh.xcfg.system.fadeToGameMillis, 1, 0);
-      }
-      ig.system.context.fillStyle = sh.xcfg.system.fadeColor.replace(')', ',' + alpha + ')');
-      ig.system.context.fillRect(0, 0, ig.system.realWidth, ig.system.realHeight);
-    }
+  onCreate: function () {
+    this.bar.cropEnabled = false;
   },
 
-  draw: function () {
-    // some damping for the status bar
-    this._drawStatus += (this.status - this._drawStatus) / 5;
-
-    var h = ig.system.realHeight;
-    var w = ig.system.realWidth;
-
-    var barSpacing = Math.min(w, h) * 0.005;
-    var spacing = Math.min(w, h) * 0.02;
-    var barHeight = h * 0.025;
-    var barWidth = w * 0.25;
-
-    var logoMainHeight = this.logoMain.height;
-    var logoMainWidth = this.logoMain.width;
-    var totalWidth = Math.max(barWidth, logoMainWidth);
-    var totalHeight = logoMainHeight + spacing + barHeight + spacing  ;
-
-    var pctY = totalHeight / h;
-    var pctX = totalWidth / w;
-    var scaleX = 1;
-    var scaleY = 1;
-
-    if (pctX > 0.5) { scaleX = 1 - ( pctX - 0.5); }
-    if (pctY > 0.5) { scaleY = 1 - ( pctY - 0.5); }
-
-    var scale = Math.min(1, scaleX, scaleY);
-    var centerY = ( h - totalHeight * scale ) / 2;
-    var centerX = ( w - totalWidth * scale ) / 2;
-
-    ig.system.context.fillStyle = 'rgb(0,0,0,0.8)';
-    ig.system.context.clearRect(0, 0, w, h);
-    ig.system.context.save();
-
-    ig.system.context.translate(centerX, centerY);
-    ig.system.context.scale(scale, scale);
-    ig.system.context.drawImage(this.logoMain, ( totalWidth - logoMainWidth ) * 0.5, 0);
-
-    ig.system.context.lineWidth = 3;
-    ig.system.context.strokeStyle = 'rgb(245,150,49)';
-    //ig.system.context.strokeStyle = 'rgb(255,255,255)';
-    ig.system.context.strokeRect(( totalWidth - barWidth ) * 0.5, logoMainHeight + spacing, barWidth, barHeight);
-
-    ig.system.context.fillStyle = 'rgb(245,150,49)';
-    //ig.system.context.fillStyle = 'rgb(255,255,255)';
-    ig.system.context.fillRect(( totalWidth - barWidth ) * 0.5 + barSpacing, logoMainHeight + spacing + barSpacing, Math.max(0, barWidth * this._drawStatus - barSpacing * 2), barHeight - barSpacing * 2);
-
-    ig.system.context.restore();
-  },
-
-  init: function (game, resources) {
-    this.logoMain = ig.$new('img');
-    this.logoMain.src = sh.xcfg.mainLogo;
-    //this.logoMain.style= "border: solid 1px; border-color: #F59631;";
-    this.parent(game, resources);
+  onUpdate: function () {
+    sh.xcfg.smac.reify(sh.main);
   }
 
-});
 
+});
 
 
 

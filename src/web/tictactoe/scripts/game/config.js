@@ -14,10 +14,16 @@ var asterix = global.ZotohLabs.Asterix;
 var sh= asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 asterix.TicTacToe= {};
+var ig=sh;  //TODO
 var smac = StateMachine.create({
   //initial: 'none',
   events: [
-    { name: 'genesis',  from: 'none',  to: 'start_screen' },
+    { name: 'genesis',  from: 'none',  to: 'Boot' },
+    { name: 'splash',  from: 'Boot',  to: 'Splash' },
+    { name: 'preload',  from: 'Splash',  to: 'Preloader' },
+    { name: 'reify',  from: 'Preloader',  to: 'Game' },
+
+    { name: 'ready',  from: 'Game',  to: 'start_screen' },
 
     { name: 'play0',  from: 'start_screen',  to: 'main_menu' },
     { name: 'quit',  from: 'main_menu',  to: 'start_screen' },
@@ -33,9 +39,21 @@ var smac = StateMachine.create({
     { name: 'resetplay',  from: 'replay_game',  to: 'play_game' }
   ],
   callbacks: {
-    ongenesis: function(ev,fr,to,start_screen) {
-      loggr.debug("ongenesis() called.");
-      asterix.TicTacToe.startScreen= start_screen;
+    ongenesis: function(ev,fr,to,mainObj) {
+      loggr.debug("ongenesis() called, moving to state [" + to + "]");
+      mainObj.state.start(to);
+    },
+    onsplash: function(ev,fr,to,mainObj) {
+      loggr.debug("onsplash() called, moving to state [" + to + "]");
+      mainObj.state.start(to);
+    },
+    onpreload: function(ev,fr,to,mainObj) {
+      loggr.debug("onpreload() called, moving to state [" + to + "]");
+      mainObj.state.start(to);
+    },
+    onreify: function(ev,fr,to,mainObj) {
+      loggr.debug("onload() called, moving to state [" + to + "]");
+      mainObj.state.start(to);
     },
     onplay0: function(ev,fr,to) {
       asterix.TicTacToe.mainMenu = new (asterix.TicTacToe.MainMenu)();
@@ -73,7 +91,7 @@ var smac = StateMachine.create({
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = ig.merge( asterix.XConfig, {
+sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
   csts: {
     CV_X: 'X'.charCodeAt(0),
@@ -117,11 +135,13 @@ sh.xcfg = ig.merge( asterix.XConfig, {
   },
 
   sounds: {
+    /*
     start_game: new ig.Sound('media/impact/sfx/StartGame.*'),
     game_end: new ig.Sound('media/impact/sfx/MineExplosion.*'),
     x_pick: new ig.Sound('media/impact/sfx/ElevatorBeep.*'),
     o_pick: new ig.Sound('media/impact/sfx/MineBeep.*'),
     quit: new ig.Sound('media/impact/sfx/PlayerMonsterFall.*')
+    */
   },
 
   smac: smac

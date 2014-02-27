@@ -83,11 +83,11 @@ var Funcs= klass.extends({
     return deg * Math.PI / 180;
   },
 
-  init: function() {}
+  ctor: function() {}
 
 });
 
-global.ZotohLabs.Phaser = {
+global.ZotohLabs.Asterix = {
   fns: new Funcs(),
   Shell: {
     l10nInit: function(table) {
@@ -98,20 +98,16 @@ global.ZotohLabs.Phaser = {
     getTextSize: function(ft,msg) {
       return [ ft.widthForString(msg), ft.heightForString(msg) ];
     },
+
     currentStage: 1,
+    protos: {},
+    main: null,
     lang: 'en',
-    newFonFile: function(module,file,pms) {
-      var ff= this.fonFile(module,file);
-      return pms ? new ig.Font(ff,pms) : new ig.Font(ff);
+
+    sanitizeUrl: function(url) {
+      return Mustache.render( url || '', { lang: this.lang } );
     },
-    imgFile: function(module,category,file) {
-      return Mustache.render( ['media', module,
-                               category, '{{lang}}', file].join('/'),
-                              { lang: this.lang } );
-    },
-    fonFile: function(module,file) {
-      return this.imgFile(module, 'fon', file);
-    },
+
     l10n: function(s,pms) {
       var t= s.toLocaleString();
       return echt(pms) ? Mustache.render(t,pms) : t;

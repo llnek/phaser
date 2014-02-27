@@ -10,7 +10,7 @@
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global=this; var _ = global._ ;
-var phaser= global.ZotohLabs.Phaser;
+var asterix= global.ZotohLabs.Asterix;
 var loggr= global.ZotohLabs.logger;
 var klass= global.ZotohLabs.klass;
 var echt= global.ZotohLabs.echt;
@@ -20,14 +20,14 @@ var CKS= global.Cookies;
 //// score class
 ///////////////////////////////////////////////////////////////////
 
-phaser.Score= klass.extends({
-  init: function(name,value) {
+asterix.Score= klass.extends({
+  ctor: function(name,value) {
     this.value=value;
     this.name= name;
   }
 });
 
-phaser.HighScores= klass.extends({
+asterix.HighScores= klass.extends({
 
   reset: function() {
     this.scores=[];
@@ -106,7 +106,7 @@ phaser.HighScores= klass.extends({
     }
   },
 
-  init: function(key, size, duration) {
+  ctor: function(key, size, duration) {
     this.duration= duration || 60*60*24*1000;
     this.size = size || 10;
     this.scores = [];

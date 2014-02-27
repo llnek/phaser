@@ -43,6 +43,27 @@ var ZotohLabs = {
   klass: function() {},
   echt: _echt,
 
+  merge: function( original, extended ) {
+    for( var key in extended ) {
+      var ext = extended[key];
+      if(
+        typeof(ext) != 'object' ||
+        ext instanceof ZotohLabs.klass ||
+        ext instanceof HTMLElement ||
+        ext === null
+      ) {
+        original[key] = ext;
+      }
+      else {
+        if( !original[key] || typeof(original[key]) != 'object' ) {
+          original[key] = (ext instanceof Array) ? [] : {};
+        }
+        ZotohLabs.klass.merge( original[key], ext );
+      }
+    }
+    return original;
+  },
+
   prettyNumber: function (num, digits) {
     var len= Number(num).toString().length;
     if (digits > 32) { throw Error("Too many digits to prettify."); }
@@ -59,7 +80,7 @@ var ZotohLabs = {
 };
 
 //----------------------------------------------------------------------------
-// js inheritance - copied from impact.js
+// js inheritance - lifted from impact.js
 var inject = function(prop) {
   var name, proto = this.prototype;
   var parent = {};
@@ -82,6 +103,27 @@ var inject = function(prop) {
       proto[name] = prop[name];
     }
   }
+};
+
+var merge= function( original, extended ) {
+  for( var key in extended ) {
+    var ext = extended[key];
+    if(
+      typeof(ext) !== 'object' ||
+      ext instanceof ZotohLabs.klass ||
+      ext instanceof HTMLElement ||
+      ext === null
+    ) {
+      original[key] = ext;
+    }
+    else {
+      if( !original[key] || typeof(original[key]) !== 'object' ) {
+        original[key] = (ext instanceof Array) ? [] : {};
+      }
+      merge( original[key], ext );
+    }
+  }
+  return original;
 };
 
 ZotohLabs.klass.extends = function (other) {
@@ -111,24 +153,26 @@ ZotohLabs.klass.extends = function (other) {
     if ( !initing ) {
       // If this class has a staticInstantiate method, invoke it
       // and check if we got something back. If not, the normal
-      // constructor (init) is called.
+      // constructor (ctor) is called.
       if (_echt(this.staticInstantiate)) {
         var obj = this.staticInstantiate.apply(this, arguments);
         if (_echt(obj)) { return obj; }
       }
-      if (_echt(this.init)) {
-        this.init.apply(this, arguments);
+      if (_echt(this.ctor)) {
+        this.ctor.apply(this, arguments);
       }
     }
     return this;
   }
 
   Class.extends = ZotohLabs.klass.extends;
-  Class.patch = inject;
   Class.prototype = prototype;
   Class.prototype.constructor = Class;
   return Class;
 };
+
+ZotohLabs.klass.patch= inject;
+ZotohLabs.klass.merge= merge;
 
 /////////////////////////////////////////////////////////
 //// export your stuff

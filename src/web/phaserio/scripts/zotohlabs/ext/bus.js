@@ -16,7 +16,7 @@ var echt= global.ZotohLabs.echt;
 var _SEED=0;
 
 var Subcr= klass.extends({
-  init: function(topic, callback, context, repeat, args) {
+  ctor: function(topic, callback, context, repeat, args) {
     this.id= "sub-" + Number(++_SEED);
     this.args= args || [];
     this.context= context
@@ -28,7 +28,7 @@ var Subcr= klass.extends({
 });
 
 var TNode= klass.extends({
-  init: function() {
+  ctor: function() {
     this.parts= {};
     this.subs=[];
   }
@@ -181,7 +181,7 @@ var EventBus = klass.extends({
     return node.parts[token];
   },
 
-  init: function() {
+  ctor: function() {
     this.rootNode = new TNode();
     this.allSubs = {};
     this.msgCount=0;
