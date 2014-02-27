@@ -45,20 +45,21 @@ sh.protos['Game'] =  asterix.XScreen.extends({
   },
 
   onCreate: function() {
+    var btnImg= this.cache.getImage('splash.play-btn');
     var c= this.getCenter();
     var s= this.getSize();
 
-    this.gui = this.game.add.group();
-    this.game.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
-    this.btn= this.game.add.button( c.x, s.y - 20, 'splash.play-btn', function() {
+    this.gui = this.add.group();
+    this.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
+    this.btn= this.add.button( c.x, s.y - btnImg.height * 1.5 , 'splash.play-btn', function() {
       sh.xcfg.smac.play0();
     }, this, 0,0,0,0,this.gui);
     this.anchor(this.btn);
   },
 
   onUpdate: function() {
-    if (this.game.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
-        this.game.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
+    if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
+        this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
       sh.xcfg.smac.play0();
     }
   },
