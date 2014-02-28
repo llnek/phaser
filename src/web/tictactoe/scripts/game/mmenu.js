@@ -24,17 +24,74 @@ sh.protos['Main_Menu'] =  asterix.XScreen.extends({
   onCreate: function() {
     var csts= sh.xcfg.csts;
     var c= this.getCenter();
+
+    this.gui = this.add.group();
+
     this.map = this.add.tilemap('gui.mmenu');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
     this.map.addTilesetImage('BG', 'gui.mmenu.bg');
-    this.map.createLayer('Back');
-    this.map.createLayer('Front');
-    // text => Main Menu => 198x26
-    this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 26) / 2, 'gui.mmenu.title', '', 24);
+    this.map.createLayer('Back',undef, undef, this.gui);
+    this.map.createLayer('Front',undef, undef, this.gui);
+
+    //this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 24) / 2, 'gui.mmenu.title', '', 24);
+    // this is rather a round about way, need to figure out the width/height of text
+    // then reset the anchor point.
+    this.title = this.add.bitmapText( 0,0, 'gui.mmenu.title', sh.l10n('%mmenu'), 24, this.gui);
+    this.title.y = (csts.TILE * 8 - this.title.textHeight) / 2;
+    this.title.x =  c.x - this.title.textWidth / 2;
+
+    this.createSelections();
+    this.ctrlBtns();
+  },
+
+  createSelections: function() {
+    var b1= this.cache.getImage('gui.mmenu.onep');
+    var b2= this.cache.getImage('gui.mmenu.twop');
+    var b3= this.cache.getImage('gui.mmenu.netp');
+    var c = this.getCenter();
+    var s = this.getSize();
+    var topy = (s.y - b1.height  - b2.height - b3.height - (2 * 10)) / 2;
+    var bw= _.max( [ b1.width, b2.width, b3.width ] );
+    var topx = (s.x -  bw) / 2;
+
+    this.onep= this.add.button( topx, topy, 'gui.mmenu.onep', function() {
+    }, this, 0,0,0,0,this.gui);
+
+    this.twop= this.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
+    }, this, 0,0,0,0,this.gui);
+
+    this.netp= this.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
+    }, this, 0,0,0,0,this.gui);
+  },
+
+  ctrlBtns: function() {
+    var quitBtn= this.cache.getImage('gui.xbxY');
+    var backBtn= this.cache.getImage('gui.xbxB');
+    var sfxBtn= this.cache.getImage('gui.audio');
+    var csts= sh.xcfg.csts;
+    var s= this.getSize();
+    var hx, hy = s.y - _.max([quitBtn.height, backBtn.height]) - csts.TILE - csts.S_OFF;
+
+    hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
+    this.quitBtn = this.add.button( hx, hy, 'gui.xbxY', function() {
+    }, this, 0,0,0,0,this.gui);
+
+    hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
+    this.backBtn = this.add.button( hx, hy, 'gui.xbxB', function() {
+    }, this, 0,0,0,0,this.gui);
+
+    hx = csts.TILE + csts.S_OFF;
+    this.audioBtn = this.add.sprite( hx, hy, 'gui.audio',
+      sh.xcfg.sound.open ? 1 : 0, this.gui);
+    this.audioBtn.inputEnabled=true;
+    this.audioBtn.events.onInputDown.add(function() {
+      sh.xcfg.sound.open = ! sh.xcfg.sound.open;
+      this.audioBtn.frame= sh.xcfg.sound.open ? 1 : 0;
+    },this);
+
   },
 
   onUpdate: function() {
-    this.title.setText( sh.l10n('%mmenu'));
     if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
         this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
     }

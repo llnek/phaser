@@ -18,25 +18,6 @@ var echt = global.ZotohLabs.echt;
 
 
 //////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-/*
-asterix.TicTacToe.MainMenu = asterix.XMainMenu.extend({
-  appObj: ttt
-});
-*/
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-/*
-var PlayBtnCtor= asterix.XButtonFactory.define({
-  animSheet: new ig.AnimationSheet(sh.imgFile('tictactoe','gui','play_btn.png'), 194,58),
-  size: { x: 194, y: 58 },
-  clicker: function() { sh.xcfg.smac.play0(); }
-});
-*/
-//////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
 sh.protos['Start_Screen'] =  asterix.XScreen.extends({
@@ -51,10 +32,9 @@ sh.protos['Start_Screen'] =  asterix.XScreen.extends({
 
     this.gui = this.add.group();
     this.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
-    this.btn= this.add.button( c.x, s.y - btnImg.height * 1.5 , 'splash.play-btn', function() {
+    this.btn= this.add.button( c.x - btnImg.width / 2, s.y - btnImg.height * 1.5 , 'splash.play-btn', function() {
       this.showMainMenu();
     }, this, 0,0,0,0,this.gui);
-    this.anchor(this.btn);
   },
 
   onUpdate: function() {

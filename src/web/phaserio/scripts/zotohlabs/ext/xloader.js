@@ -38,6 +38,16 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
     //  as the files below are loaded in.
     this.load.setPreloadSprite(this.bar);
 
+    _.each(sh.xcfg.assets.sprites, function(v,k) {
+      vv=sh.sanitizeUrl(v[0]);
+      if (v[3] === -1) {
+        me.load.spritesheet(k, vv, v[1], v[2]);
+      } else {
+        me.load.spritesheet(k, vv, v[1], v[2], v[3]);
+      }
+      loggr.debug("loaded sprite [" + k + "] = " + vv);
+    });
+
     _.each(sh.xcfg.assets.images, function(v,k) {
       me.load.image(k, (vv=sh.sanitizeUrl(v)));
       loggr.debug("loaded image [" + k + "] = " + vv);
