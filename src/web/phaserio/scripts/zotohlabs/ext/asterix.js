@@ -95,13 +95,25 @@ global.ZotohLabs.Asterix = {
       String.toLocaleString(table);
       loggr.info("loaded l10n strings.  locale = " + String.locale);
     },
-    getTextSize: function(ft,msg) {
-      return [ ft.widthForString(msg), ft.heightForString(msg) ];
+
+    toggleScreen: function(s,skip) {
+      if (skip === false) {} else {
+        this.last = this.main.state.current;
+      }
+      this.main.state.start(s);
+    },
+
+    revertScreen: function() {
+      if (echt(this.last)) {
+        this.main.state.start(this.last);
+        this.last=null;
+      }
     },
 
     currentStage: 1,
     protos: {},
     main: null,
+    last: null,
     lang: 'en',
 
     sanitizeUrl: function(url) {

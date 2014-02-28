@@ -36,7 +36,7 @@ sh.protos['Main_Menu'] =  asterix.XScreen.extends({
     //this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 24) / 2, 'gui.mmenu.title', '', 24);
     // this is rather a round about way, need to figure out the width/height of text
     // then reset the anchor point.
-    this.title = this.add.bitmapText( 0,0, 'gui.mmenu.title', sh.l10n('%mmenu'), 24, this.gui);
+    this.title = this.add.bitmapText( 0,0, 'font.tinyBoxBB', sh.l10n('%mmenu'), 24, this.gui);
     this.title.y = (csts.TILE * 8 - this.title.textHeight) / 2;
     this.title.x =  c.x - this.title.textWidth / 2;
 
@@ -74,6 +74,7 @@ sh.protos['Main_Menu'] =  asterix.XScreen.extends({
 
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
     this.quitBtn = this.add.button( hx, hy, 'gui.xbxY', function() {
+      sh.toggleScreen('YesNoBox');
     }, this, 0,0,0,0,this.gui);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;

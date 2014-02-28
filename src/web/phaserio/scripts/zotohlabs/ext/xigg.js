@@ -68,11 +68,22 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
   onRender: function() {
   },
 
+  setPrevious: function (last) {
+    this.previous_state_id = last;
+  },
+
+  getPrevious: function() {
+    return previous_state_id;
+  },
+
   ctor: function(g) {
     this.game=g;
   },
 
+  previous_state_id: '',
+
   created_ok: false,
+
   moniker: ''
 
 });

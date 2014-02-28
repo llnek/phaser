@@ -51,11 +51,11 @@ var smac = StateMachine.create({
     },
     onready: function(ev,fr,to,mainObj) {
       loggr.debug("onload() called, moving to state [" + to + "]");
-      mainObj.state.start(to);
+      sh.setScreen(to);
     },
     onplay0: function(ev,fr,to,mainObj) {
       loggr.debug("onload() called, moving to state [" + to + "]");
-      mainObj.state.start(to);
+      sh.toggleScreen(to);
     },
     onquit: function(ev,fr,to) {
       ig.system.setDelegateEx(asterix.TicTacToe.startScreen);

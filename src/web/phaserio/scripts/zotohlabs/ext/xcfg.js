@@ -41,6 +41,7 @@ asterix.XConfig = {
       'gui.audio' : [ 'media/phaserio/btns/audio_onoff_white.png', 32,32, -1 ]
     },
     tiles: {
+      'gui.ynbox' : 'lib/game/{{appid}}/levels/blankscreen.json',
       'gui.mmenu' : 'lib/game/{{appid}}/levels/mainmenu.json'
     },
     images: {
@@ -59,7 +60,8 @@ asterix.XConfig = {
     sounds: {
     },
     fonts: {
-      'gui.mmenu.title' : [ 'media/phaserio/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.xml' ]
+      'font.tinyBoxBB' : [ 'media/phaserio/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.xml' ],
+      'font.downlink' : [ 'media/phaserio/fon/{{lang}}/', 'Downlink.png', 'Downlink.xml' ]
     }
   },
 
