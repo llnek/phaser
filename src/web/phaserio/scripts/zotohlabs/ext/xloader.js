@@ -22,7 +22,7 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
 
   onPreload: function () {
     var imgLogo= this.cache.getImage('zLogo');
-    var c= this.getCenter();
+    var p, vv, c= this.getCenter();
     var me= this;
 
     this.gui = this.add.group();
@@ -39,19 +39,26 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
     this.load.setPreloadSprite(this.bar);
 
     _.each(sh.xcfg.assets.images, function(v,k) {
-      me.load.image(k, sh.sanitizeUrl(v));
+      me.load.image(k, (vv=sh.sanitizeUrl(v)));
+      loggr.debug("loaded image [" + k + "] = " + vv);
     });
 
     _.each(sh.xcfg.assets.sounds, function(v,k) {
-      me.load.audio(k, sh.sanitizeUrl(v));
+      me.load.audio(k, (vv=sh.sanitizeUrl(v)));
+      loggr.debug("loaded sfx [" + k + "] = " + vv);
     });
 
     _.each(sh.xcfg.assets.fonts, function(v,k) {
-      me.load.bitmapFont(k, sh.sanitizeUrl(v));
+      // value is array of [ path, image , xml ]
+      p= sh.sanitizeUrl(v[0]);
+      vv = p + v[1];
+      me.load.bitmapFont(k, vv, p + v[2]);
+      loggr.debug("loaded bitmap-font [" + k + "] = " + vv);
     });
 
     _.each(sh.xcfg.assets.tiles, function(v,k) {
-      me.load.tilemap(k, sh.sanitizeUrl(v), null, Phaser.Tilemap.TILED_JSON);
+      me.load.tilemap(k, (vv=sh.sanitizeUrl(v)), null, Phaser.Tilemap.TILED_JSON);
+      loggr.debug("loaded tiles [" + k + "] = " + vv);
     });
   },
 

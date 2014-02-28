@@ -50,6 +50,7 @@ asterix.XConfig = {
     sounds: {
     },
     fonts: {
+      'gui.mmenu.title' : [ 'media/phaserio/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.xml' ]
     }
   },
 

@@ -22,14 +22,19 @@ var echt = global.ZotohLabs.echt;
 sh.protos['Main_Menu'] =  asterix.XScreen.extends({
 
   onCreate: function() {
+    var csts= sh.xcfg.csts;
+    var c= this.getCenter();
     this.map = this.add.tilemap('gui.mmenu');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
     this.map.addTilesetImage('BG', 'gui.mmenu.bg');
     this.map.createLayer('Back');
     this.map.createLayer('Front');
+    // text => Main Menu => 198x26
+    this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 26) / 2, 'gui.mmenu.title', '', 24);
   },
 
   onUpdate: function() {
+    this.title.setText( sh.l10n('%mmenu'));
     if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
         this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
     }
