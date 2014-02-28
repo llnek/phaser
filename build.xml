@@ -282,7 +282,10 @@
 
   <target name="compile-js">
     <copy todir="${build.dir}/web_scripts/${wappid}">
-      <fileset dir="${web.dir}/${wappid}/scripts"><include name="**/*.js"/></fileset>
+      <fileset dir="${web.dir}/${wappid}/scripts">
+        <include name="**/*.json"/>
+        <include name="**/*.js"/>
+      </fileset>
     </copy>
     <mkdir dir="${basedir}/public/ig/lib/game"/>
     <mkdir dir="${basedir}/public/scripts"/>
@@ -290,6 +293,7 @@
       <case value="phaserio">
         <copy todir="${basedir}/public/ig/lib">
           <fileset dir="${build.dir}/web_scripts/${wappid}">
+            <include name="**/*.json"/>
             <include name="**/*.js"/>
           </fileset>
         </copy>
@@ -297,6 +301,7 @@
       <case value="main">
         <copy todir="${basedir}/public/scripts">
           <fileset dir="${build.dir}/web_scripts/${wappid}">
+            <include name="**/*.json"/>
             <include name="**/*.js"/>
           </fileset>
         </copy>
@@ -304,6 +309,7 @@
       <default>
         <copy todir="${basedir}/public/ig/lib/game/${wappid}">
           <fileset dir="${build.dir}/web_scripts/${wappid}/game">
+            <include name="**/*.json"/>
             <include name="**/*.js"/>
           </fileset>
         </copy>

@@ -21,6 +21,7 @@ var echt = global.ZotohLabs.echt;
 asterix.XConfig = {
 
   urlPrefix: '/public/ig/',
+  appid: '',
 
   setGameSize: function(sz) {
     if (_.isString(sz)) {
@@ -36,9 +37,15 @@ asterix.XConfig = {
   },
 
   assets: {
+    tiles: {
+      'gui.mmenu' : 'lib/game/{{appid}}/levels/mainmenu.json'
+    },
     images: {
-      'splash.play-btn' : 'media/tictactoe/gui/{{lang}}/play_btn.png',
-      'splash.splash' : 'media/tictactoe/gui/splash.png'
+      'splash.play-btn' : 'media/{{appid}}/gui/{{lang}}/play_btn.png',
+      'splash.splash' : 'media/{{appid}}/gui/splash.png',
+      'gui.mmenu.border16': 'media/phaserio/game/cbox-borders_x16.png',
+      'gui.mmenu.border8': 'media/phaserio/game/cbox-borders_x8.png',
+      'gui.mmenu.bg' : 'media/{{appid}}/gui/bg.png'
     },
     sounds: {
     },

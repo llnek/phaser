@@ -21,22 +21,20 @@ var smac = StateMachine.create({
     { name: 'genesis',  from: 'none',  to: 'Boot' },
     { name: 'splash',  from: 'Boot',  to: 'Splash' },
     { name: 'preload',  from: 'Splash',  to: 'Preloader' },
-    { name: 'reify',  from: 'Preloader',  to: 'Game' },
+    { name: 'ready',  from: 'Preloader',  to: 'Start_Screen' },
 
-    { name: 'ready',  from: 'Game',  to: 'start_screen' },
+    { name: 'play0',  from: 'Start_Screen',  to: 'Main_Menu' },
+    { name: 'quit',  from: 'Main_Menu',  to: 'Start_Screen' },
 
-    { name: 'play0',  from: 'start_screen',  to: 'main_menu' },
-    { name: 'quit',  from: 'main_menu',  to: 'start_screen' },
+    { name: 'play1',  from: 'Main_Menu',  to: 'Play_Game' },
+    { name: 'play2',  from: 'Main_Menu',  to: 'Play_Game' },
+    { name: 'play3',  from: 'Main_Menu',  to: 'Play_Game' },
 
-    { name: 'play1',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play2',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play3',  from: 'main_menu',  to: 'play_game' },
+    { name: 'settings',  from: 'Play_Game',  to: 'Main_Menu' },
+    { name: 'back',  from: 'Main_Menu',  to: 'Play_Game' },
 
-    { name: 'settings',  from: 'play_game',  to: 'main_menu' },
-    { name: 'back',  from: 'main_menu',  to: 'play_game' },
-
-    { name: 'replay',  from: 'play_game',  to: 'replay_game' },
-    { name: 'resetplay',  from: 'replay_game',  to: 'play_game' }
+    { name: 'replay',  from: 'Play_Game',  to: 'Replay_Game' },
+    { name: 'resetplay',  from: 'Replay_Game',  to: 'Play_Game' }
   ],
   callbacks: {
     ongenesis: function(ev,fr,to,mainObj) {
@@ -51,13 +49,13 @@ var smac = StateMachine.create({
       loggr.debug("onpreload() called, moving to state [" + to + "]");
       mainObj.state.start(to);
     },
-    onreify: function(ev,fr,to,mainObj) {
+    onready: function(ev,fr,to,mainObj) {
       loggr.debug("onload() called, moving to state [" + to + "]");
       mainObj.state.start(to);
     },
-    onplay0: function(ev,fr,to) {
-      asterix.TicTacToe.mainMenu = new (asterix.TicTacToe.MainMenu)();
-      ig.system.setDelegateEx(asterix.TicTacToe.mainMenu);
+    onplay0: function(ev,fr,to,mainObj) {
+      loggr.debug("onload() called, moving to state [" + to + "]");
+      mainObj.state.start(to);
     },
     onquit: function(ev,fr,to) {
       ig.system.setDelegateEx(asterix.TicTacToe.startScreen);
@@ -93,6 +91,8 @@ var smac = StateMachine.create({
 
 sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
+  appid: 'tictactoe',
+
   csts: {
     CV_X: 'X'.charCodeAt(0),
     CV_O: 'O'.charCodeAt(0),
@@ -119,29 +119,22 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     default:{width:320, height:480, scale:1}
   },
 
-  levels: {
-    startscreen : {
-      main: 'startscreen.js'
+  assets: {
+    tiles: {
     },
-    confirmbox : {
-      main: 'blankscreen.js'
+    images: {
     },
-    mainmenu : {
-      main: 'mainmenu.js'
+    sounds: {
+      game_end: 'media/phaserio/sfx/MineExplosion.mp3',
+      x_pick: 'media/phaserio/sfx/ElevatorBeep.mp3',
+      o_pick: 'media/phaserio/sfx/MineBeep.mp3',
+      quit: 'media/phaserio/sfx/PlayerMonsterFall.mp3'
     },
-    tictactoe : {
-      main: 'arena.js'
+    fonts: {
     }
   },
 
-  sounds: {
-    /*
-    start_game: new ig.Sound('media/impact/sfx/StartGame.*'),
-    game_end: new ig.Sound('media/impact/sfx/MineExplosion.*'),
-    x_pick: new ig.Sound('media/impact/sfx/ElevatorBeep.*'),
-    o_pick: new ig.Sound('media/impact/sfx/MineBeep.*'),
-    quit: new ig.Sound('media/impact/sfx/PlayerMonsterFall.*')
-    */
+  levels: {
   },
 
   smac: smac

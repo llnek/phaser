@@ -16,58 +16,24 @@ var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-/*
-asterix.TicTacToe.MainMenu = asterix.XMainMenu.extend({
-  appObj: ttt
-});
-*/
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-/*
-var PlayBtnCtor= asterix.XButtonFactory.define({
-  animSheet: new ig.AnimationSheet(sh.imgFile('tictactoe','gui','play_btn.png'), 194,58),
-  size: { x: 194, y: 58 },
-  clicker: function() { sh.xcfg.smac.play0(); }
-});
-*/
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['Start_Screen'] =  asterix.XScreen.extends({
-
-  noPreload: function() {
-  },
+sh.protos['Main_Menu'] =  asterix.XScreen.extends({
 
   onCreate: function() {
-    var btnImg= this.cache.getImage('splash.play-btn');
-    var c= this.getCenter();
-    var s= this.getSize();
-
-    this.gui = this.add.group();
-    this.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
-    this.btn= this.add.button( c.x, s.y - btnImg.height * 1.5 , 'splash.play-btn', function() {
-      this.showMainMenu();
-    }, this, 0,0,0,0,this.gui);
-    this.anchor(this.btn);
+    this.map = this.add.tilemap('gui.mmenu');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
+    this.map.addTilesetImage('BG', 'gui.mmenu.bg');
+    this.map.createLayer('Back');
+    this.map.createLayer('Front');
   },
 
   onUpdate: function() {
     if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
         this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
-      this.showMainMenu();
     }
-  },
-
-  showMainMenu: function() {
-    sh.xcfg.smac.play0(sh.main);
   }
-
 
 });
 

@@ -50,6 +50,9 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
       me.load.bitmapFont(k, sh.sanitizeUrl(v));
     });
 
+    _.each(sh.xcfg.assets.tiles, function(v,k) {
+      me.load.tilemap(k, sh.sanitizeUrl(v), null, Phaser.Tilemap.TILED_JSON);
+    });
   },
 
   onCreate: function () {
@@ -59,9 +62,9 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
   onUpdate: function () {
     tween = this.add.tween(this.logo);
     tween.onComplete.add(function() {
-       sh.xcfg.smac.reify(sh.main);
+       sh.xcfg.smac.ready(sh.main);
     }, this);
-    tween.to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None).start();
+    tween.to( { alpha: 0 }, 800, Phaser.Easing.Linear.None).start();
   }
 
 
