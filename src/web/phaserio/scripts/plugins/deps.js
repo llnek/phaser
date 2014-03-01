@@ -12,6 +12,14 @@
 
 (function (undef) { "use strict"; var global = this; var _ = global._ ;
 
+// monkey-patch phaser to do some positional stuff with bitmaptext
+Phaser.BitmapText.prototype.repos = function(x,y) {
+  this.y= y;
+  this.x= x;
+  this.world = new Phaser.Point(x,y);
+  this.position.set(x,y);
+};
+
 // monkey-patch phaser to do what we want with state management.
 
 var orig = Phaser.StateManager.prototype.setCurrentState;

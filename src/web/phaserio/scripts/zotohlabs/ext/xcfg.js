@@ -60,8 +60,8 @@ asterix.XConfig = {
     sounds: {
     },
     fonts: {
-      'font.tinyBoxBB' : [ 'media/phaserio/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.xml' ],
-      'font.downlink' : [ 'media/phaserio/fon/{{lang}}/', 'Downlink.png', 'Downlink.xml' ]
+      'font.TinyBoxBB' : [ 'media/phaserio/fon/{{lang}}/', 'TinyBoxBlackBitA8.png', 'TinyBoxBlackBitA8.xml' ],
+      'font.Downlink' : [ 'media/phaserio/fon/{{lang}}/', 'Downlink.png', 'Downlink.xml' ]
     }
   },
 
@@ -71,6 +71,7 @@ asterix.XConfig = {
     size: null
   },
 
+  preloadLevels: false,
   smac: null,
 
   l10n: {

@@ -38,9 +38,10 @@ sh.protos['MainMenu'] =  asterix.XScreen.extends({
     //this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 24) / 2, 'gui.mmenu.title', '', 24);
     // this is rather a round about way, need to figure out the width/height of text
     // then reset the anchor point.
-    this.title = this.add.bitmapText( 0,0, 'font.tinyBoxBB', sh.l10n('%mmenu'), 24, this.gui);
-    this.title.y = (csts.TILE * 8 - this.title.textHeight) / 2;
-    this.title.x =  c.x - this.title.textWidth / 2;
+    this.title = this.add.bitmapText( 0,0, 'font.TinyBoxBB', sh.l10n('%mmenu'), 24, this.gui);
+    this.title.repos( c.x - this.title.textWidth / 2, (csts.TILE * 8 - this.title.textHeight) / 2);
+    //this.title.y = (csts.TILE * 8 - this.title.textHeight) / 2;
+    //this.title.x =  c.x - this.title.textWidth / 2;
 
     this.createSelections();
     this.ctrlBtns();
@@ -57,12 +58,15 @@ sh.protos['MainMenu'] =  asterix.XScreen.extends({
     var topx = (s.x -  bw) / 2;
 
     this.onep= this.add.button( topx, topy, 'gui.mmenu.onep', function() {
+      sh.xcfg.smac.play1();
     }, this, 0,0,0,0,this.gui);
 
     this.twop= this.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
+      sh.xcfg.smac.play2();
     }, this, 0,0,0,0,this.gui);
 
     this.netp= this.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
+      sh.xcfg.smac.play3();
     }, this, 0,0,0,0,this.gui);
   },
 

@@ -14,7 +14,7 @@ var asterix = global.ZotohLabs.Asterix;
 var sh= asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 asterix.TicTacToe= {};
-var ig=sh;  //TODO
+
 var smac = StateMachine.create({
   //initial: 'none',
   events: [
@@ -38,15 +38,15 @@ var smac = StateMachine.create({
   ],
   callbacks: {
     ongenesis: function(ev,fr,to,mainObj) {
-      loggr.debug("ongenesis() called, moving to state [" + to + "]");
+      sh.logstate("ongenesis",fr,to);
       mainObj.state.start(to);
     },
     onsplash: function(ev,fr,to,mainObj) {
-      loggr.debug("onsplash() called, moving to state [" + to + "]");
+      sh.logstate("onsplash",fr,to);
       mainObj.state.start(to);
     },
     onpreload: function(ev,fr,to,mainObj) {
-      loggr.debug("onpreload() called, moving to state [" + to + "]");
+      sh.logstate("onpreload",fr,to);
       mainObj.state.start(to);
     },
     onready: function(ev,fr,to,mainObj) {
@@ -54,34 +54,39 @@ var smac = StateMachine.create({
       sh.pushState(to);
     },
     onplay0: function(ev,fr,to,mainObj) {
-      loggr.debug("onload() called, moving to state [" + to + "]");
+      sh.logstate("onplay0",fr,to);
       sh.pushState(to);
     },
     onquit: function(ev,fr,to) {
-      loggr.debug("onload() called, moving to state [" + to + "]");
+      sh.logstate("onquit",fr,to);
       sh.pushState(to);
     },
     onplay1: function(ev,fr,to) {
-      asterix.TicTacToe.mainGame = new (sh.xcfg.game.proto)(1);
-      ig.system.setDelegateEx(asterix.TicTacToe.mainGame);
+      sh.logstate("onplay1",fr,to);
+      sh.pushState(to, { mode: 1 });
     },
     onplay2: function(ev,fr,to) {
-      asterix.TicTacToe.mainGame = new (sh.xcfg.game.proto)(2);
-      ig.system.setDelegateEx(asterix.TicTacToe.mainGame);
+      sh.logstate("onplay2",fr,to);
+      sh.pushState(to, { mode: 2 });
     },
     onplay3: function(ev,fr,to) {
+      sh.logstate("onplay3",fr,to);
+      //sh.pushState(to, { mode: 3 });
     },
     onsettings: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.TicTacToe.mainMenu);
+      sh.logstate("onsettings",fr,to);
+      sh.pushState(to);
     },
     onback: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.TicTacToe.mainGame);
+      sh.logstate("onback",fr,to);
+      sh.pushState(to);
     },
     onreplay: function(ev,fr,to) {
-      asterix.TicTacToe.mainGame.restart();
+      sh.logstate("onreplay",fr,to);
+      sh.pushState(to);
     },
     onresetplay: function(ev,fr,to) {
-      loggr.debug("onresetplay() called.");
+      sh.logstate("onresetplay",fr,to);
     }
   }
 });
@@ -132,12 +137,25 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       quit: 'media/phaserio/sfx/PlayerMonsterFall.mp3'
     },
     fonts: {
+      'font.CrystalRadioKit' : [ 'media/phaserio/fon/{{lang}}/', 'CrystalRadioKit.png', 'CrystalRadioKit.xml' ]
     }
   },
 
   levels: {
+    "gamelevel1" : {
+      tiles: {
+        'arena' : 'lib/game/{{appid}}/levels/arena.json'
+      },
+      images: {
+        'arena' : 'media/{{appid}}/game/arena.png'
+      },
+      sprites: {
+        'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
+      }
+    }
   },
 
+  preloadLevels: true,
   smac: smac
 
 });

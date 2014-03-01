@@ -40,18 +40,11 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
     this.load.setPreloadSprite(this.bar);
 
     _.each(sh.xcfg.assets.sprites, function(v,k) {
-      vv=sh.sanitizeUrl(v[0]);
-      if (v[3] === -1) {
-        me.load.spritesheet(k, vv, v[1], v[2]);
-      } else {
-        me.load.spritesheet(k, vv, v[1], v[2], v[3]);
-      }
-      loggr.debug("loaded sprite [" + k + "] = " + vv);
+      me.doLoadSprite(k,v);
     });
 
     _.each(sh.xcfg.assets.images, function(v,k) {
-      me.load.image(k, (vv=sh.sanitizeUrl(v)));
-      loggr.debug("loaded image [" + k + "] = " + vv);
+      me.doLoadImage(k,v);
     });
 
     _.each(sh.xcfg.assets.sounds, function(v,k) {
@@ -68,9 +61,47 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
     });
 
     _.each(sh.xcfg.assets.tiles, function(v,k) {
-      me.load.tilemap(k, (vv=sh.sanitizeUrl(v)), null, Phaser.Tilemap.TILED_JSON);
-      loggr.debug("loaded tiles [" + k + "] = " + vv);
+      me.doLoadTile(k,v);
     });
+
+    if (sh.xcfg.preloadLevels) {
+      this.doLoadLevels();
+    }
+  },
+
+  doLoadLevels: function() {
+    var z, me=this; _.each(sh.xcfg.levels, function(v,k) {
+      _.each(v,function(obj,n){
+        _.each(obj, function(item, x) {
+          z=  k + '.' + n + '.' + x;
+          switch (n) {
+            case 'sprites': me.doLoadSprite( z,item); break;
+            case 'images': me.doLoadImage( z, item); break;
+            case 'tiles': me.doLoadTile( z, item); break;
+          }
+        });
+      });
+    });
+  },
+
+  doLoadSprite: function(k, v) {
+    var vv= sh.sanitizeUrl(v[0]);
+    if (v[3] === -1) {
+      this.load.spritesheet(k, vv, v[1], v[2]);
+    } else {
+      this.load.spritesheet(k, vv, v[1], v[2], v[3]);
+    }
+    loggr.debug("loaded sprite [" + k + "] = " + vv);
+  },
+
+  doLoadImage: function(k,v) {
+    this.load.image(k, (vv=sh.sanitizeUrl(v)));
+    loggr.debug("loaded image [" + k + "] = " + vv);
+  },
+
+  doLoadTile: function(k,v) {
+    this.load.tilemap(k, (vv=sh.sanitizeUrl(v)), null, Phaser.Tilemap.TILED_JSON);
+    loggr.debug("loaded tiles [" + k + "] = " + vv);
   },
 
   onCreate: function () {

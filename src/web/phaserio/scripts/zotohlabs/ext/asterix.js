@@ -117,6 +117,10 @@ global.ZotohLabs.Asterix = {
       }
     },
 
+    logstate: function(cb,from,state) {
+      loggr.debug("" + cb + "() called, moving from [" + from + "] to state [" + state + "]");
+    },
+
     currentStage: 1,
     protos: {},
     main: null,

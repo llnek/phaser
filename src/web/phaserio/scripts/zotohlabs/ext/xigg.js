@@ -28,6 +28,8 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
 
   create: function() {
     this.onCreate(this.startOptions || {});
+    this.doLayout();
+    this.fzCreate();
   },
 
   update: function() {
@@ -63,12 +65,19 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
   onRender: function() {
   },
 
+  doLayout: function() {},
+  fzCreate: function() {},
+
   setPrevious: function (last) {
     this.prevState = last;
   },
 
   getPrevious: function() {
     return this.prevState;
+  },
+
+  setGameMode: function(mode) {
+    sh.xcfg.csts.GAME_MODE= mode;
   },
 
   // hack to allow optional params to be passed into state object

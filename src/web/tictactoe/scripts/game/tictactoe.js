@@ -26,16 +26,17 @@ var Cmd= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.proto = asterix.XGame.extend({
+sh.protos['PlayGame'] = asterix.XScreen.extends({
 
+  moniker: 'PlayGame',
+
+  /*
   fontHead16_Amber: sh.newFonFile('impact','tinybox_white_16_font.png', { fontColor: '#ff6600'}),
   fontHead16_Red: sh.newFonFile('impact', 'tinybox_white_16_font.png', { fontColor: '#ee1d05'}),
   fontHead8: sh.newFonFile('impact','256_white_16_font.png'),
-
   fontScore: sh.newFonFile('impact','crystal_radio_kit_white_16_font.png'),
   fontResult: sh.newFonFile('impact','tinybox_white_16_font.png'),
-
-  name: 'tictactoe',
+  */
 
   p2ID: '',
   p1ID: '',
@@ -56,10 +57,15 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   // holds references to entities
   cells: [],
 
-  preStart: function() {
-  // initialize the board and create the 2 players.
+  onCreate: function(options) {
+
+    this.setGameMode(options.mode);
+    this.mapGridPos();
+
+    // initialize the board and create the 2 players.
     sh.xcfg.sfxPlay('start_game');
     this.maybeReset();
+
     var p1= new ttt.Human(sh.xcfg.csts.CV_X, ttt.EntityCross, 'X');
     var p2= null;
     switch (sh.xcfg.csts.GAME_MODE) {
@@ -72,10 +78,12 @@ sh.xcfg.game.proto = asterix.XGame.extend({
       case 3:
       break;
     }
+
     this.board = new ttt.Board(sh.xcfg.csts.GRID_SIZE);
     this.board.registerPlayers(p1, p2);
     this.players= [null,p1,p2];
     this.actions = [];
+
   },
 
   onRestart: function() {
@@ -85,23 +93,20 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     this.start();
   },
 
-  onStart: function() {
+  fzCreate: function() {
   // randomly decide who goes first, if robot, then randomly pick a start cell.
     this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+    /*
     this.actor = this.board.getCurActor();
     if (this.actor.isRobot()) {
       this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
     }
     loggr.debug("game started, initor = " + this.actor.getColor());
-  },
-
-  onEnd: function() {
+    */
   },
 
   maybeReset: function() {
   // clean up
-    this.removeEntityTypes(ttt.EntityNought);
-    this.removeEntityTypes(ttt.EntityCross);
     this.actor=null;
     this.players=[];
     this.cells=[];
@@ -143,10 +148,11 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   processInputs: function() {
-  // clicked!
+    /*
     if (this.pressed('clicked')) {
       this.onclicked(ig.input.mouse.x, ig.input.mouse.y);
     }
+    */
   },
 
   frameUpdate: function() {
@@ -167,7 +173,7 @@ sh.xcfg.game.proto = asterix.XGame.extend({
                 sh.xcfg.sfxPlay('o_pick');
               break;
             }
-            this.cells[cmd.cell] = this.spawnEntity(cmd.actor.getPic(), c[0], c[1]);
+            //this.cells[cmd.cell] = this.spawnEntity(cmd.actor.getPic(), c[0], c[1]);
           }
       } else {
         this.checkEnding();
@@ -210,8 +216,8 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   doDone: function(p,combo) {
-    this.replayBtn.toggleVisible(true);
-    this.showWinningIcons(combo);
+    //this.replayBtn.toggleVisible(true);
+    //this.showWinningIcons(combo);
     sh.xcfg.sfxPlay('game_end');
     this.lastWinner = p;
     this.board.finz();
@@ -278,6 +284,7 @@ sh.xcfg.game.proto = asterix.XGame.extend({
   },
 
   drawStatus: function() {
+  /*
     var pfx, msg, x, y, csts= sh.xcfg.csts;
     y = (csts.GRID_H - csts.GAP) * csts.TILE;
     x = ig.system.width / 2;
@@ -291,10 +298,12 @@ sh.xcfg.game.proto = asterix.XGame.extend({
     }
     msg = sh.l10n('%whosturn', {who: pfx});
     this.fontHead8.draw(msg, x, y, ig.Font.ALIGN.CENTER);
+    */
   },
 
   drawResult: function() {
   // report game result please.
+    /*
     var msg, p1, p2, x, y, csts= sh.xcfg.csts;
     y = (csts.GRID_H - csts.GAP) * csts.TILE;
     x = ig.system.width / 2;
@@ -306,82 +315,45 @@ sh.xcfg.game.proto = asterix.XGame.extend({
       default: msg= sh.l10n('%whodraw'); break;
     }
     this.fontResult.draw(msg, x, y, ig.Font.ALIGN.CENTER);
+    */
   },
 
   guiBtns: function() {
-  // build GUI - buttons
-    var me=this, x, y, csts = sh.xcfg.csts;
-    var group = 'gui-btns';
-    this.createLayerEx(group);
-
-    y = ig.system.height - csts.TILE - csts.BTN_SIZE - csts.S_OFF;
-    // settings btn
-    x = ig.system.width - csts.TILE - csts.BTN_SIZE - csts.S_OFF;
-    var setts= asterix.XButtonFactory.define({
-      animSheet: new ig.AnimationSheet('media/impact/btns/settings-x32.png', 32, 32),
-      size: { x: 32, y: 32 },
-      _layer: group,
-      clicker: function() { sh.xcfg.smac.settings(); }
-    });
-    this.spawnEntity(setts, x , y, {});
-
-    // replay btn
-    x = csts.TILE + csts.S_OFF;
-    var repy= asterix.XButtonFactory.define({
-      animSheet: new ig.AnimationSheet('media/impact/btns/replay-x32.png', 32, 32),
-      size: { x:32, y:32 },
-      _layer: group,
-      clicker: function() {
-        sh.xcfg.smac.replay();
-        this.visible=false;
-      }
-    });
-    this.replayBtn= this.spawnEntity(repy, x , y, {});
-    this.replayBtn.toggleVisible(false);
   },
 
-  gui: function() {
-  // build GUI
-    var lbl, gid= 'gui', csts= sh.xcfg.csts;
-    var me=this;
-    this.createLayer(gid);
-    // headings
-    lbl= new ig.XLabel(gid, this.fontHead16_Red, this.p1ID );
-    lbl.update= function() {
-      this.x = csts.TILE + csts.GAP;
-      this.y = this.x;
-    };
-    this.addItem(lbl);
-    lbl= new ig.XLabel(gid, this.fontHead8, sh.l10n('%scores'));
-    lbl.update= function() {
-      this.x = (ig.system.width - this.font.widthForString(this.text)) / 2 ;
-      this.y = csts.TILE + csts.GAP;
-    };
-    this.addItem(lbl);
-    lbl = new ig.XLabel(gid, this.fontHead16_Amber, this.p2ID );
-    lbl.update= function() {
-      this.x = ig.system.width - csts.TILE - csts.GAP - this.font.widthForString(this.text);
-      this.y = csts.TILE + csts.GAP;
-    };
-    this.addItem(lbl);
-    // scores
-    lbl = new ig.XLabel(gid, this.fontScore);
-    lbl.update= function() {
-      var s1 = me.scores[me.players[1].getColor()];
-      this.text = global.ZotohLabs.prettyNumber(s1,3);
-      this.x = csts.TILE + csts.GAP;
-      this.y = csts.TILE + csts.GAP + (3 * csts.TILE);
-    };
-    this.addItem(lbl);
-    lbl = new ig.XLabel(gid, this.fontScore);
-    lbl.update= function() {
-      var s2 = me.scores[me.players[2].getColor()];
-      this.text = global.ZotohLabs.prettyNumber(s2,3);
-      this.x = ig.system.width - csts.TILE - csts.GAP - this.font.widthForString(this.text);
-      this.y = csts.TILE + csts.GAP + (3 * csts.TILE);
-    };
-    this.addItem(lbl);
-    this.guiBtns();
+  doLayout: function() {
+    this.gui = this.add.group();
+    var csts= sh.xcfg.csts;
+    var c= this.getCenter();
+    var s= this.getSize();
+    // background
+    this.map = this.add.tilemap('gamelevel1.tiles.arena');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
+    this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
+    this.map.createLayer('Back',undef, undef, this.gui);
+    this.map.createLayer('Grid',undef, undef, this.gui);
+    this.map.createLayer('Front',undef, undef, this.gui);
+
+    this.p1Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p1ID, 16, this.gui);
+    this.p1Hdr.repos(csts.TILE + csts.GAP, csts.TILE + csts.GAP);
+
+    this.p2Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p2ID, 16, this.gui);
+    this.p2Hdr.repos( s.x - csts.TILE - csts.GAP - this.p2Hdr.textWidth, csts.TILE + csts.GAP);
+
+    this.scoreHdr = this.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%scores'), 16, this.gui);
+    this.scoreHdr.repos( (s.x - this.scoreHdr.textWidth) / 2, csts.TILE + csts.GAP);
+
+    //s1 = me.scores[me.players[1].getColor()];
+      //this.text = global.ZotohLabs.prettyNumber(s2,3);
+    this.score1 = this.add.bitmapText( 0,0, 'font.CrystalRadioKit', '888', 16, this.gui);
+    this.score1.repos( csts.TILE + csts.GAP, csts.TILE + csts.GAP + (3 * csts.TILE));
+    this.score1.setText('964');
+
+    this.score2 = this.add.bitmapText( 0,0, 'font.CrystalRadioKit', '888', 16, this.gui);
+    this.score2.repos( s.x - csts.TILE - csts.GAP - this.score2.textWidth ,
+      csts.TILE + csts.GAP + (3 * csts.TILE));
+    this.score2.setText('001');
+
   },
 
   setGameMode: function(mode) {
@@ -392,15 +364,8 @@ sh.xcfg.game.proto = asterix.XGame.extend({
       this.p2Long= sh.l10n('%computer');
       this.p2ID= sh.l10n('%cpu');
     }
-  },
-
-  init: function(mode) {
-    this.setGameMode(mode);
-    this.mapGridPos();
-    this.parent();
-    this.gui();
-    this.start();
   }
+
 
 });
 
