@@ -44,14 +44,11 @@ sh.protos['YesNoBox'] =  asterix.XScreen.extends({
     this.map.createLayer('Front',undef, undef, this.gui);
 
     this.question = this.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%quit?'), 16, this.gui);
-    this.question.repos( c.x - this.question.textWidth / 2, c.y - this.question.textHeight / 2);
-    //this.question.y = c.y - this.question.textHeight / 2;
-    //this.question.x =  c.x - this.question.textWidth / 2;
-
-    this.ctrlBtns();
+    this.question.repos( c.x - this.question.textWidth / 2,
+      c.y - this.question.textHeight / 2);
   },
 
-  ctrlBtns: function() {
+  doLayout: function() {
     var backBtn= this.cache.getImage('gui.xbxB');
     var yesBtn= this.cache.getImage('gui.xbxA');
     var csts= sh.xcfg.csts;

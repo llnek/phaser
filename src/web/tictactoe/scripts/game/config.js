@@ -102,8 +102,8 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
   csts: {
     CV_X: 'X'.charCodeAt(0),
     CV_O: 'O'.charCodeAt(0),
-    COL: [10, 10, 10],
-    ROW: [11, 11, 11],
+    //COL: [10, 10, 10],
+    //ROW: [11, 11, 11],
     GRID_SIZE: 3,
     PIC_SIZE: 72,
     BTN_SIZE: 32,
@@ -114,6 +114,7 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     C_GAP: 1,
     R_GAP: 1,
     LEFT: 4,
+    HOLE: 10,
     TOP: 11,
     GAP: 10
   },
@@ -129,6 +130,8 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     tiles: {
     },
     images: {
+      "game.arena.menu" : 'media/phaserio/btns/settings-x32.png',
+      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png'
     },
     sounds: {
       game_end: 'media/phaserio/sfx/MineExplosion.mp3',
@@ -137,7 +140,10 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
       quit: 'media/phaserio/sfx/PlayerMonsterFall.mp3'
     },
     fonts: {
-      'font.CrystalRadioKit' : [ 'media/phaserio/fon/{{lang}}/', 'CrystalRadioKit.png', 'CrystalRadioKit.xml' ]
+      'font.CrystalRadioKit' : [ 'media/phaserio/fon/{{lang}}/', 'CrystalRadioKit.png', 'CrystalRadioKit.xml' ],
+      'font.SugarPie' : [ 'media/phaserio/fon/{{lang}}/', 'SugarPie.png', 'SugarPie.xml' ],
+      'font.256Bytes' : [ 'media/phaserio/fon/{{lang}}/', '256Bytes.png', '256Bytes.xml' ],
+      'font.Subito' : [ 'media/phaserio/fon/{{lang}}/', 'Subito.png', 'Subito.xml' ]
     }
   },
 

@@ -38,11 +38,11 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   fontResult: sh.newFonFile('impact','tinybox_white_16_font.png'),
   */
 
-  p2ID: '',
-  p1ID: '',
-
   p2Long: sh.l10n('%player2'),
   p1Long: sh.l10n('%player1'),
+
+  p2ID: '',
+  p1ID: '',
 
   actions: [],
   board: null,
@@ -251,22 +251,24 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   // we know which cell the user has clicked on.
     var csts= sh.xcfg.csts;
     var x2, x1 = csts.LEFT;
-    var y2, y1 = csts.TOP;
+    var y2, y1 = (csts.GRID_H - (3 * csts.HOLE + 2 * csts.R_GAP)) / 2;
     var r,c,n, _results = [];
+
     for (n=0; n < csts.CELLS; ++n) {
       this.gridMap[n] = [];
     }
     for (r=0; r < csts.GRID_SIZE; ++r) {
       for (c= 0; c < csts.GRID_SIZE; ++c) {
-        x2 = x1 + csts.COL[c];
-        y2 = y1 + csts.ROW[r];
+        x2 = x1 + csts.HOLE;
+        y2 = y1 + csts.HOLE;
         this.gridMap[r * csts.GRID_SIZE + c] = [x1 * csts.TILE,
                                                 y1 * csts.TILE,
                                                 x2 * csts.TILE, y2 * csts.TILE];
         x1 = x2 + csts.C_GAP;
       }
-      y1 = y1 + csts.ROW[r] + csts.R_GAP;
-      _results.push(x1 = csts.LEFT);
+      y1 = y1 + csts.HOLE + csts.R_GAP;
+      x1 = csts.LEFT;
+      _results.push(x1);
     }
   },
 
@@ -318,7 +320,44 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     */
   },
 
+  drawScores: function() {
+    var s2 = 1; //this.scores[this.players[2].getColor()];
+    var s1 = 653;//this.scores[this.players[1].getColor()];
+    var csts= sh.xcfg.csts;
+    var s = this.getSize();
+    var n2 = global.ZotohLabs.prettyNumber(s2,3);
+    var n1 = global.ZotohLabs.prettyNumber(s1,3);
+
+    this.score1.setText(n1);
+    this.score1.updateText();
+    //this.score1.repos( csts.TILE + csts.GAP, csts.TILE + csts.GAP + (3 * csts.TILE));
+    this.score1.repos( csts.TILE + csts.GAP, csts.TILE + csts.GAP );
+
+    this.score2.setText(n2);
+    this.score2.updateText();
+    this.score2.repos( s.x - csts.TILE - csts.GAP - this.score2.textWidth ,
+      //csts.TILE + csts.GAP + (3 * csts.TILE));
+      csts.TILE + csts.GAP);
+  },
+
   guiBtns: function() {
+    var img2= this.cache.getImage('game.arena.replay');
+    var img1= this.cache.getImage('game.arena.menu');
+    var csts = sh.xcfg.csts;
+    var s= this.getSize();
+    var x,y;
+
+    y = s.y - csts.TILE - img2.height - csts.S_OFF;
+    x = csts.TILE + csts.S_OFF;
+    this.replayBtn = this.add.button( x, y, 'game.arena.replay', function() {
+    }, this, 0,0,0,0,this.gui);
+    this.replayBtn.visible=false;
+
+    y = s.y - csts.TILE - img1.height - csts.S_OFF;
+    x = s.x - csts.TILE - img1.width - csts.S_OFF;
+    this.menuBtn = this.add.button( x, y, 'game.arena.menu', function() {
+    }, this, 0,0,0,0,this.gui);
+
   },
 
   doLayout: function() {
@@ -334,26 +373,27 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     this.map.createLayer('Grid',undef, undef, this.gui);
     this.map.createLayer('Front',undef, undef, this.gui);
 
+    /*
     this.p1Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p1ID, 16, this.gui);
     this.p1Hdr.repos(csts.TILE + csts.GAP, csts.TILE + csts.GAP);
 
     this.p2Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p2ID, 16, this.gui);
     this.p2Hdr.repos( s.x - csts.TILE - csts.GAP - this.p2Hdr.textWidth, csts.TILE + csts.GAP);
+    */
 
-    this.scoreHdr = this.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%scores'), 16, this.gui);
+    var xxx= this.p1ID + " / " + this.p2ID;
+    this.scoreHdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', xxx, 12, this.gui);
     this.scoreHdr.repos( (s.x - this.scoreHdr.textWidth) / 2, csts.TILE + csts.GAP);
 
     //s1 = me.scores[me.players[1].getColor()];
       //this.text = global.ZotohLabs.prettyNumber(s2,3);
-    this.score1 = this.add.bitmapText( 0,0, 'font.CrystalRadioKit', '888', 16, this.gui);
-    this.score1.repos( csts.TILE + csts.GAP, csts.TILE + csts.GAP + (3 * csts.TILE));
-    this.score1.setText('964');
+    this.score1 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
+    this.score1.tint= 0xee1d05;
+    this.score2 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
+    this.score2.tint= 0xff6600;
 
-    this.score2 = this.add.bitmapText( 0,0, 'font.CrystalRadioKit', '888', 16, this.gui);
-    this.score2.repos( s.x - csts.TILE - csts.GAP - this.score2.textWidth ,
-      csts.TILE + csts.GAP + (3 * csts.TILE));
-    this.score2.setText('001');
-
+    this.drawScores();
+    this.guiBtns();
   },
 
   setGameMode: function(mode) {

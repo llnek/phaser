@@ -35,14 +35,11 @@ sh.protos['MainMenu'] =  asterix.XScreen.extends({
     this.map.createLayer('Back',undef, undef, this.gui);
     this.map.createLayer('Front',undef, undef, this.gui);
 
-    //this.title = this.add.bitmapText( c.x-198/2, (csts.TILE * 8 - 24) / 2, 'gui.mmenu.title', '', 24);
-    // this is rather a round about way, need to figure out the width/height of text
-    // then reset the anchor point.
     this.title = this.add.bitmapText( 0,0, 'font.TinyBoxBB', sh.l10n('%mmenu'), 24, this.gui);
     this.title.repos( c.x - this.title.textWidth / 2, (csts.TILE * 8 - this.title.textHeight) / 2);
-    //this.title.y = (csts.TILE * 8 - this.title.textHeight) / 2;
-    //this.title.x =  c.x - this.title.textWidth / 2;
+  },
 
+  doLayout: function() {
     this.createSelections();
     this.ctrlBtns();
   },
