@@ -12,8 +12,28 @@
 
 (function (undef) { "use strict"; var global = this; var _ = global._ ;
 
-// hack to force load and evaluate all impact modules
-ig._DOMReady();
+// monkey-patch phaser to do what we want with state management.
+
+var orig = Phaser.StateManager.prototype.setCurrentState;
+
+Phaser.StateManager.prototype.setCurrentState = function(key) {
+var last= this.getCurrentState();
+orig.call(this, key);
+var cur= this.getCurrentState();
+if (last && last.moniker === 'YesNoBox') {} else {
+  cur.setPrevious(last);
+}
+};
+
+Phaser.StateManager.prototype.resetHistory = function() {
+  _.each(this.states, function(v) {
+    v.setPrevious(null);
+  });
+};
+
+Phaser.StateManager.prototype.getState = function(key) {
+  return this.states[key];
+};
 
 }).call(this);
 

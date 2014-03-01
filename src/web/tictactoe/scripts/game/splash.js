@@ -20,7 +20,9 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['Start_Screen'] =  asterix.XScreen.extends({
+sh.protos['StartScreen'] =  asterix.XScreen.extends({
+
+  moniker: 'StartScreen',
 
   noPreload: function() {
   },
@@ -47,7 +49,6 @@ sh.protos['Start_Screen'] =  asterix.XScreen.extends({
   showMainMenu: function() {
     sh.xcfg.smac.play0(sh.main);
   }
-
 
 });
 

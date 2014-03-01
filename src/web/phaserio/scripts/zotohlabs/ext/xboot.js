@@ -19,7 +19,7 @@ var loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 sh.protos['Boot']  = asterix.XScreen.extends({
-
+  moniker: 'Boot',
   onPreload: function () {
     this.load.image('loadingBar', 'media/phaserio/game/preloader_bar.png');
     this.load.image('zLogo', 'media/main/logos/ZotohLabs_x200.png');

@@ -19,7 +19,9 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['Main_Menu'] =  asterix.XScreen.extends({
+sh.protos['MainMenu'] =  asterix.XScreen.extends({
+
+  moniker: 'MainMenu',
 
   onCreate: function() {
     var csts= sh.xcfg.csts;
@@ -74,11 +76,18 @@ sh.protos['Main_Menu'] =  asterix.XScreen.extends({
 
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
     this.quitBtn = this.add.button( hx, hy, 'gui.xbxY', function() {
-      sh.toggleScreen('YesNoBox');
+      sh.pushState('YesNoBox', { yes: function() {
+        sh.xcfg.smac.quit();
+      } });
     }, this, 0,0,0,0,this.gui);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
     this.backBtn = this.add.button( hx, hy, 'gui.xbxB', function() {
+      switch (this.getPrevious().moniker) {
+      case 'StartScreen': sh.xcfg.smac.quit(); break;
+      case 'PlayGame': sh.xcfg.smac.back(); break;
+      default: throw new Error("No valid state to go back to!");
+      }
     }, this, 0,0,0,0,this.gui);
 
     hx = csts.TILE + csts.S_OFF;
@@ -97,6 +106,7 @@ sh.protos['Main_Menu'] =  asterix.XScreen.extends({
         this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
     }
   }
+
 
 });
 

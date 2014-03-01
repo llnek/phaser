@@ -21,20 +21,20 @@ var smac = StateMachine.create({
     { name: 'genesis',  from: 'none',  to: 'Boot' },
     { name: 'splash',  from: 'Boot',  to: 'Splash' },
     { name: 'preload',  from: 'Splash',  to: 'Preloader' },
-    { name: 'ready',  from: 'Preloader',  to: 'Start_Screen' },
+    { name: 'ready',  from: 'Preloader',  to: 'StartScreen' },
 
-    { name: 'play0',  from: 'Start_Screen',  to: 'Main_Menu' },
-    { name: 'quit',  from: 'Main_Menu',  to: 'Start_Screen' },
+    { name: 'play0',  from: 'StartScreen',  to: 'MainMenu' },
+    { name: 'quit',  from: 'MainMenu',  to: 'StartScreen' },
 
-    { name: 'play1',  from: 'Main_Menu',  to: 'Play_Game' },
-    { name: 'play2',  from: 'Main_Menu',  to: 'Play_Game' },
-    { name: 'play3',  from: 'Main_Menu',  to: 'Play_Game' },
+    { name: 'play1',  from: 'MainMenu',  to: 'PlayGame' },
+    { name: 'play2',  from: 'MainMenu',  to: 'PlayGame' },
+    { name: 'play3',  from: 'MainMenu',  to: 'PlayGame' },
 
-    { name: 'settings',  from: 'Play_Game',  to: 'Main_Menu' },
-    { name: 'back',  from: 'Main_Menu',  to: 'Play_Game' },
+    { name: 'settings',  from: 'PlayGame',  to: 'MainMenu' },
+    { name: 'back',  from: 'MainMenu',  to: 'PlayGame' },
 
-    { name: 'replay',  from: 'Play_Game',  to: 'Replay_Game' },
-    { name: 'resetplay',  from: 'Replay_Game',  to: 'Play_Game' }
+    { name: 'replay',  from: 'PlayGame',  to: 'ReplayGame' },
+    { name: 'resetplay',  from: 'ReplayGame',  to: 'PlayGame' }
   ],
   callbacks: {
     ongenesis: function(ev,fr,to,mainObj) {
@@ -51,14 +51,15 @@ var smac = StateMachine.create({
     },
     onready: function(ev,fr,to,mainObj) {
       loggr.debug("onload() called, moving to state [" + to + "]");
-      sh.setScreen(to);
+      sh.pushState(to);
     },
     onplay0: function(ev,fr,to,mainObj) {
       loggr.debug("onload() called, moving to state [" + to + "]");
-      sh.toggleScreen(to);
+      sh.pushState(to);
     },
     onquit: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.TicTacToe.startScreen);
+      loggr.debug("onload() called, moving to state [" + to + "]");
+      sh.pushState(to);
     },
     onplay1: function(ev,fr,to) {
       asterix.TicTacToe.mainGame = new (sh.xcfg.game.proto)(1);

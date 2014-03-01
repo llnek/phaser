@@ -21,11 +21,21 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 sh.protos['YesNoBox'] =  asterix.XScreen.extends({
 
-  onCreate: function() {
+  moniker: 'YesNoBox',
+
+  onCreate: function(options) {
     var csts= sh.xcfg.csts;
     var c= this.getCenter();
+    var fc= function() {
+      sh.popState();
+    }
 
     this.gui = this.add.group();
+    this.yesFunc= fc;
+    this.noFunc= fc;
+
+    if (echt(options.yes)) { this.yesFunc= options.yes; }
+    if (echt(options.no)) { this.noFunc= options.no; }
 
     this.map = this.add.tilemap('gui.ynbox');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
@@ -49,12 +59,12 @@ sh.protos['YesNoBox'] =  asterix.XScreen.extends({
 
     hx = s.x - yesBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
     this.yesBtn = this.add.button( hx, hy, 'gui.xbxA', function() {
-      sh.toggleScreen('Start_Screen');
+      this.yesFunc();
     }, this, 0,0,0,0,this.gui);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
     this.backBtn = this.add.button( hx, hy, 'gui.xbxB', function() {
-      sh.revertScreen();
+      this.noFunc();
     }, this, 0,0,0,0,this.gui);
 
   },
@@ -63,7 +73,16 @@ sh.protos['YesNoBox'] =  asterix.XScreen.extends({
     if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
         this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
     }
+  },
+
+  bindYes: function(cb) {
+    this.yesFunc = cb;
+  },
+
+  bindNo: function(cb) {
+    this.noFunc = cb;
   }
+
 
 });
 

@@ -90,23 +90,30 @@ var Funcs= klass.extends({
 global.ZotohLabs.Asterix = {
   fns: new Funcs(),
   Shell: {
+
     l10nInit: function(table) {
       String.defaultLocale="en-US";
       String.toLocaleString(table);
       loggr.info("loaded l10n strings.  locale = " + String.locale);
     },
 
-    toggleScreen: function(s,skip) {
-      if (skip === false) {} else {
-        this.last = this.main.state.current;
+    pushState: function(s,options) {
+      options= options || {};
+      var p= this.main.state.getState(s);
+      if (p) {
+        p.bindStartOptions(options);
       }
       this.main.state.start(s);
     },
 
-    revertScreen: function() {
-      if (echt(this.last)) {
-        this.main.state.start(this.last);
-        this.last=null;
+    popState: function() {
+      var c= this.main.state.getCurrentState();
+      var p= c.getPrevious();
+      c.setPrevious();
+      if (p) {
+        this.main.state.start(p.moniker);
+      } else {
+        throw new Error("No state to pop back to!");
       }
     },
 

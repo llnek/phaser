@@ -22,17 +22,12 @@ var echt= global.ZotohLabs.echt;
 asterix.XScreen = global.ZotohLabs.klass.extends({
 
   preload: function() {
-    if (! this.created_ok) {
-      this.load.baseURL = sh.xcfg.urlPrefix;
-      this.onPreload();
-    }
+    this.load.baseURL = sh.xcfg.urlPrefix;
+    this.onPreload();
   },
 
   create: function() {
-    if (! this.created_ok) {
-      this.onCreate();
-      this.created_ok=true;
-    }
+    this.onCreate(this.startOptions || {});
   },
 
   update: function() {
@@ -69,21 +64,24 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
   },
 
   setPrevious: function (last) {
-    this.previous_state_id = last;
+    this.prevState = last;
   },
 
   getPrevious: function() {
-    return previous_state_id;
+    return this.prevState;
+  },
+
+  // hack to allow optional params to be passed into state object
+  // when pushState is used.
+  bindStartOptions: function(options) {
+    this.startOptions= options || {};
   },
 
   ctor: function(g) {
     this.game=g;
   },
 
-  previous_state_id: '',
-
-  created_ok: false,
-
+  prevState: null,
   moniker: ''
 
 });

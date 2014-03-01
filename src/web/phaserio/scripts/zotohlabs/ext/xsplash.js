@@ -18,6 +18,7 @@ var loggr = global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 sh.protos['Splash'] = asterix.XScreen.extends({
+  moniker: 'Splash',
 
   onUpdate: function () {
      sh.xcfg.smac.preload(sh.main);
