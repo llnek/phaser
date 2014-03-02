@@ -21,95 +21,54 @@ var echt= global.ZotohLabs.echt;
 
 asterix.XScreen = global.ZotohLabs.klass.extends({
 
-  preStart: function() {
+  create: function(root,id) {
+    this.group= root.game.add.group(root,id);
+    this.moniker= id;
+    this.start();
   },
 
-  preload: function() {
-    this.load.baseURL = sh.xcfg.urlPrefix;
-    this.onPreload();
-  },
-
-  create: function() {
-    this.onCreate(this.startOptions || {});
-    this.doLayout();
-    this.fzCreate();
+  start: function() {
   },
 
   update: function() {
-    if (!this.firstUpdate) {
-      this.firstUpdate=true;
-      this.preStart();
-    } else {
-      this.onUpdate();
+  },
+
+  draw: function() {
+  },
+
+  loseFocus: function() {
+    this.group.visible=false;
+  },
+
+  focus: function(options) {
+    this.group.visible=true;
+  },
+
+  popout: function() {
+    var p = this.prev;
+    if (p) {
+      sh.main.invoke(p.moniker);
     }
+    p=null;
   },
 
-  render: function() {
-    this.onRender();
+  setPrev: function(p) {
+    this.prev= p;
   },
 
-  anchor: function(obj, deltaX, deltaY) {
-    obj.anchor.y = deltaY || 0.5;
-    obj.anchor.x = deltaX || 0.5;
-  },
-
-  getCenter: function() {
-    return { x: this.game.world.centerX, y: this.game.world.centerY };
-  },
-
-  getSize: function() {
-    return { x: this.game.world.width, y: this.game.world.height };
-  },
-
-  onPreload: function() {
-  },
-
-  onCreate: function() {
-  },
-
-  onUpdate: function() {
-  },
-
-  onRender: function() {
-  },
-
-  doLayout: function() {},
-  fzCreate: function() {},
-
-  setPrevious: function (last) {
-    this.prevState = last;
-  },
-
-  getPrevious: function() {
-    return this.prevState;
+  getPrev: function() {
+    return this.prev;
   },
 
   setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE= mode;
+    loggr.info("game is running in mode = " + mode);
+    sh.xcfg.csts.GAME_MODE=mode;
   },
 
-  // hack to allow optional params to be passed into state object
-  // when pushState is used.
-  bindStartOptions: function(options) {
-    this.startOptions= options || {};
-  },
-
-  dbgPointer: function(ptr) {
-    ptr = ptr || this.input.activePointer;
-    loggr.debug("ptr.worldX,Y = " + ptr.worldX + "," + ptr.worldY );
-    loggr.debug("ptr.x,y = " + ptr.x + "," + ptr.y);
-    loggr.debug("ptr.pageX,Y = " + ptr.pageX + "," + ptr.pageY);
-    loggr.debug("ptr.screenX,Y = " + ptr.screenX + "," + ptr.screenY );
-    loggr.debug("ptr.clientX,Y = " + ptr.clientX + "," + ptr.clientY );
-  },
-
-  ctor: function(g) {
-    this.firstUpdate= false;
-    this.prevState= null;
-    this.game=g;
-  },
-
-  moniker: ''
+  ctor: function() {
+    this.moniker = '';
+    this.prev = null;
+  }
 
 });
 

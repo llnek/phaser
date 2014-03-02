@@ -19,66 +19,67 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['YesNoBox'] =  asterix.XScreen.extends({
+ttt.YesNoBox =  asterix.XScreen.extends({
 
-  moniker: 'YesNoBox',
-
-  onCreate: function(options) {
+  start: function() {
+    var c= sh.main.getCenter();
+    var s= sh.main.getSize();
     var csts= sh.xcfg.csts;
-    var c= this.getCenter();
-    var fc= function() {
-      sh.popState();
-    }
 
-    this.gui = this.add.group();
-    this.yesFunc= fc;
-    this.noFunc= fc;
-
-    if (echt(options.yes)) { this.yesFunc= options.yes; }
-    if (echt(options.no)) { this.noFunc= options.no; }
-
-    this.map = this.add.tilemap('gui.ynbox');
+    this.map = sh.main.add.tilemap('gui.ynbox');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
     this.map.addTilesetImage('BG', 'gui.mmenu.bg');
-    this.map.createLayer('Back',undef, undef, this.gui);
-    this.map.createLayer('Front',undef, undef, this.gui);
+    this.map.createLayer('Back',undef, undef, this.group);
+    this.map.createLayer('Front',undef, undef, this.group);
 
-    this.question = this.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%quit?'), 16, this.gui);
+    this.question = sh.main.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%quit?'), 16, this.group);
     this.question.repos( c.x - this.question.textWidth / 2,
       c.y - this.question.textHeight / 2);
-  },
 
-  doLayout: function() {
-    var backBtn= this.cache.getImage('gui.xbxB');
-    var yesBtn= this.cache.getImage('gui.xbxA');
-    var csts= sh.xcfg.csts;
-    var s= this.getSize();
+    var backBtn= sh.main.cache.getImage('gui.xbxB');
+    var yesBtn= sh.main.cache.getImage('gui.xbxA');
     var hx, hy = s.y - _.max([yesBtn.height, backBtn.height]) - csts.TILE - csts.S_OFF;
 
     hx = s.x - yesBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
-    this.yesBtn = this.add.button( hx, hy, 'gui.xbxA', function() {
+    this.yesBtn = sh.main.add.button( hx, hy, 'gui.xbxA', function() {
       this.yesFunc();
-    }, this, 0,0,0,0,this.gui);
+    }, this, 0,0,0,0,this.group);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
-    this.backBtn = this.add.button( hx, hy, 'gui.xbxB', function() {
+    this.backBtn = sh.main.add.button( hx, hy, 'gui.xbxB', function() {
       this.noFunc();
-    }, this, 0,0,0,0,this.gui);
+    }, this, 0,0,0,0,this.group);
 
   },
 
-  onUpdate: function() {
-    if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
-        this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
-    }
+  loseFocus: function() {
+    this.parent();
+    //this.group.removeAll();
+  },
+
+  focus: function(options) {
+    options = options || {};
+    this.parent(options);
+    if (echt(options.yes)) { this.yesCB= options.yes; }
+    if (echt(options.no)) { this.noCB= options.no; }
+  },
+
+  yesFunc: function() {
+    sh.main.defly(this);
+    if (this.yesCB) { this.yesCB(); }
+  },
+
+  noFunc: function() {
+    sh.main.defly(this);
+    if (this.noCB) { this.noCB(); }
   },
 
   bindYes: function(cb) {
-    this.yesFunc = cb;
+    this.yesCB = cb;
   },
 
   bindNo: function(cb) {
-    this.noFunc = cb;
+    this.noCB = cb;
   }
 
 

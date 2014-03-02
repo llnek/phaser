@@ -19,7 +19,6 @@ var loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 sh.protos['Preloader']  = asterix.XState.extends({
-  moniker: 'Preloader',
 
   onPreload: function () {
     var imgLogo= this.cache.getImage('zLogo');

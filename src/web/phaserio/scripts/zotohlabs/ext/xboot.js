@@ -18,8 +18,8 @@ var loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.protos['Boot']  = asterix.XScreen.extends({
-  moniker: 'Boot',
+sh.protos['Boot']  = asterix.XState.extends({
+
   onPreload: function () {
     this.load.image('loadingBar', 'media/phaserio/game/preloader_bar.png');
     this.load.image('zLogo', 'media/main/logos/ZotohLabs_x200.png');

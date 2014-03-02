@@ -20,34 +20,32 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['StartScreen'] =  asterix.XScreen.extends({
+ttt.Splash =  asterix.XScreen.extends({
 
-  moniker: 'StartScreen',
+  start: function() {
+    var btnImg= sh.main.cache.getImage('splash.play-btn');
+    var c= sh.main.getCenter();
+    var s= sh.main.getSize();
 
-  noPreload: function() {
+    sh.main.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.group);
+    sh.main.add.button( c.x - btnImg.width / 2,
+                        s.y - btnImg.height * 1.5 ,
+                        'splash.play-btn',
+                        function() { this.showMainMenu(); },
+                        this,
+                        0,0,0,0,
+                        this.group);
   },
 
-  onCreate: function() {
-    var btnImg= this.cache.getImage('splash.play-btn');
-    var c= this.getCenter();
-    var s= this.getSize();
-
-    this.gui = this.add.group();
-    this.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.gui);
-    this.btn= this.add.button( c.x - btnImg.width / 2, s.y - btnImg.height * 1.5 , 'splash.play-btn', function() {
-      this.showMainMenu();
-    }, this, 0,0,0,0,this.gui);
-  },
-
-  onUpdate: function() {
-    if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
-        this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
+  update: function() {
+    if (sh.main.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
+        sh.main.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
       this.showMainMenu();
     }
   },
 
   showMainMenu: function() {
-    sh.xcfg.smac.play0(sh.main);
+    sh.xcfg.smac.play0();
   }
 
 });

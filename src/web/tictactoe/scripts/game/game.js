@@ -23,9 +23,10 @@ var echt= global.ZotohLabs.echt;
 sh.protos['Game'] = asterix.XGame.extends({
 
   preStart: function() {
-    this.screens[ 'Arena' ] = ttt.GameArena;
-    this.screens[ 'Splash' ] = ttt.Splash;
-    this.screens[ 'Menu' ] = ttt.MainMenu;
+    this.screens[ 'Arena' ] = new ttt.GameArena();
+    this.screens[ 'Splash' ] = new ttt.Splash();
+    this.screens[ 'MMenu' ] = new ttt.MainMenu();
+    return this.screens['Splash'];
   }
 
 

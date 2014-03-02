@@ -18,7 +18,6 @@ var loggr = global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 sh.protos['Splash'] = asterix.XState.extends({
-  moniker: 'Splash',
 
   onUpdate: function () {
      this.state.start('Preloader');

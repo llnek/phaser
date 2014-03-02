@@ -26,17 +26,7 @@ var Cmd= klass.extends({
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['PlayGame'] = asterix.XScreen.extends({
-
-  moniker: 'PlayGame',
-
-  /*
-  fontHead16_Amber: sh.newFonFile('impact','tinybox_white_16_font.png', { fontColor: '#ff6600'}),
-  fontHead16_Red: sh.newFonFile('impact', 'tinybox_white_16_font.png', { fontColor: '#ee1d05'}),
-  fontHead8: sh.newFonFile('impact','256_white_16_font.png'),
-  fontScore: sh.newFonFile('impact','crystal_radio_kit_white_16_font.png'),
-  fontResult: sh.newFonFile('impact','tinybox_white_16_font.png'),
-  */
+ttt.GameArena  = asterix.XScreen.extends({
 
   p2Long: sh.l10n('%player2'),
   p1Long: sh.l10n('%player1'),
@@ -57,13 +47,9 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   // holds references to entities
   cells: [],
 
-  onCreate: function(options) {
+  play: function() {
 
-    this.setGameMode(options.mode);
     this.mapGridPos();
-
-    // initialize the board and create the 2 players.
-    sh.xcfg.sfxPlay('start_game');
     this.maybeReset();
 
     var p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
@@ -84,6 +70,15 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     this.players= [null,p1,p2];
     this.actions = [];
 
+    this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+    this.doLayout();
+    sh.xcfg.sfxPlay('start_game');
+
+    this.actor = this.board.getCurActor();
+    if (this.actor.isRobot()) {
+      this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
+    }
+    loggr.debug("game started, initor = " + this.actor.getColor());
   },
 
   onRestart: function() {
@@ -93,18 +88,22 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     this.start();
   },
 
-  fzCreate: function() {
-  // randomly decide who goes first, if robot, then randomly pick a start cell.
-    this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
+  loseFocus: function() {
+    if (this.clicker) {
+      this.clicker.detach();
+      this.clicker=null;
+    }
   },
 
-  preStart: function() {
-    this.input.onDown.add(function() { this.processInputs(); }, this);
-    this.actor = this.board.getCurActor();
-    if (this.actor.isRobot()) {
-      this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
+  focus: function(options) {
+    options= options || {};
+
+    if (echt(options.mode)) {
+      this.setGameMode(options.mode);
+      this.play();
     }
-    loggr.debug("game started, initor = " + this.actor.getColor());
+
+    this.clicker= sh.main.input.onDown.add(function() { this.processInputs(); }, this);
   },
 
   maybeReset: function() {
@@ -150,10 +149,10 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   },
 
   processInputs: function() {
-    this.onclicked(this.input.activePointer.x, this.input.activePointer.y);
+    this.onclicked(sh.main.input.activePointer.x, sh.main.input.activePointer.y);
   },
 
-  onUpdate: function() {
+  update: function() {
   // null board => game over
     if (this.board) {
       if (this.actions.length > 0) {
@@ -171,7 +170,8 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
                 sh.xcfg.sfxPlay('o_pick');
               break;
             }
-            this.cells[cmd.cell] = this.add.sprite(c[0],c[1], 'gamelevel1.sprites.markers', cmd.actor.getPic() );
+            this.cells[cmd.cell] = sh.main.add.sprite(c[0],c[1],
+                  'gamelevel1.sprites.markers', cmd.actor.getPic(),this.group );
           }
       } else {
         this.checkEnding();
@@ -321,7 +321,7 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     var s2 = 1; //this.scores[this.players[2].getColor()];
     var s1 = 653;//this.scores[this.players[1].getColor()];
     var csts= sh.xcfg.csts;
-    var s = this.getSize();
+    var s = sh.main.getSize();
     var n2 = global.ZotohLabs.prettyNumber(s2,3);
     var n1 = global.ZotohLabs.prettyNumber(s1,3);
 
@@ -338,55 +338,46 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   },
 
   guiBtns: function() {
-    var img2= this.cache.getImage('game.arena.replay');
-    var img1= this.cache.getImage('game.arena.menu');
+    var img2= sh.main.cache.getImage('game.arena.replay');
+    var img1= sh.main.cache.getImage('game.arena.menu');
     var csts = sh.xcfg.csts;
-    var s= this.getSize();
+    var s= sh.main.getSize();
     var x,y;
 
     y = s.y - csts.TILE - img2.height - csts.S_OFF;
     x = csts.TILE + csts.S_OFF;
-    this.replayBtn = this.add.button( x, y, 'game.arena.replay', function() {
-    }, this, 0,0,0,0,this.gui);
+    this.replayBtn = sh.main.add.button( x, y, 'game.arena.replay', function() {
+    }, this, 0,0,0,0,this.group);
     this.replayBtn.visible=false;
 
     y = s.y - csts.TILE - img1.height - csts.S_OFF;
     x = s.x - csts.TILE - img1.width - csts.S_OFF;
-    this.menuBtn = this.add.button( x, y, 'game.arena.menu', function() {
-    }, this, 0,0,0,0,this.gui);
+    this.menuBtn = sh.main.add.button( x, y, 'game.arena.menu', function() {
+    }, this, 0,0,0,0,this.group);
 
   },
 
   doLayout: function() {
-    this.gui = this.add.group();
+    var c= sh.main.getCenter();
+    var s= sh.main.getSize();
     var csts= sh.xcfg.csts;
-    var c= this.getCenter();
-    var s= this.getSize();
     // background
-    this.map = this.add.tilemap('gamelevel1.tiles.arena');
+    this.map = sh.main.add.tilemap('gamelevel1.tiles.arena');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
-    this.map.createLayer('Back',undef, undef, this.gui);
-    this.map.createLayer('Grid',undef, undef, this.gui);
-    this.map.createLayer('Front',undef, undef, this.gui);
-
-    /*
-    this.p1Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p1ID, 16, this.gui);
-    this.p1Hdr.repos(csts.TILE + csts.GAP, csts.TILE + csts.GAP);
-
-    this.p2Hdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', this.p2ID, 16, this.gui);
-    this.p2Hdr.repos( s.x - csts.TILE - csts.GAP - this.p2Hdr.textWidth, csts.TILE + csts.GAP);
-    */
+    this.map.createLayer('Back',undef, undef, this.group);
+    this.map.createLayer('Grid',undef, undef, this.group);
+    this.map.createLayer('Front',undef, undef, this.group);
 
     var xxx= this.p1ID + " / " + this.p2ID;
-    this.scoreHdr = this.add.bitmapText( 0,0, 'font.TinyBoxBB', xxx, 12, this.gui);
+    this.scoreHdr = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', xxx, 12, this.group);
     this.scoreHdr.repos( (s.x - this.scoreHdr.textWidth) / 2, csts.TILE + csts.GAP);
 
     //s1 = me.scores[me.players[1].getColor()];
       //this.text = global.ZotohLabs.prettyNumber(s2,3);
-    this.score1 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
+    this.score1 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);
     this.score1.tint= 0x94c207;
-    this.score2 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
+    this.score2 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);
     this.score2.tint= 0xff6600;
 
     this.drawScores();
@@ -401,6 +392,7 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
       this.p2Long= sh.l10n('%computer');
       this.p2ID= sh.l10n('%cpu');
     }
+    this.play();
   }
 
 

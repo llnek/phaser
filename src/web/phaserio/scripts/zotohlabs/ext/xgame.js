@@ -21,10 +21,14 @@ var echt= global.ZotohLabs.echt;
 
 asterix.XGame = asterix.XState.extends({
 
-  moniker: 'Game',
-
   onCreate: function() {
-    this.preStart();
+    this.root= this.add.group(undef, 'root');
+    var fs= this.preStart();
+    var me=this;
+    _.each(this.screens, function(v,k) {
+      v.create(me.root,k);
+    });
+    this.floatTop(fs);
   },
 
   onUpdate: function() {
@@ -43,9 +47,15 @@ asterix.XGame = asterix.XState.extends({
   },
 
   doFrame: function() {
+    if (this.cur) {
+      this.cur.update();
+    }
   },
 
   doDraw: function() {
+    if (this.cur) {
+      this.cur.draw();
+    }
   },
 
   doStart: function() {
@@ -55,11 +65,48 @@ asterix.XGame = asterix.XState.extends({
   preStart: function() {
   },
 
+  invoke: function(screen, options) {
+    loggr.debug('invoking screen: ' + screen);
+    var x= this.screens[screen];
+    if (x) {
+      if (this.cur) {
+        this.cur.loseFocus();
+        x.setPrev(this.cur);
+      }
+      this.cur=x;
+      this.floatTop(this.cur, options);
+    }
+  },
+
+  flyout: function(scr, options) {
+    var p= new (scr)();
+    p.create(this.root,'flyout');
+    if (this.cur) {
+      this.cur.loseFocus();
+    }
+    this.floatTop(p,options);
+  },
+
+  defly: function(s) {
+    s.loseFocus();
+    if (this.cur) {
+      this.floatTop(this.cur);
+    }
+    //this.root.remove(s.group);
+  },
+
+  floatTop: function(c, options) {
+    this.root.bringToTop(c.group);
+    c.focus(options || {});
+  },
+
   ctor: function(g) {
-    this.startFired=false;
-    this.screens= {};
+    this.startFired = false;
+    this.screens = {};
+    this.root = null;
+    this.cur = null;
     this.parent(g);
-    sh.main= this;
+    sh.main = this;
   }
 
 });

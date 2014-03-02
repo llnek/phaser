@@ -71,10 +71,6 @@ asterix.XState = global.ZotohLabs.klass.extends({
     return this.prevState;
   },
 
-  setGameMode: function(mode) {
-    sh.xcfg.csts.GAME_MODE= mode;
-  },
-
   dbgPointer: function(ptr) {
     ptr = ptr || this.input.activePointer;
     loggr.debug("ptr.worldX,Y = " + ptr.worldX + "," + ptr.worldY );
@@ -87,9 +83,8 @@ asterix.XState = global.ZotohLabs.klass.extends({
   ctor: function(g) {
     this.prevState= null;
     this.game=g;
-  },
+  }
 
-  moniker: ''
 
 });
 

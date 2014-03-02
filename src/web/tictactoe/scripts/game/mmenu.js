@@ -17,83 +17,73 @@ var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
-// splash screen for the game - make it look nice please.
+// Main menu.
 //////////////////////////////////////////////////////////////////////////////
-sh.protos['MainMenu'] =  asterix.XScreen.extends({
+ttt.MainMenu =  asterix.XScreen.extends({
 
-  moniker: 'MainMenu',
-
-  onCreate: function() {
+  start: function() {
+    var c= sh.main.getCenter();
     var csts= sh.xcfg.csts;
-    var c= this.getCenter();
 
-    this.gui = this.add.group();
-
-    this.map = this.add.tilemap('gui.mmenu');
+    this.map = sh.main.add.tilemap('gui.mmenu');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
     this.map.addTilesetImage('BG', 'gui.mmenu.bg');
-    this.map.createLayer('Back',undef, undef, this.gui);
-    this.map.createLayer('Front',undef, undef, this.gui);
+    this.map.createLayer('Back',undef, undef, this.group);
+    this.map.createLayer('Front',undef, undef, this.group);
 
-    this.title = this.add.bitmapText( 0,0, 'font.TinyBoxBB', sh.l10n('%mmenu'), 24, this.gui);
-    this.title.repos( c.x - this.title.textWidth / 2, (csts.TILE * 8 - this.title.textHeight) / 2);
-  },
-
-  doLayout: function() {
+    this.title = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', sh.l10n('%mmenu'), 24, this.group);
+    this.title.repos( c.x - this.title.textWidth / 2,
+                      (csts.TILE * 8 - this.title.textHeight) / 2);
     this.createSelections();
     this.ctrlBtns();
   },
 
   createSelections: function() {
-    var b1= this.cache.getImage('gui.mmenu.onep');
-    var b2= this.cache.getImage('gui.mmenu.twop');
-    var b3= this.cache.getImage('gui.mmenu.netp');
-    var c = this.getCenter();
-    var s = this.getSize();
+    var b1= sh.main.cache.getImage('gui.mmenu.onep');
+    var b2= sh.main.cache.getImage('gui.mmenu.twop');
+    var b3= sh.main.cache.getImage('gui.mmenu.netp');
+    var c = sh.main.getCenter();
+    var s = sh.main.getSize();
     var topy = (s.y - b1.height  - b2.height - b3.height - (2 * 10)) / 2;
     var bw= _.max( [ b1.width, b2.width, b3.width ] );
     var topx = (s.x -  bw) / 2;
 
-    this.onep= this.add.button( topx, topy, 'gui.mmenu.onep', function() {
+    this.onep= sh.main.add.button( topx, topy, 'gui.mmenu.onep', function() {
       sh.xcfg.smac.play1();
-    }, this, 0,0,0,0,this.gui);
+    }, this, 0,0,0,0,this.group);
 
-    this.twop= this.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
+    this.twop= sh.main.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
       sh.xcfg.smac.play2();
-    }, this, 0,0,0,0,this.gui);
+    }, this, 0,0,0,0,this.group);
 
-    this.netp= this.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
+    this.netp= sh.main.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
       sh.xcfg.smac.play3();
-    }, this, 0,0,0,0,this.gui);
+    }, this, 0,0,0,0,this.group);
   },
 
   ctrlBtns: function() {
-    var quitBtn= this.cache.getImage('gui.xbxY');
-    var backBtn= this.cache.getImage('gui.xbxB');
-    var sfxBtn= this.cache.getImage('gui.audio');
+    var quitBtn= sh.main.cache.getImage('gui.xbxY');
+    var backBtn= sh.main.cache.getImage('gui.xbxB');
+    var sfxBtn= sh.main.cache.getImage('gui.audio');
     var csts= sh.xcfg.csts;
-    var s= this.getSize();
+    var s= sh.main.getSize();
     var hx, hy = s.y - _.max([quitBtn.height, backBtn.height]) - csts.TILE - csts.S_OFF;
 
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
-    this.quitBtn = this.add.button( hx, hy, 'gui.xbxY', function() {
-      sh.pushState('YesNoBox', { yes: function() {
-        sh.xcfg.smac.quit();
-      } });
-    }, this, 0,0,0,0,this.gui);
+    this.quitBtn = sh.main.add.button( hx, hy, 'gui.xbxY', function() {
+      sh.main.flyout(ttt.YesNoBox,{
+        yes: function() { sh.xcfg.smac.quit(); }
+      });
+    }, this, 0,0,0,0,this.group);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
-    this.backBtn = this.add.button( hx, hy, 'gui.xbxB', function() {
-      switch (this.getPrevious().moniker) {
-      case 'StartScreen': sh.xcfg.smac.quit(); break;
-      case 'PlayGame': sh.xcfg.smac.back(); break;
-      default: throw new Error("No valid state to go back to!");
-      }
-    }, this, 0,0,0,0,this.gui);
+    this.backBtn = sh.main.add.button( hx, hy, 'gui.xbxB', function() {
+      this.goback();
+    }, this, 0,0,0,0,this.group);
 
     hx = csts.TILE + csts.S_OFF;
-    this.audioBtn = this.add.sprite( hx, hy, 'gui.audio',
-      sh.xcfg.sound.open ? 1 : 0, this.gui);
+    this.audioBtn = sh.main.add.sprite( hx, hy, 'gui.audio',
+      sh.xcfg.sound.open ? 1 : 0, this.group);
     this.audioBtn.inputEnabled=true;
     this.audioBtn.events.onInputDown.add(function() {
       sh.xcfg.sound.open = ! sh.xcfg.sound.open;
@@ -102,9 +92,17 @@ sh.protos['MainMenu'] =  asterix.XScreen.extends({
 
   },
 
-  onUpdate: function() {
-    if (this.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
-        this.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
+  goback: function() {
+    switch (this.prev.moniker) {
+
+      case 'GameArena':
+        sh.xcfg.smac.back();
+      break;
+
+      case 'Splash':
+        sh.xcfg.smac.quit();
+      break;
+
     }
   }
 
