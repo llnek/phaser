@@ -385,7 +385,7 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     //s1 = me.scores[me.players[1].getColor()];
       //this.text = global.ZotohLabs.prettyNumber(s2,3);
     this.score1 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
-    this.score1.tint= 0xee1d05;
+    this.score1.tint= 0x94c207;
     this.score2 = this.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.gui);
     this.score2.tint= 0xff6600;
 
