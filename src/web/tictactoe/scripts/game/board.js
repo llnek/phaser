@@ -297,7 +297,7 @@ asterix.TicTacToe.Board= klass.extends({
     this.GOALSPACE = this.DAGSPACE.concat(this.ROWSPACE, this.COLSPACE);
   },
 
-  init: function (size) {
+  ctor: function (size) {
     this.mapGoalSpace(size);
     this.initBoard();
     loggr.debug("new board init'ed");

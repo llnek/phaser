@@ -33,19 +33,20 @@ sh.protos['Boot']  = asterix.XScreen.extends({
     // You can disable that here:
     //this.stage.disableVisibilityChange = true;
 
-    this.stage.scale.pageAlignHorizontally = true;
+    this.scale.maxHeight = sh.xcfg.game.size.height * sh.xcfg.game.size.scale;
+    this.scale.maxWidth = sh.xcfg.game.size.width * sh.xcfg.game.size.scale;
+    this.scale.minHeight = sh.xcfg.game.size.height;
+    this.scale.minWidth = sh.xcfg.game.size.width;
     if (this.game.device.desktop) {
-      // any desktop specific settings
-      // they can go in here
+      this.scale.minHeight = this.scale.maxHeight;
+      this.scale.minWidth = this.scale.maxWidth;
     } else {
-      this.stage.scale.forceLandscape = sh.xcfg.game.landscape;
-      this.stage.scaleMode = Phaser.StageScaleMode.SHOW_ALL;
-      this.stage.scale.minHeight = sh.xcfg.game.size.height;
-      this.stage.scale.minWidth = sh.xcfg.game.size.width;
-      this.stage.scale.maxHeight = sh.xcfg.game.size.height * sh.xcfg.game.size.scale;
-      this.stage.scale.maxWidth = sh.xcfg.game.size.width * sh.xcfg.game.size.scale;
-      this.stage.scale.setScreenSize(true);
+      this.scale.forceLandscape = sh.xcfg.game.landscape;
     }
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.scale.pageAlignHorizontally = true;
+    this.scale.pageAlignVertically = true;
+    this.scale.setScreenSize(true);
   },
 
   onUpdate: function() {

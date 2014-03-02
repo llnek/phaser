@@ -36,7 +36,7 @@ var Player = klass.extends({
 
   setBoard: function(b) { this.board=b; },
 
-  init: function(value, human, pic, picColor) {
+  ctor: function(value, human, pic, picColor) {
     this.picColor = picColor;
     this.pic = pic;
     this.value = value;
@@ -49,7 +49,7 @@ var Robot = Player.extends({
 
   isMax: function() { return true; },
 
-  init: function(idv, pic, color) {
+  ctor: function(idv, pic, color) {
     this.parent(idv, false, pic, color);
   }
 
@@ -60,7 +60,7 @@ asterix.TicTacToe.Human = Player.extends({
 
   isMax: function() { return false; },
   takeTurn: function() {},
-  init: function (idv, pic, color) {
+  ctor: function (idv, pic, color) {
     this.parent(idv, true, pic, color);
   }
 
@@ -77,7 +77,7 @@ asterix.TicTacToe.AlgoBot = Robot.extends({
     this.mmAlgo = new negax.Algo(b);
   },
 
-  init: function ( idv, pic, color) {
+  ctor: function ( idv, pic, color) {
     this.parent( idv, pic, color);
     this.mmAlgo= null;
   }

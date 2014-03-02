@@ -21,6 +21,9 @@ var echt= global.ZotohLabs.echt;
 
 asterix.XScreen = global.ZotohLabs.klass.extends({
 
+  preStart: function() {
+  },
+
   preload: function() {
     this.load.baseURL = sh.xcfg.urlPrefix;
     this.onPreload();
@@ -33,7 +36,12 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
   },
 
   update: function() {
-    this.onUpdate();
+    if (!this.firstUpdate) {
+      this.firstUpdate=true;
+      this.preStart();
+    } else {
+      this.onUpdate();
+    }
   },
 
   render: function() {
@@ -86,11 +94,21 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
     this.startOptions= options || {};
   },
 
+  dbgPointer: function(ptr) {
+    ptr = ptr || this.input.activePointer;
+    loggr.debug("ptr.worldX,Y = " + ptr.worldX + "," + ptr.worldY );
+    loggr.debug("ptr.x,y = " + ptr.x + "," + ptr.y);
+    loggr.debug("ptr.pageX,Y = " + ptr.pageX + "," + ptr.pageY);
+    loggr.debug("ptr.screenX,Y = " + ptr.screenX + "," + ptr.screenY );
+    loggr.debug("ptr.clientX,Y = " + ptr.clientX + "," + ptr.clientY );
+  },
+
   ctor: function(g) {
+    this.firstUpdate= false;
+    this.prevState= null;
     this.game=g;
   },
 
-  prevState: null,
   moniker: ''
 
 });

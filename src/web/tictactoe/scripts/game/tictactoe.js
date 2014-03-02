@@ -17,7 +17,7 @@ var echt= global.ZotohLabs.echt;
 var ttt= asterix.TicTacToe;
 var sh = asterix.Shell;
 var Cmd= klass.extends({
-  init: function(a,pos) {
+  ctor: function(a,pos) {
     this.cell=pos;
     this.actor=a;
   }
@@ -66,14 +66,14 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
     sh.xcfg.sfxPlay('start_game');
     this.maybeReset();
 
-    var p1= new ttt.Human(sh.xcfg.csts.CV_X, ttt.EntityCross, 'X');
+    var p1= new ttt.Human(sh.xcfg.csts.CV_X, 0, 'X');
     var p2= null;
     switch (sh.xcfg.csts.GAME_MODE) {
       case 1:
-        p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, ttt.EntityNought, 'O');
+        p2= new ttt.AlgoBot(sh.xcfg.csts.CV_O, 1, 'O');
       break;
       case 2:
-        p2= new ttt.Human(sh.xcfg.csts.CV_O, ttt.EntityNought, 'O');
+        p2= new ttt.Human(sh.xcfg.csts.CV_O, 1, 'O');
       break;
       case 3:
       break;
@@ -96,13 +96,15 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   fzCreate: function() {
   // randomly decide who goes first, if robot, then randomly pick a start cell.
     this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
-    /*
+  },
+
+  preStart: function() {
+    this.input.onDown.add(function() { this.processInputs(); }, this);
     this.actor = this.board.getCurActor();
     if (this.actor.isRobot()) {
       this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
     }
     loggr.debug("game started, initor = " + this.actor.getColor());
-    */
   },
 
   maybeReset: function() {
@@ -148,14 +150,10 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
   },
 
   processInputs: function() {
-    /*
-    if (this.pressed('clicked')) {
-      this.onclicked(ig.input.mouse.x, ig.input.mouse.y);
-    }
-    */
+    this.onclicked(this.input.activePointer.x, this.input.activePointer.y);
   },
 
-  frameUpdate: function() {
+  onUpdate: function() {
   // null board => game over
     if (this.board) {
       if (this.actions.length > 0) {
@@ -173,13 +171,12 @@ sh.protos['PlayGame'] = asterix.XScreen.extends({
                 sh.xcfg.sfxPlay('o_pick');
               break;
             }
-            //this.cells[cmd.cell] = this.spawnEntity(cmd.actor.getPic(), c[0], c[1]);
+            this.cells[cmd.cell] = this.add.sprite(c[0],c[1], 'gamelevel1.sprites.markers', cmd.actor.getPic() );
           }
       } else {
         this.checkEnding();
       }
     }
-    this.processInputs();
   },
 
   checkEnding: function() {
