@@ -18,10 +18,7 @@ asterix.TicTacToe= {};
 var smac = StateMachine.create({
   //initial: 'none',
   events: [
-    { name: 'genesis',  from: 'none',  to: 'Boot' },
-    { name: 'splash',  from: 'Boot',  to: 'Splash' },
-    { name: 'preload',  from: 'Splash',  to: 'Preloader' },
-    { name: 'ready',  from: 'Preloader',  to: 'StartScreen' },
+    { name: 'genesis',  from: 'none',  to: 'StartScreen' },
 
     { name: 'play0',  from: 'StartScreen',  to: 'MainMenu' },
     { name: 'quit',  from: 'MainMenu',  to: 'StartScreen' },
@@ -37,53 +34,42 @@ var smac = StateMachine.create({
     { name: 'resetplay',  from: 'ReplayGame',  to: 'PlayGame' }
   ],
   callbacks: {
-    ongenesis: function(ev,fr,to,mainObj) {
+    ongenesis: function(ev,fr,to) {
       sh.logstate("ongenesis",fr,to);
-      mainObj.state.start(to);
-    },
-    onsplash: function(ev,fr,to,mainObj) {
-      sh.logstate("onsplash",fr,to);
-      mainObj.state.start(to);
-    },
-    onpreload: function(ev,fr,to,mainObj) {
-      sh.logstate("onpreload",fr,to);
-      mainObj.state.start(to);
-    },
-    onready: function(ev,fr,to,mainObj) {
-      loggr.debug("onload() called, moving to state [" + to + "]");
-      sh.pushState(to);
+      sh.main.invoke('Splash');
     },
     onplay0: function(ev,fr,to,mainObj) {
       sh.logstate("onplay0",fr,to);
-      sh.pushState(to);
+      sh.main.invoke('MMenu');
     },
     onquit: function(ev,fr,to) {
       sh.logstate("onquit",fr,to);
-      sh.pushState(to);
+      sh.main.invoke('Splash');
     },
     onplay1: function(ev,fr,to) {
       sh.logstate("onplay1",fr,to);
-      sh.pushState(to, { mode: 1 });
+      sh.main.invoke('Arena', { mode: 1 });
     },
     onplay2: function(ev,fr,to) {
       sh.logstate("onplay2",fr,to);
-      sh.pushState(to, { mode: 2 });
+      sh.main.invoke('Arena', { mode: 2 });
     },
     onplay3: function(ev,fr,to) {
       sh.logstate("onplay3",fr,to);
-      //sh.pushState(to, { mode: 3 });
+      //sh.main.invoke('Arena', { mode: 3 });
     },
     onsettings: function(ev,fr,to) {
       sh.logstate("onsettings",fr,to);
-      sh.pushState(to);
+      sh.main.invoke('MMenu');
     },
     onback: function(ev,fr,to) {
       sh.logstate("onback",fr,to);
-      sh.pushState(to);
+      // zero means continue last game
+      sh.main.invoke('Arena', { action: 'continue' });
     },
     onreplay: function(ev,fr,to) {
       sh.logstate("onreplay",fr,to);
-      sh.pushState(to);
+      sh.main.invoke('Arena', { action: 'replay' });
     },
     onresetplay: function(ev,fr,to) {
       sh.logstate("onresetplay",fr,to);

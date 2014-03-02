@@ -9,23 +9,61 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global=this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this; var _ = global._ ;
+var asterix= global.ZotohLabs.Asterix;
+var sh= asterix.Shell;
+var loggr= global.ZotohLabs.logger;
+var echt= global.ZotohLabs.echt;
+
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.protos['Splash'] = asterix.XState.extends({
-  moniker: 'Splash',
+asterix.XGame = asterix.XState.extends({
 
-  onUpdate: function () {
-     this.state.start('Preloader');
+  moniker: 'Game',
+
+  onCreate: function() {
+    this.preStart();
+  },
+
+  onUpdate: function() {
+    if (! this.startFired) {
+      this.startFired = true;
+      this.doStart();
+    } else {
+      this.doFrame();
+    }
+  },
+
+  onRender: function() {
+    if (this.startFired) {
+      this.doDraw();
+    }
+  },
+
+  doFrame: function() {
+  },
+
+  doDraw: function() {
+  },
+
+  doStart: function() {
+    sh.xcfg.smac.genesis();
+  },
+
+  preStart: function() {
+  },
+
+  ctor: function(g) {
+    this.startFired=false;
+    this.screens= {};
+    this.parent(g);
+    sh.main= this;
   }
 
-
 });
+
 
 
 

@@ -20,23 +20,22 @@ var echt= global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 
 loggr.info("About to create Phaser.Game");
-sh.main = new Phaser.Game(
+sh.phaser = new Phaser.Game(
   sh.xcfg.game.size.width,
   sh.xcfg.game.size.height,
   Phaser.AUTO, sh.xcfg.game.canvasDiv);
 
 loggr.info("loading proto objects...");
 _.each(sh.protos, function(z,k) {
-  sh.main.state.add( k, z);
+  sh.phaser.state.add( k, z);
   loggr.info("loaded proto object [" + k + "]");
 });
 
-loggr.info("Game loaded and running. OK");
+loggr.info("states loaded and running. OK");
 loggr.info(sh.xcfg);
 
-//loggr.info("register game start state - " + sh.xcfg.game.startState);
-//sh.main.state.start(sh.xcfg.game.startState);
-sh.xcfg.smac.genesis(sh.main);
+loggr.info("register game start state - " + sh.xcfg.game.startState);
+sh.phaser.state.start(sh.xcfg.game.startState);
 
 }).call(this);
 

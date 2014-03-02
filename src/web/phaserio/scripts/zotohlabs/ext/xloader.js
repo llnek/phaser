@@ -18,7 +18,7 @@ var loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.protos['Preloader']  = asterix.XScreen.extends({
+sh.protos['Preloader']  = asterix.XState.extends({
   moniker: 'Preloader',
 
   onPreload: function () {
@@ -111,7 +111,7 @@ sh.protos['Preloader']  = asterix.XScreen.extends({
   onUpdate: function () {
     tween = this.add.tween(this.logo);
     tween.onComplete.add(function() {
-       sh.xcfg.smac.ready(sh.main);
+       this.state.start('Game');
     }, this);
     tween.to( { alpha: 0 }, 800, Phaser.Easing.Linear.None).start();
   }

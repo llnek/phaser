@@ -9,23 +9,28 @@
 // this software.
 // Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
 
-(function (undef) { "use strict"; var global=this; var _ = global._ ;
-var asterix = global.ZotohLabs.Asterix;
-var sh = asterix.Shell;
-var loggr = global.ZotohLabs.logger;
+(function(undef) { "use strict"; var global = this; var _ = global._ ;
+var asterix= global.ZotohLabs.Asterix;
+var ttt= asterix.TicTacToe;
+var sh= asterix.Shell;
+var loggr= global.ZotohLabs.logger;
+var echt= global.ZotohLabs.echt;
+
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.protos['Splash'] = asterix.XState.extends({
-  moniker: 'Splash',
+sh.protos['Game'] = asterix.XGame.extends({
 
-  onUpdate: function () {
-     this.state.start('Preloader');
+  preStart: function() {
+    this.screens[ 'Arena' ] = ttt.GameArena;
+    this.screens[ 'Splash' ] = ttt.Splash;
+    this.screens[ 'Menu' ] = ttt.MainMenu;
   }
 
 
 });
+
 
 
 

@@ -67,6 +67,7 @@ asterix.XConfig = {
 
   game: {
     canvasDiv: 'game-container',
+    startState: 'Boot',
     landscape: false,
     size: null
   },

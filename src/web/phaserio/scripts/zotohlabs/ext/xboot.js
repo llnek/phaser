@@ -50,7 +50,7 @@ sh.protos['Boot']  = asterix.XScreen.extends({
   },
 
   onUpdate: function() {
-    sh.xcfg.smac.splash(sh.main);
+    this.state.start('Splash');
   }
 
 
