@@ -11,48 +11,29 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var ttt= asterix.TicTacToe;
 var sh= asterix.Shell;
 var loggr= global.ZotohLabs.logger;
+var echt= global.ZotohLabs.echt;
 
-ig.merge(global.ZotohLabs.Asterix.Shell.xcfg.l10n, {
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
 
-"en-US" : {
+sh.protos['Game'] = asterix.XGame.extends({
 
-  "%whosturn" : "{{who}}'s TURN...",
-  "%whodraw" : "Draw!",
-  "%whowin" : "{{who}} Wins!",
-  "%computer" : 'Computer',
-  "%player2" : 'Player 2',
-  "%player1" : 'Player 1',
-
-  "%quit!" : 'Quit',
-  "%back" : 'Back',
-  "%ok" : 'OK',
-
-  "%cpu" : "CPU",
-  "%p2" : "P2",
-  "%p1" : "P1",
-
-  "%mmenu" : 'Main Menu',
-
-  "%replay" : 'REPLAY',
-  "%play" : 'PLAY',
-
-  "%quit?" : 'Continue to quit game?',
-  "%scores" : '= scores ='
-
-
-}
-
-
-
-
+  preStart: function() {
+    this.screens[ 'Arena' ] = new ttt.GameArena();
+    this.screens[ 'Splash' ] = new ttt.Splash();
+    this.screens[ 'MMenu' ] = new ttt.MainMenu();
+    return this.screens['Splash'];
+  }
 
 
 });
 
-loggr.info("Loading resource bundle");
-sh.l10nInit(sh.xcfg.l10n);
+
+
 
 }).call(this);
 

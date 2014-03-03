@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
@@ -23,10 +23,19 @@ var echt= global.ZotohLabs.echt;
 sh.protos['Game'] = asterix.XGame.extends({
 
   preStart: function() {
+
+    this.screens[ 'Splash' ] = new (asterix.StartScreen.extends({
+      onplay: function() {
+        sh.xcfg.smac.play0();
+      }
+    }))();
+
     this.screens[ 'Arena' ] = new ttt.GameArena();
-    this.screens[ 'Splash' ] = new ttt.Splash();
+
     this.screens[ 'MMenu' ] = new ttt.MainMenu();
+
     return this.screens['Splash'];
+
   }
 
 

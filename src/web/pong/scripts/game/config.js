@@ -7,67 +7,13 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
 var sh= asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 asterix.Pong= {};
-var smac = StateMachine.create({
-  //initial: 'none',
-  events: [
-    { name: 'genesis',  from: 'none',  to: 'start_screen' },
-
-    { name: 'play0',  from: 'start_screen',  to: 'main_menu' },
-    { name: 'quit',  from: 'main_menu',  to: 'start_screen' },
-
-    { name: 'play1',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play2',  from: 'main_menu',  to: 'play_game' },
-    { name: 'play3',  from: 'main_menu',  to: 'play_game' },
-
-    { name: 'settings',  from: 'play_game',  to: 'main_menu' },
-    { name: 'back',  from: 'main_menu',  to: 'play_game' },
-
-    { name: 'replay',  from: 'play_game',  to: 'replay_game' },
-    { name: 'resetplay',  from: 'replay_game',  to: 'play_game' }
-  ],
-  callbacks: {
-    ongenesis: function(ev,fr,to,start_screen) {
-      loggr.debug("ongenesis() called.");
-      asterix.Pong.startScreen= start_screen;
-    },
-    onplay0: function(ev,fr,to) {
-      asterix.Pong.mainMenu = new (asterix.Pong.MainMenu)();
-      ig.system.setDelegateEx(asterix.Pong.mainMenu);
-    },
-    onquit: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Pong.startScreen);
-    },
-    onplay1: function(ev,fr,to) {
-      asterix.Pong.mainGame = new (sh.xcfg.game.proto)(1);
-      ig.system.setDelegateEx(asterix.Pong.mainGame);
-    },
-    onplay2: function(ev,fr,to) {
-      asterix.Pong.mainGame = new (sh.xcfg.game.proto)(2);
-      ig.system.setDelegateEx(asterix.Pong.mainGame);
-    },
-    onplay3: function(ev,fr,to) {
-    },
-    onsettings: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Pong.mainMenu);
-    },
-    onback: function(ev,fr,to) {
-      ig.system.setDelegateEx(asterix.Pong.mainGame);
-    },
-    onreplay: function(ev,fr,to) {
-      asterix.Pong.mainGame.restart();
-    },
-    onresetplay: function(ev,fr,to) {
-      loggr.debug("onresetplay() called.");
-    }
-  }
-});
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
@@ -75,12 +21,29 @@ var smac = StateMachine.create({
 
 sh.xcfg = ig.merge( asterix.XConfig, {
 
+  appid: 'pong',
+
   csts: {
-    BTN_SIZE: 32,
     GRID_W: 60,
     GRID_H: 40,
-    TILE: 8,
-    SIDE: 1
+    TILE: 8
+  },
+
+  assets: {
+    tiles: {
+    },
+    images: {
+      "game.arena.menu" : 'media/phaserio/btns/settings-x32.png',
+      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png'
+    },
+    sounds: {
+      'game_end' : [ 'media/phaserio/sfx/MineExplosion.mp3', 'media/phaserio/sfx/MineExplosion.ogg'],
+      'x_pick' : [ 'media/phaserio/sfx/ElevatorBeep.mp3', 'media/phaserio/sfx/ElevatorBeep.ogg'],
+      'o_pick' : [ 'media/phaserio/sfx/MineBeep.mp3', 'media/phaserio/sfx/MineBeep.ogg'],
+      'quit' : [ 'media/phaserio/sfx/PlayerMonsterFall.mp3', 'media/phaserio/sfx/PlayerMonsterFall.ogg' ]
+    },
+    fonts: {
+    }
   },
 
   devices: {
@@ -91,21 +54,47 @@ sh.xcfg = ig.merge( asterix.XConfig, {
   },
 
   levels: {
-    startscreen : {
-      main: 'startscreen.js'
-    },
-    confirmbox : {
-      main: 'blankscreen.js'
-    },
-    mainmenu : {
-      main: 'mainmenu.js'
-    },
-    pong : {
-      main: 'arena.js'
+    "gamelevel1" : {
+      tiles: {
+        'arena' : 'lib/game/{{appid}}/levels/arena.json'
+      },
+      images: {
+        'arena' : 'media/{{appid}}/game/arena.png'
+      },
+      sprites: {
+        'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
+      }
     }
   },
 
-  smac: smac
+  smac: StateMachine.create({
+    events: [
+        { name: 'genesis',  from: 'none',  to: 'StartScreen' },
+        { name: 'play0',  from: 'StartScreen',  to: 'MainMenu' },
+        { name: 'quit',  from: 'MainMenu',  to: 'StartScreen' },
+        { name: 'play1',  from: 'MainMenu',  to: 'PlayGame' },
+        { name: 'play2',  from: 'MainMenu',  to: 'PlayGame' },
+        { name: 'play3',  from: 'MainMenu',  to: 'PlayGame' },
+        { name: 'settings',  from: 'PlayGame',  to: 'MainMenu' },
+        { name: 'back',  from: 'MainMenu',  to: 'PlayGame' },
+        { name: 'replay',  from: 'PlayGame',  to: 'ReplayGame' },
+        { name: 'resetplay',  from: 'ReplayGame',  to: 'PlayGame' }
+    ],
+    callbacks: {
+        ongenesis: function(ev,fr,to) { sh.main.invoke('Splash'); },
+        onplay0: function(ev,fr,to,mainObj) { sh.main.invoke('MMenu'); },
+        onquit: function(ev,fr,to) { sh.main.invoke('Splash'); },
+        onplay1: function(ev,fr,to) { sh.main.invoke('Arena', 'new-1'); },
+        onplay2: function(ev,fr,to) { sh.main.invoke('Arena', 'new-2'); },
+        onplay3: function(ev,fr,to) {},
+        onsettings: function(ev,fr,to) { sh.main.invoke('MMenu'); },
+        onback: function(ev,fr,to) { sh.main.invoke('Arena', 'continue'); },
+        onreplay: function(ev,fr,to) { sh.main.invoke('Arena', 'replay'); },
+        onresetplay: function(ev,fr,to) {}
+    }
+  })
+
+
 
 });
 

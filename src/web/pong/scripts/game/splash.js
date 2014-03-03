@@ -7,60 +7,45 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var png = asterix.Pong;
 var sh = asterix.Shell;
+var png= asterix.Pong;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
+//////////////////////////////////////////////////////////////////////////////
+// splash screen for the game - make it look nice please.
+//////////////////////////////////////////////////////////////////////////////
+png.Splash = asterix.XScreen.extends({
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-asterix.Pong.MainMenu = asterix.XMainMenu.extend({
-  appObj: png
-});
+  start: function() {
+    var btnImg= sh.main.cache.getImage('splash.play-btn');
+    var c= sh.main.getCenter();
+    var s= sh.main.getSize();
 
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-var PlayBtnCtor = asterix.XButtonFactory.define({
-  animSheet: new ig.AnimationSheet(sh.imgFile('pong','gui','play_btn.png'), 194,58),
-  size: { x: 194, y: 58 },
-  clicker: function() { sh.xcfg.smac.play0(); }
-});
-
-//////////////////////////////////////////////////////////////////////////////
-// module def
-//////////////////////////////////////////////////////////////////////////////
-sh.xcfg.game.splash = asterix.XScreenFactory.define({
-
-  preStart: function() {
-    var y = ig.system.height - PlayBtnCtor.prototype.size.y - 10;
-    var x = (ig.system.width - PlayBtnCtor.prototype.size.x) / 2;
-    this.spawnEntity(PlayBtnCtor, x, y, {});
-  },
-
-  onStart: function() {
-    sh.xcfg.smac.genesis(this);
+    sh.main.add.tileSprite(0, 0, s.x, s.y, 'splash.splash',0, this.group);
+    sh.main.add.button( c.x - btnImg.width / 2,
+                        s.y - btnImg.height * 1.5 ,
+                        'splash.play-btn',
+                        function() { this.showMainMenu(); },
+                        this,
+                        0,0,0,0,
+                        this.group);
   },
 
   update: function() {
-    this.parent();
-    if (this.pressed('continue')) {
-      sh.xcfg.smac.play0();
+    if (sh.main.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
+        sh.main.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
+      this.showMainMenu();
     }
   },
 
-  init: function() {
-    this.parent();
-    this.start();
-  },
-
-  name: 'startscreen'
+  showMainMenu: function() {
+    sh.xcfg.smac.play0();
+  }
 
 });
 

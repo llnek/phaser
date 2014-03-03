@@ -112,7 +112,7 @@ sh.protos['Preloader']  = asterix.XState.extends({
     tween.onComplete.add(function() {
        this.state.start('Game');
     }, this);
-    tween.to( { alpha: 0 }, 800, Phaser.Easing.Linear.None).start();
+    tween.to( { alpha: 0 }, 1200, Phaser.Easing.Linear.None).start();
   }
 
 

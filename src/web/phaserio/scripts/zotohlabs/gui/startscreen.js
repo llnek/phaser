@@ -11,7 +11,6 @@
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var ttt= asterix.TicTacToe;
 var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
@@ -20,7 +19,7 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // splash screen for the game - make it look nice please.
 //////////////////////////////////////////////////////////////////////////////
-ttt.Splash = asterix.XScreen.extends({
+asterix.StartScreen = asterix.XScreen.extends({
 
   start: function() {
     var btnImg= sh.main.cache.getImage('splash.play-btn');
@@ -31,22 +30,22 @@ ttt.Splash = asterix.XScreen.extends({
     sh.main.add.button( c.x - btnImg.width / 2,
                         s.y - btnImg.height * 1.5 ,
                         'splash.play-btn',
-                        function() { this.showMainMenu(); },
+                        function() { this.onplay(); },
                         this,
                         0,0,0,0,
                         this.group);
   },
 
+  onplay: function() {
+  },
+
   update: function() {
     if (sh.main.input.keyboard.isDown( Phaser.Keyboard.SPACEBAR) ||
         sh.main.input.keyboard.isDown( Phaser.Keyboard.ENTER)) {
-      this.showMainMenu();
+      this.onplay();
     }
-  },
-
-  showMainMenu: function() {
-    sh.xcfg.smac.play0();
   }
+
 
 });
 
