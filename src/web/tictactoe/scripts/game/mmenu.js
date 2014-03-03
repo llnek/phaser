@@ -101,7 +101,7 @@ ttt.MainMenu =  asterix.XScreen.extends({
   goback: function() {
     switch (this.prev.moniker) {
 
-      case 'GameArena':
+      case 'Arena':
         sh.xcfg.smac.back();
       break;
 

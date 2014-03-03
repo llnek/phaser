@@ -374,6 +374,7 @@ ttt.GameArena  = asterix.XScreen.extends({
     y = s.y - csts.TILE - img1.height - csts.S_OFF;
     x = s.x - csts.TILE - img1.width - csts.S_OFF;
     this.menuBtn = sh.main.add.button( x, y, 'game.arena.menu', function() {
+      sh.xcfg.smac.settings();
     }, this, 0,0,0,0,this.group);
     this.btns.push(this.menuBtn);
 
