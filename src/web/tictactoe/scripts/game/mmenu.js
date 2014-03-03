@@ -71,8 +71,14 @@ ttt.MainMenu =  asterix.XScreen.extends({
 
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
     this.quitBtn = sh.main.add.button( hx, hy, 'gui.xbxY', function() {
-      sh.main.flyout(ttt.YesNoBox,{
-        yes: function() { sh.xcfg.smac.quit(); }
+      sh.main.flyout(asterix.YesNoBox,{
+        yes: function() { sh.xcfg.smac.quit(); },
+        layout: function() {
+          var map = sh.main.add.tilemap('gui.ynbox');
+          map.addTilesetImage('Borders', 'gui.mmenu.border8');
+          map.addTilesetImage('BG', 'gui.mmenu.bg');
+          return map;
+        }
       });
     }, this, 0,0,0,0,this.group);
 

@@ -65,8 +65,19 @@ asterix.XScreen = global.ZotohLabs.klass.extends({
     sh.xcfg.csts.GAME_MODE=mode;
   },
 
+  dtorBtns: function() {
+    // we need to clear out input handler stuff
+    _.each(this.btns, function(z) { z.destroy(); });
+  },
+
+  dtor: function() {
+    this.dtorBtns();
+    this.group.removeAll();
+  },
+
   ctor: function() {
     this.moniker = '';
+    this.btns=[];
     this.prev = null;
   }
 

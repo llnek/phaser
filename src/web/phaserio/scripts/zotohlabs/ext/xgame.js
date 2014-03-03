@@ -88,11 +88,11 @@ asterix.XGame = asterix.XState.extends({
   },
 
   defly: function(s) {
+    this.root.remove(s.group);
     s.loseFocus();
     if (this.cur) {
       this.floatTop(this.cur);
     }
-    //this.root.remove(s.group);
   },
 
   floatTop: function(c, options) {
