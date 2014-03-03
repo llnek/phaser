@@ -72,7 +72,7 @@ asterix.XConfig = {
     size: null
   },
 
-  preloadLevels: false,
+  preloadLevels: true,
   smac: null,
 
   l10n: {

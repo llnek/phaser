@@ -65,9 +65,20 @@ asterix.XGame = asterix.XState.extends({
   preStart: function() {
   },
 
-  invoke: function(screen, options) {
+  invoke: function(screen, arg) {
     loggr.debug('invoking screen: ' + screen);
     var x= this.screens[screen];
+    var options;
+    if (_.isString(arg)) {
+      options= { action: arg }
+    }
+    else
+    if (_.isObject(arg)) {
+      options=arg;
+    }
+    else {
+      options= {};
+    }
     if (x) {
       if (this.cur) {
         this.cur.loseFocus();

@@ -102,6 +102,14 @@ ttt.GameArena  = asterix.XScreen.extends({
     options= options || {};
     switch (options.action) {
 
+      case 'new-2':
+        this.newGame(2);
+      break;
+
+      case 'new-1':
+        this.newGame(1);
+      break;
+
       case 'continue':
       break;
 
@@ -109,16 +117,14 @@ ttt.GameArena  = asterix.XScreen.extends({
         this.replay();
       break;
 
-      default:
-      if (echt(options.mode)) {
-        this.setGameMode(options.mode);
-        this.resetScores();
-        this.play();
-      }
-      break;
     }
-
     this.clicker= sh.main.input.onDown.add(function() { this.processInputs(); }, this);
+  },
+
+  newGame: function(mode) {
+    this.setGameMode(mode);
+    this.resetScores();
+    this.play();
   },
 
   maybeReset: function() {

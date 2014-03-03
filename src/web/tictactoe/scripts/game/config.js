@@ -147,8 +147,33 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     }
   },
 
-  preloadLevels: true,
-  smac: smac
+  smac: StateMachine.create({
+    events: [
+      { name: 'genesis',  from: 'none',  to: 'StartScreen' },
+      { name: 'play0',  from: 'StartScreen',  to: 'MainMenu' },
+      { name: 'quit',  from: 'MainMenu',  to: 'StartScreen' },
+      { name: 'play1',  from: 'MainMenu',  to: 'PlayGame' },
+      { name: 'play2',  from: 'MainMenu',  to: 'PlayGame' },
+      { name: 'play3',  from: 'MainMenu',  to: 'PlayGame' },
+      { name: 'settings',  from: 'PlayGame',  to: 'MainMenu' },
+      { name: 'back',  from: 'MainMenu',  to: 'PlayGame' },
+      { name: 'replay',  from: 'PlayGame',  to: 'ReplayGame' },
+      { name: 'resetplay',  from: 'ReplayGame',  to: 'PlayGame' }
+    ],
+    callbacks: {
+      ongenesis: function(ev,fr,to) { sh.main.invoke('Splash'); },
+      onplay0: function(ev,fr,to,mainObj) { sh.main.invoke('MMenu'); },
+      onquit: function(ev,fr,to) { sh.main.invoke('Splash'); },
+      onplay1: function(ev,fr,to) { sh.main.invoke('Arena', 'new-1'); },
+      onplay2: function(ev,fr,to) { sh.main.invoke('Arena', 'new-2'); },
+      onplay3: function(ev,fr,to) {},
+      onsettings: function(ev,fr,to) { sh.main.invoke('MMenu'); },
+      onback: function(ev,fr,to) { sh.main.invoke('Arena', 'continue'); },
+      onreplay: function(ev,fr,to) { sh.main.invoke('Arena', 'replay'); },
+      onresetplay: function(ev,fr,to) {}
+    }
+  })
+
 
 });
 
