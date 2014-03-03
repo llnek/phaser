@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use stricts"; var global = this ; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
@@ -47,8 +47,8 @@ sh.protos['Preloader']  = asterix.XState.extends({
     });
 
     _.each(sh.xcfg.assets.sounds, function(v,k) {
-      me.load.audio(k, (vv=sh.sanitizeUrl(v)));
-      loggr.debug("loaded sfx [" + k + "] = " + vv);
+      me.load.audio(k, _.map(v, function(u) { return sh.sanitizeUrl(u); }));
+      loggr.debug("loaded sfx [" + k + "] ");
     });
 
     _.each(sh.xcfg.assets.fonts, function(v,k) {

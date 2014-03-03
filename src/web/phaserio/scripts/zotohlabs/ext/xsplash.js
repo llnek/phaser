@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global=this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
@@ -18,6 +18,8 @@ var loggr = global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 
 sh.protos['Splash'] = asterix.XState.extends({
+
+  // this state does nothing for now.
 
   onUpdate: function () {
      this.state.start('Preloader');

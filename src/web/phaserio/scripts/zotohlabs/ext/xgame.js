@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
@@ -22,16 +22,21 @@ var echt= global.ZotohLabs.echt;
 asterix.XGame = asterix.XState.extends({
 
   onCreate: function() {
-    this.root= this.add.group(undef, 'root');
-    var fs= this.preStart();
+    // foundation of screens, using the group heirarchy.
+    this.root= this.add.group(undef, 'main-game-root-group');
+    // add sound files.
+    this.initSfx();
+    // sets up screen objects.
+    var firstScreen = this.preStart();
     var me=this;
-    _.each(this.screens, function(v,k) {
-      v.create(me.root,k);
+    _.each(this.screens, function(s,k) {
+      s.create(me.root,k);
     });
-    this.floatTop(fs);
+    this.floatTop(firstScreen);
   },
 
   onUpdate: function() {
+    // we use the first ever update call as a start trigger
     if (! this.startFired) {
       this.startFired = true;
       this.doStart();
@@ -59,10 +64,26 @@ asterix.XGame = asterix.XState.extends({
   },
 
   doStart: function() {
+    // kick start the state machine which controls the screen flows.
     sh.xcfg.smac.genesis();
   },
 
   preStart: function() {
+    // sub class should do work here.
+  },
+
+  initSfx: function() {
+    var me=this;
+    _.each( sh.xcfg.assets.sounds, function(v,k) {
+      me.sfxs[k] = me.add.audio(k);
+    });
+  },
+
+  sfxPlay: function(p) {
+    if (sh.xcfg.sound.open) {
+      var a = this.sfxs[p];
+      if (a) { a.play('',0, sh.xcfg.sound.volume); }
+    }
   },
 
   invoke: function(screen, arg) {
@@ -89,6 +110,7 @@ asterix.XGame = asterix.XState.extends({
     }
   },
 
+  // a detached pop up, like a confirm dialog.
   flyout: function(scr, options) {
     var p= new (scr)();
     p.create(this.root,'flyout');
@@ -114,6 +136,7 @@ asterix.XGame = asterix.XState.extends({
   ctor: function(g) {
     this.startFired = false;
     this.screens = {};
+    this.sfxs= {};
     this.root = null;
     this.cur = null;
     this.parent(g);

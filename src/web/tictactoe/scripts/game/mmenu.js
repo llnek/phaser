@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
@@ -19,7 +19,7 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
-ttt.MainMenu =  asterix.XScreen.extends({
+ttt.MainMenu = asterix.XScreen.extends({
 
   start: function() {
     var c= sh.main.getCenter();
@@ -45,32 +45,35 @@ ttt.MainMenu =  asterix.XScreen.extends({
     var c = sh.main.getCenter();
     var s = sh.main.getSize();
     var topy = (s.y - b1.height  - b2.height - b3.height - (2 * 10)) / 2;
-    var bw= _.max( [ b1.width, b2.width, b3.width ] );
+    var b, bw= _.max( [ b1.width, b2.width, b3.width ] );
     var topx = (s.x -  bw) / 2;
 
-    this.onep= sh.main.add.button( topx, topy, 'gui.mmenu.onep', function() {
+    b= sh.main.add.button( topx, topy, 'gui.mmenu.onep', function() {
       sh.xcfg.smac.play1();
     }, this, 0,0,0,0,this.group);
+    this.btns.push(b);
 
-    this.twop= sh.main.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
+    b= sh.main.add.button( topx, topy + b2.height + 10, 'gui.mmenu.twop', function() {
       sh.xcfg.smac.play2();
     }, this, 0,0,0,0,this.group);
+    this.btns.push(b);
 
-    this.netp= sh.main.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
+    b= sh.main.add.button( topx, topy + b1.height + b2.height + 20, 'gui.mmenu.netp', function() {
       sh.xcfg.smac.play3();
     }, this, 0,0,0,0,this.group);
+    this.btns.push(b);
   },
 
   ctrlBtns: function() {
     var quitBtn= sh.main.cache.getImage('gui.xbxY');
     var backBtn= sh.main.cache.getImage('gui.xbxB');
     var sfxBtn= sh.main.cache.getImage('gui.audio');
-    var csts= sh.xcfg.csts;
+    var b, csts= sh.xcfg.csts;
     var s= sh.main.getSize();
     var hx, hy = s.y - _.max([quitBtn.height, backBtn.height]) - csts.TILE - csts.S_OFF;
 
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
-    this.quitBtn = sh.main.add.button( hx, hy, 'gui.xbxY', function() {
+    b = sh.main.add.button( hx, hy, 'gui.xbxY', function() {
       sh.main.flyout(asterix.YesNoBox,{
         yes: function() { sh.xcfg.smac.quit(); },
         layout: function() {
@@ -81,18 +84,19 @@ ttt.MainMenu =  asterix.XScreen.extends({
         }
       });
     }, this, 0,0,0,0,this.group);
+    this.btns.push(b);
 
     hx = s.x - backBtn.width - csts.TILE - csts.S_OFF;
-    this.backBtn = sh.main.add.button( hx, hy, 'gui.xbxB', function() {
+    b = sh.main.add.button( hx, hy, 'gui.xbxB', function() {
       this.goback();
     }, this, 0,0,0,0,this.group);
+    this.btns.push(b);
 
     hx = csts.TILE + csts.S_OFF;
-    this.audioBtn = sh.main.add.sprite( hx, hy, 'gui.audio',
-      sh.xcfg.sound.open ? 1 : 0, this.group);
+    this.audioBtn = sh.main.add.sprite( hx, hy, 'gui.audio', sh.xcfg.sound.open ? 1 : 0, this.group);
     this.audioBtn.inputEnabled=true;
-    this.audioBtn.events.onInputDown.add(function() {
-      sh.xcfg.sound.open = ! sh.xcfg.sound.open;
+    this.audioBtnListener = this.audioBtn.events.onInputDown.add(function() {
+      sh.xcfg.toggleSfx();
       this.audioBtn.frame= sh.xcfg.sound.open ? 1 : 0;
     },this);
 
@@ -110,6 +114,17 @@ ttt.MainMenu =  asterix.XScreen.extends({
       break;
 
     }
+  },
+
+  preDeathFinz: function() {
+    if (this.audioBtnListener) {
+      this.audioBtnListener.detach();
+    }
+    if (this.audioBtn) {
+      this.audioBtn.inputEnabled=false;
+    }
+    this.audioBtnListener=null;
+    this.audioBtn=null;
   }
 
 

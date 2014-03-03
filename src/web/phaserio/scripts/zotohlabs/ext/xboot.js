@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use stricts"; var global = this ; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
@@ -18,7 +18,7 @@ var loggr= global.ZotohLabs.logger;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.protos['Boot']  = asterix.XState.extends({
+sh.protos['Boot'] = asterix.XState.extends({
 
   onPreload: function () {
     this.load.image('loadingBar', 'media/phaserio/game/preloader_bar.png');
@@ -26,10 +26,10 @@ sh.protos['Boot']  = asterix.XState.extends({
   },
 
   onCreate: function () {
-    // unless you expect multi-touch, stick to 1
+    // change this number when you need to support multi-touch.
     this.input.maxPointers = 1;
 
-    // Phaser will automatically pause if the browser tab the game is in loses focus. 
+    // Phaser will automatically pause if the browser tab the game is in loses focus.
     // You can disable that here:
     //this.stage.disableVisibilityChange = true;
 

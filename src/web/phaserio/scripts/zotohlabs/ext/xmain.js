@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
@@ -25,7 +25,7 @@ sh.phaser = new Phaser.Game(
   sh.xcfg.game.size.height,
   Phaser.AUTO, sh.xcfg.game.canvasDiv);
 
-loggr.info("loading proto objects...");
+loggr.info("loading prototypes...");
 _.each(sh.protos, function(z,k) {
   sh.phaser.state.add( k, z);
   loggr.info("loaded proto object [" + k + "]");

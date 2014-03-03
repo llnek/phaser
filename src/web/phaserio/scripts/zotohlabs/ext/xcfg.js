@@ -7,10 +7,11 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global= this; var _ = global._;
 var asterix = global.ZotohLabs.Asterix;
+var sh= asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;
 
@@ -125,29 +126,7 @@ asterix.XConfig = {
 
   toggleSfx: function(override) {
     this.sound.open = echt(override) ? override : !this.sound.open;
-    //ig.Sound.enabled = this.sound.open;
-  },
-
-  sfxInit: function() {
-  },
-
-  sfxPlay: function(p) {
-    if (this.sound.open) {
-      var s;
-      if (_.isString(p)) {
-      } else {
-      }
-      if (s) { s.play(); }
-    }
-  },
-
-  ioFinz: function() {
-  },
-
-  ioInit: function() {
-  },
-
-  getStartInstruction: function() {
+    sh.phaser.sound.mute = ! this.sound.open;
   },
 
   ctor: function() {

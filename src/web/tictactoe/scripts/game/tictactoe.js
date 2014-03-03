@@ -7,7 +7,7 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function (undef){ "use strict"; var global = this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
@@ -44,7 +44,7 @@ ttt.GameArena  = asterix.XScreen.extends({
   // map of the screen co-ords of each cell in the grid
   gridMap: [],
 
-  // holds references to entities
+  // holds references to sprites
   cells: [],
 
   resetScores: function() {
@@ -76,7 +76,6 @@ ttt.GameArena  = asterix.XScreen.extends({
 
     this.cells= global.ZotohLabs.makeArray( this.board.getBoardSize() * this.board.getBoardSize(), null);
     this.doLayout();
-    sh.xcfg.sfxPlay('start_game');
 
     this.actor = this.board.getCurActor();
     if (this.actor.isRobot()) {
@@ -122,6 +121,7 @@ ttt.GameArena  = asterix.XScreen.extends({
   },
 
   newGame: function(mode) {
+    sh.main.sfxPlay('start_game');
     this.setGameMode(mode);
     this.resetScores();
     this.play();
@@ -185,10 +185,10 @@ ttt.GameArena  = asterix.XScreen.extends({
           if (c) {
             switch (cmd.actor.getValue()) {
               case sh.xcfg.csts.CV_X:
-                sh.xcfg.sfxPlay('x_pick');
+                sh.main.sfxPlay('x_pick');
               break;
               case sh.xcfg.csts.CV_O:
-                sh.xcfg.sfxPlay('o_pick');
+                sh.main.sfxPlay('o_pick');
               break;
             }
             this.cells[cmd.cell] = sh.main.add.sprite(c[0],c[1],
@@ -231,14 +231,14 @@ ttt.GameArena  = asterix.XScreen.extends({
   // flip all other icons except for the winning ones.
     var c, me= this;
     _.each(this.cells, function(z,n) {
-      if (! _.contains(combo,n)) { if (z) { z.flip=true; } }
+      if (! _.contains(combo,n)) { if (z) { z.frame = z.frame + 2; } }
     });
   },
 
   doDone: function(p,combo) {
     this.replayBtn.visible=true;
-    //this.showWinningIcons(combo);
-    sh.xcfg.sfxPlay('game_end');
+    this.showWinningIcons(combo);
+    sh.main.sfxPlay('game_end');
     this.lastWinner = p;
     this.board.finz();
     this.board=null;
@@ -293,12 +293,14 @@ ttt.GameArena  = asterix.XScreen.extends({
   },
 
   cellToGrid: function(pos) {
-  // given a cell, find the screen co-ordinates for that cell.
+    // given a cell, find the screen co-ordinates for that cell.
+    var img2= sh.main.cache.getImage('gamelevel1.sprites.markers');
+    var delta= img2.height;
     var gg, x, y, csts= sh.xcfg.csts;
     if (pos >= 0 && pos < csts.CELLS) {
       gg = this.gridMap[pos];
-      x = gg[0] + (gg[2] - gg[0]  - csts.PIC_SIZE) / 2;
-      y = gg[1] + (gg[3] - gg[1] - csts.PIC_SIZE) / 2;
+      x = gg[0] + (gg[2] - gg[0]  - delta) / 2;
+      y = gg[1] + (gg[3] - gg[1] - delta ) / 2;
       return [x, y];
     } else {
       return null;
