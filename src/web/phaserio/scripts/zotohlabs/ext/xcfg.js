@@ -51,7 +51,7 @@ asterix.XConfig = {
       'gui.mmenu.border': 'media/phaserio/game/{{border-tiles}}',
 
       "game.arena.menu" : 'media/phaserio/btns/settings-x32.png',
-      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png'
+      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png',
 
       /*
       'gui.mmenu.border16': 'media/phaserio/game/cbox-borders_x16.png',

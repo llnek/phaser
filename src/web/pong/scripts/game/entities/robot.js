@@ -21,11 +21,12 @@ var echt= global.ZotohLabs.echt;
 png.EntityRobot = png.EntityXXX.extends({
 
   update: function() {
+  /*
     var b = ig.game.getEntitiesByType(pg.EntityBall)[0];
     if (echt(b)) {
       this.vel.y = (b.pos.y + b.size.y / 2) > (this.pos.y + this.size.y / 2) ? 150 : -150;
     }
-    this.parent();
+    */
   }
 
 });

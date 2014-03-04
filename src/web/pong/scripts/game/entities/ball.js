@@ -20,6 +20,10 @@ var loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 png.EntityBall = png.EntityXXX.extends({
 
+  update: function() {
+
+  },
+
   create: function() {
     this.parent();
     this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();

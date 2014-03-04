@@ -20,8 +20,17 @@ var loggr = global.ZotohLabs.logger;
 
 png.EntityXXX = global.ZotohLabs.klass.extends({
 
+  update: function() {
+  },
+
+  kill: function() {
+    this.sprite.destroy();
+    this.sprite=null;
+  },
+
   create: function() {
     this.sprite = sh.main.add.sprite(this.start.x, this.start.y, this.key);
+    this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.physicsEnabled = true;
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
@@ -35,10 +44,15 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
 
 });
 
+Object.defineProperty(png.EntityXXX.prototype, "height", {
+  get: function() { return this.sprite.height; }
+});
+Object.defineProperty(png.EntityXXX.prototype, "width", {
+  get: function() { return this.sprite.width; }
+});
 Object.defineProperty(png.EntityXXX.prototype, "color", {
   get: function() { return this.picColor; }
 });
-
 
 
 }).call(this);

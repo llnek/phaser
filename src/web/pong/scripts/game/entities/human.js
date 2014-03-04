@@ -22,37 +22,26 @@ png.EntityHuman = png.EntityXXX.extends({
 
   update: function() {
     if (sh.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-      this.sprite.body.velocity.x = -200;
+      /*
+      var py = (this.pos.y + this.size.y) - ig.game.screen.y;
+      if (py < ig.system.height) {
+        this.vel.y = 150;
+      }
+      */
+      this.sprite.body.velocity.x = 200;
     }
     else
     if (sh.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-      this.sprite.body.velocity.x = 200;
-    }
-    if (sh.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-      fireBullet();
-    }
-    if (ig.input.state('down')) {
-      this.onDown();
-    }
-    if (ig.input.state('up')) {
-      this.onUp();
-    }
-    this.parent();
-  },
-
-  onDown: function() {
-    var py = (this.pos.y + this.size.y) - ig.game.screen.y;
-    if (py < ig.system.height) {
-      this.vel.y = 150;
-    }
-  },
-
-  onUp: function() {
-    var py = this.pos.y - ig.game.screen.y;
-    if (py > 0) {
-      this.vel.y = -150;
+      /*
+      var py = this.pos.y - ig.game.screen.y;
+      if (py > 0) {
+        this.vel.y = -150;
+      }
+      */
+      this.sprite.body.velocity.x = -200;
     }
   }
+
 
 });
 
