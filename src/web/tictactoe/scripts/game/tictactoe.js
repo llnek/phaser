@@ -406,7 +406,7 @@ ttt.GameArena  = asterix.XScreen.extends({
     this.scoreHdr.repos( (s.x - this.scoreHdr.textWidth) / 2, csts.TILE + csts.GAP);
 
     this.score1 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);
-    this.score1.tint= 0x94c207;
+    this.score1.tint= 0xfdbcb2;
     this.score2 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);
     this.score2.tint= 0xff6600;
 
