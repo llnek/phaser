@@ -12,28 +12,24 @@
 (function(undef) { "use strict"; var global=this; var _ = global._;
 var asterix = global.ZotohLabs.Asterix;
 var sh= asterix.Shell;
-var pg= asterix.Pong;
+var png= asterix.Pong;
 var echt= global.ZotohLabs.echt;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg.game.proto = asterix.XGame.extend({
+png.GameArena = asterix.XGame.extend({
 
-  fontScore: sh.newFonFile('impact', 'ocr_white_16_font.png'),
+  //fontScore: sh.newFonFile('impact', 'ocr_white_16_font.png'),
 
   scores : { 'O': 0, 'X': 0 },
   max_score: 1, //11,
 
-  sfx: {
-  },
-
   players: [],
   ball: null,
-  name: 'pong',
 
-  preStart: function() {
+  play: function() {
     var csts= sh.xcfg.csts;
     var c= this.getCenter();
     this.maybeReset();

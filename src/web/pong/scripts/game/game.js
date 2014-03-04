@@ -11,7 +11,7 @@
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
-var ttt= asterix.TicTacToe;
+var png= asterix.Pong;
 var sh= asterix.Shell;
 var loggr= global.ZotohLabs.logger;
 var echt= global.ZotohLabs.echt;
@@ -23,10 +23,20 @@ var echt= global.ZotohLabs.echt;
 sh.protos['Game'] = asterix.XGame.extends({
 
   preStart: function() {
-    this.screens[ 'Arena' ] = new ttt.GameArena();
-    this.screens[ 'Splash' ] = new ttt.Splash();
-    this.screens[ 'MMenu' ] = new ttt.MainMenu();
+
+    this.screens[ 'Splash' ] = new (asterix.StartScreen.extends({
+      onplay: function() {
+        sh.xcfg.smac.play0();
+      }
+    }))();
+
+    this.screens[ 'MMenu' ] = new (asterix.MainMenu.extends({
+    }))();
+
+    this.screens[ 'Arena' ] = new png.GameArena();
+
     return this.screens['Splash'];
+
   }
 
 

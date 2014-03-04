@@ -11,16 +11,26 @@
 
 (function(undef) { "use strict"; var global=this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
+var png = asterix.Pong;
+var sh = asterix.Shell;
+var loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Pong.EntityHuman = asterix.Pong.EntityPaddle.extend({
-
-  animSheet: new ig.AnimationSheet('media/pong/game/red_paddle.png', 14,48),
-  typeiid: 'EntityHuman',
+png.EntityHuman = png.EntityXXX.extends({
 
   update: function() {
+    if (sh.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+      this.sprite.body.velocity.x = -200;
+    }
+    else
+    if (sh.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+      this.sprite.body.velocity.x = 200;
+    }
+    if (sh.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+      fireBullet();
+    }
     if (ig.input.state('down')) {
       this.onDown();
     }
@@ -42,11 +52,6 @@ asterix.Pong.EntityHuman = asterix.Pong.EntityPaddle.extend({
     if (py > 0) {
       this.vel.y = -150;
     }
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.addAnim('show', 1, [0]);
   }
 
 });

@@ -7,38 +7,37 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef){ "use strict"; var global= this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var png= asterix.Pong;
+var loggr = global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-asterix.Pong.EntityPaddle = asterix.XEntity.extend({
+png.EntityXXX = global.ZotohLabs.klass.extends({
 
-  collides: ig.Entity.COLLIDES.FIXED,
-
-  getColor: function() {
-    return this.colorValue;
+  create: function() {
+    this.sprite = sh.main.add.sprite(this.start.x, this.start.y, this.key);
+    this.sprite.physicsEnabled = true;
+    this.sprite.body.velocity.x = 0;
+    this.sprite.body.velocity.y = 0;
   },
 
-  size: { x: 14, y: 48 },
-
-  typeiid: 'EntityPaddle',
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.maxVel.x = 200;
-    this.maxVel.y = 200;
-    this.maxVelx = 100;
-    this.friction.x = 150;
-    this.friction.y = 0;
+  ctor: function(x,y,options) {
+    this.picColor= options.color;
+    this.key= options.key;
+    this.start = { x: x, y: y };
   }
 
 });
 
+Object.defineProperty(png.EntityXXX.prototype, "color", {
+  get: function() { return this.picColor; }
+});
 
 
 

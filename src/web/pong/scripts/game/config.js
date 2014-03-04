@@ -33,14 +33,11 @@ sh.xcfg = ig.merge( asterix.XConfig, {
     tiles: {
     },
     images: {
-      "game.arena.menu" : 'media/phaserio/btns/settings-x32.png',
-      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png'
+      'game.entity.paddle2' : 'media/{{appid}}/game/green_paddle.png',
+      'game.entity.paddle1' : 'media/{{appid}}/game/red_paddle.png',
+      'game.entity.ball' : 'media/{{appid}}/game/coin.png'
     },
     sounds: {
-      'game_end' : [ 'media/phaserio/sfx/MineExplosion.mp3', 'media/phaserio/sfx/MineExplosion.ogg'],
-      'x_pick' : [ 'media/phaserio/sfx/ElevatorBeep.mp3', 'media/phaserio/sfx/ElevatorBeep.ogg'],
-      'o_pick' : [ 'media/phaserio/sfx/MineBeep.mp3', 'media/phaserio/sfx/MineBeep.ogg'],
-      'quit' : [ 'media/phaserio/sfx/PlayerMonsterFall.mp3', 'media/phaserio/sfx/PlayerMonsterFall.ogg' ]
     },
     fonts: {
     }
@@ -62,7 +59,9 @@ sh.xcfg = ig.merge( asterix.XConfig, {
         'arena' : 'media/{{appid}}/game/arena.png'
       },
       sprites: {
-        'markers' : [ 'media/{{appid}}/game/markers.png', 72,72, -1]
+        'paddle2' : [ 'media/{{appid}}/game/green_paddle.png', 14, 48, -1 ],
+        'paddle1' : [ 'media/{{appid}}/game/red_paddle.png', 14, 48, -1 ],
+        'ball' : [ 'media/{{appid}}/game/coin.png', 18, 18, -1]
       }
     }
   },

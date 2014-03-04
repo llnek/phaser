@@ -7,33 +7,23 @@
 // By using this software in any  fashion, you are agreeing to be bound by the
 // terms of this license. You  must not remove this notice, or any other, from
 // this software.
-// Copyright (c) 2013 Cherimoia, LLC. All rights reserved.
+// Copyright (c) 2013-2014 Cherimoia, LLC. All rights reserved.
 
 (function(undef) { "use strict"; var global = this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var sh= asterix.Shell;
+var png= asterix.Pong;
+var loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-asterix.Pong.EntityBall = asterix.XEntity.extend({
+png.EntityBall = png.EntityXXX.extends({
 
-  animSheet: new ig.AnimationSheet('media/pong/game/coin.png', 18,18),
-  collides: ig.Entity.COLLIDES.ACTIVE,
-
-  size: { x: 18, y: 18 },
-  typeiid: 'EntityBall',
-  bounciness: 1,
-
-  update: function() {
+  create: function() {
     this.parent();
-  },
-
-  init: function(x, y, options) {
-    this.parent(x, y, options);
-    this.addAnim('show', 1, [0]);
-    this.maxVel.y = 200;
-    this.vel.y = 100 * asterix.fns.randomSign();
-    this.vel.x = 100 * asterix.fns.randomSign();
+    this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();
+    this.sprite.body.velocity.y = 100 * asterix.fns.randomSign();
   }
 
 });

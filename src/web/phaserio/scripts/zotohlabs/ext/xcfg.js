@@ -49,6 +49,10 @@ asterix.XConfig = {
       'splash.play-btn' : 'media/{{appid}}/gui/{{lang}}/play_btn.png',
       'splash.splash' : 'media/{{appid}}/gui/splash.png',
       'gui.mmenu.border': 'media/phaserio/game/{{border-tiles}}',
+
+      "game.arena.menu" : 'media/phaserio/btns/settings-x32.png',
+      "game.arena.replay" : 'media/phaserio/btns/replay-x32.png'
+
       /*
       'gui.mmenu.border16': 'media/phaserio/game/cbox-borders_x16.png',
       'gui.mmenu.border8': 'media/phaserio/game/cbox-borders_x8.png',
