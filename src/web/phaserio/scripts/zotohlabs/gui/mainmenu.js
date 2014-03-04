@@ -19,14 +19,14 @@ var echt = global.ZotohLabs.echt;
 //////////////////////////////////////////////////////////////////////////////
 // Main menu.
 //////////////////////////////////////////////////////////////////////////////
-ttt.MainMenu = asterix.XScreen.extends({
+asterix.MainMenu = asterix.XScreen.extends({
 
   start: function() {
     var c= sh.main.getCenter();
     var csts= sh.xcfg.csts;
 
     this.map = sh.main.add.tilemap('gui.mmenu');
-    this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border');
     this.map.addTilesetImage('BG', 'gui.mmenu.bg');
     this.map.createLayer('Back',undef, undef, this.group);
     this.map.createLayer('Front',undef, undef, this.group);
@@ -75,13 +75,7 @@ ttt.MainMenu = asterix.XScreen.extends({
     hx = s.x - quitBtn.width - backBtn.width - csts.TILE - 10 - csts.S_OFF;
     b = sh.main.add.button( hx, hy, 'gui.xbxY', function() {
       sh.main.flyout(asterix.YesNoBox,{
-        yes: function() { sh.xcfg.smac.quit(); },
-        layout: function() {
-          var map = sh.main.add.tilemap('gui.ynbox');
-          map.addTilesetImage('Borders', 'gui.mmenu.border8');
-          map.addTilesetImage('BG', 'gui.mmenu.bg');
-          return map;
-        }
+        yes: function() { sh.xcfg.smac.quit(); }
       });
     }, this, 0,0,0,0,this.group);
     this.btns.push(b);
@@ -117,12 +111,8 @@ ttt.MainMenu = asterix.XScreen.extends({
   },
 
   preDeathFinz: function() {
-    if (this.audioBtnListener) {
-      this.audioBtnListener.detach();
-    }
-    if (this.audioBtn) {
-      this.audioBtn.inputEnabled=false;
-    }
+    if (this.audioBtnListener) { this.audioBtnListener.detach(); }
+    if (this.audioBtn) { this.audioBtn.inputEnabled=false; }
     this.audioBtnListener=null;
     this.audioBtn=null;
   }

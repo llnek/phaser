@@ -37,8 +37,8 @@ asterix.TicTacToe.Board= klass.extends({
 
   registerPlayers: function(p1,p2) {
     this.actors= [ asterix.fns.randomSign() > 0 ? p1 : p2, p1, p2 ];
-    p2.setBoard(this);
-    p1.setBoard(this);
+    p2.bindBoard(this);
+    p1.bindBoard(this);
     this.gameInProgress = true;
   },
 
@@ -49,13 +49,13 @@ asterix.TicTacToe.Board= klass.extends({
     if ( (cmd.cell >= 0 && cmd.cell < this.grid.length) &&
          this.actors[0] === cmd.actor &&
          this.CV_Z === this.grid[cmd.cell]) {
-      this.grid[cmd.cell] = cmd.actor.getValue();
+      this.grid[cmd.cell] = cmd.actor.value;
       this.checkWin(cmd,cb);
     }
   },
 
   checkWin: function(cmd, cb) {
-    loggr.debug("checking for win " + cmd.actor.getColor() + ", pos = " + cmd.cell);
+    loggr.debug("checking for win " + cmd.actor.color + ", pos = " + cmd.cell);
     if (this.isStalemate()) {
       this.drawGame(cmd, cb);
     }
@@ -227,7 +227,7 @@ asterix.TicTacToe.Board= klass.extends({
 
   makeMove: function(snapshot,move) {
     if ( this.isNil( snapshot.state[move])) {
-      snapshot.state[move] = snapshot.cur.getValue();
+      snapshot.state[move] = snapshot.cur.value;
     } else {
       throw new Error("Fatal Error: cell [" + move + "] is not free.");
     }
@@ -301,6 +301,77 @@ asterix.TicTacToe.Board= klass.extends({
     this.mapGoalSpace(size);
     this.initBoard();
     loggr.debug("new board init'ed");
+  }
+
+});
+
+
+//////////////////////////////////////////////////////////////////////////////
+// module def
+//////////////////////////////////////////////////////////////////////////////
+var negax= global.ZotohLabs.NegaMax;
+var Player = klass.extends({
+
+  takeTurn: function() { throw new Error("Abstract call"); },
+  isRobot: function() { return !this.isHuman(); },
+  isHuman: function() { return this.human; },
+  isValue: function(n) { return this.value === n; },
+  bindBoard: function(b) { this.arena=b; },
+  ctor: function(value, human, pic, picColor) {
+    this.picColor = picColor;
+    this.picValue = value;
+    this.entity = pic;
+    this.human = human;
+  }
+});
+
+Object.defineProperty(Player.prototype, "color", {
+  get: function() { return this.picColor; },
+  set: function(v) { this.picColor=v; }
+});
+Object.defineProperty(Player.prototype, "value", {
+  get: function() { return this.picValue; },
+  set: function(v) { this.picValue=v; }
+});
+Object.defineProperty(Player.prototype, "pic", {
+  get: function() { return this.entity; },
+  set: function(v) { this.entity=v; }
+});
+Object.defineProperty(Player.prototype, "board", {
+  get: function() { return this.arena; },
+});
+
+var Robot = Player.extends({
+
+  isMax: function() { return true; },
+  ctor: function(idv, pic, color) {
+    this.parent(idv, false, pic, color);
+  }
+
+});
+
+asterix.TicTacToe.Human = Player.extends({
+
+  isMax: function() { return false; },
+  takeTurn: function() {},
+  ctor: function (idv, pic, color) {
+    this.parent(idv, true, pic, color);
+  }
+
+});
+
+asterix.TicTacToe.AlgoBot = Robot.extends({
+
+  takeTurn: function() {
+    return this.mmAlgo.eval();
+  },
+  bindBoard: function(b) {
+    this.parent(b);
+    this.mmAlgo = new negax.Algo(b);
+  },
+  ctor: function ( idv, pic, color) {
+    this.parent( idv, pic, color);
+    this.mmAlgo= null;
   }
 
 });

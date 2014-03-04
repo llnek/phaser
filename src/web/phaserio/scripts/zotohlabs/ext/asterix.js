@@ -129,7 +129,10 @@ global.ZotohLabs.Asterix = {
 
     sanitizeUrl: function(url) {
       var me=this;
-      return Mustache.render( url || '', { lang: this.lang, appid:  me.xcfg.appid } );
+      return Mustache.render( url || '', {
+        'border-tiles' : me.xcfg.game.borderTiles,
+        'lang' : this.lang,
+        'appid' :  me.xcfg.appid } );
     },
 
     l10n: function(s,pms) {

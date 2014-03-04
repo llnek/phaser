@@ -48,8 +48,11 @@ asterix.XConfig = {
     images: {
       'splash.play-btn' : 'media/{{appid}}/gui/{{lang}}/play_btn.png',
       'splash.splash' : 'media/{{appid}}/gui/splash.png',
+      'gui.mmenu.border': 'media/phaserio/game/{{border-tiles}}',
+      /*
       'gui.mmenu.border16': 'media/phaserio/game/cbox-borders_x16.png',
       'gui.mmenu.border8': 'media/phaserio/game/cbox-borders_x8.png',
+      */
       'gui.mmenu.bg' : 'media/{{appid}}/gui/bg.png',
       'gui.mmenu.onep' : 'media/phaserio/btns/{{lang}}/onep_btn.png',
       'gui.mmenu.twop' : 'media/phaserio/btns/{{lang}}/twop_btn.png',
@@ -67,6 +70,7 @@ asterix.XConfig = {
   },
 
   game: {
+    borderTiles: 'cbox-borders_x8.png',
     canvasDiv: 'game-container',
     startState: 'Boot',
     landscape: false,

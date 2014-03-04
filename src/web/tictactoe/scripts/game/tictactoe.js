@@ -81,7 +81,7 @@ ttt.GameArena  = asterix.XScreen.extends({
     if (this.actor.isRobot()) {
       this.move( new Cmd(this.actor, asterix.fns.rand(sh.xcfg.csts.CELLS)));
     }
-    loggr.debug("game started, initor = " + this.actor.getColor());
+    loggr.debug("game started, initor = " + this.actor.color );
   },
 
   replay: function() {
@@ -138,7 +138,7 @@ ttt.GameArena  = asterix.XScreen.extends({
   // given a command object, make a move
   // if the move is valid, then a corresponding action is added to the
   // queue, such as drawing the icon , playing a sound...etc
-    loggr.debug("actor = " + cmd.actor.getColor() + ", pos = " + cmd.cell);
+    loggr.debug("actor = " + cmd.actor.color + ", pos = " + cmd.cell);
     var me= this;
     this.board.enqueue(cmd, function(cmd, status, np) {
       // crap move, is ignored for now.
@@ -183,7 +183,7 @@ ttt.GameArena  = asterix.XScreen.extends({
           var cmd= _ref[0];
           var c = this.cellToGrid(cmd.cell);
           if (c) {
-            switch (cmd.actor.getValue()) {
+            switch (cmd.actor.value) {
               case sh.xcfg.csts.CV_X:
                 sh.main.sfxPlay('x_pick');
               break;
@@ -192,7 +192,7 @@ ttt.GameArena  = asterix.XScreen.extends({
               break;
             }
             this.cells[cmd.cell] = sh.main.add.sprite(c[0],c[1],
-                  'gamelevel1.sprites.markers', cmd.actor.getPic(),this.group );
+                  'gamelevel1.sprites.markers', cmd.actor.pic, this.group );
           }
       } else {
         this.checkEnding();
@@ -221,8 +221,8 @@ ttt.GameArena  = asterix.XScreen.extends({
   doWin: function(info) {
     var combo= info[1];
     var p= info[0];
-    var s = this.scores[p.getColor()];
-    this.scores[p.getColor()] = s + 1;
+    var s = this.scores[p.color];
+    this.scores[p.color] = s + 1;
     this.drawScores();
     this.doDone(p,info[1]);
   },
@@ -321,7 +321,7 @@ ttt.GameArena  = asterix.XScreen.extends({
     if (this.actor.isRobot()) {
       pfx = sh.l10n('%computer');
     }
-    else if (this.actor.getColor() === 'X') {
+    else if (this.actor.color === 'X') {
       pfx = sh.l10n('%player1');
     } else {
       pfx = sh.l10n('%player2');
@@ -348,8 +348,8 @@ ttt.GameArena  = asterix.XScreen.extends({
   },
 
   drawScores: function() {
-    var s2 = this.scores[this.players[2].getColor()];
-    var s1 = this.scores[this.players[1].getColor()];
+    var s2 = this.scores[this.players[2].color];
+    var s1 = this.scores[this.players[1].color];
     var csts= sh.xcfg.csts;
     var s = sh.main.getSize();
     var n2 = global.ZotohLabs.prettyNumber(s2,3);
@@ -395,7 +395,7 @@ ttt.GameArena  = asterix.XScreen.extends({
     var csts= sh.xcfg.csts;
     // background
     this.map = sh.main.add.tilemap('gamelevel1.tiles.arena');
-    this.map.addTilesetImage('Borders', 'gui.mmenu.border8');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border');
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
     this.map.createLayer('Back',undef, undef, this.group);
     this.map.createLayer('Grid',undef, undef, this.group);
@@ -405,8 +405,6 @@ ttt.GameArena  = asterix.XScreen.extends({
     this.scoreHdr = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', xxx, 12, this.group);
     this.scoreHdr.repos( (s.x - this.scoreHdr.textWidth) / 2, csts.TILE + csts.GAP);
 
-    //s1 = me.scores[me.players[1].getColor()];
-      //this.text = global.ZotohLabs.prettyNumber(s2,3);
     this.score1 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);
     this.score1.tint= 0x94c207;
     this.score2 = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '888', 20, this.group);

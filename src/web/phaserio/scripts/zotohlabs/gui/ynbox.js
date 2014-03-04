@@ -25,11 +25,11 @@ asterix.YesNoBox =  asterix.XScreen.extends({
     var s= sh.main.getSize();
     var csts= sh.xcfg.csts;
 
-    if (this.layoutFunc) { this.map= this.layoutFunc.call(this, this.group); }
-    if (this.map) {
-      this.map.createLayer('Back',undef, undef, this.group);
-      this.map.createLayer('Front',undef, undef, this.group);
-    }
+    this.map = sh.main.add.tilemap('gui.ynbox');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border');
+    this.map.addTilesetImage('BG', 'gui.mmenu.bg');
+    this.map.createLayer('Back',undef, undef, this.group);
+    this.map.createLayer('Front',undef, undef, this.group);
 
     this.question = sh.main.add.bitmapText( 0,0, 'font.Downlink', sh.l10n('%quit?'), 16, this.group);
     this.question.repos( c.x - this.question.textWidth / 2,

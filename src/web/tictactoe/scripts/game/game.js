@@ -30,9 +30,10 @@ sh.protos['Game'] = asterix.XGame.extends({
       }
     }))();
 
-    this.screens[ 'Arena' ] = new ttt.GameArena();
+    this.screens[ 'MMenu' ] = new (asterix.MainMenu.extends({
+    }))();
 
-    this.screens[ 'MMenu' ] = new ttt.MainMenu();
+    this.screens[ 'Arena' ] = new ttt.GameArena();
 
     return this.screens['Splash'];
 
