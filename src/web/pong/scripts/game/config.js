@@ -19,7 +19,7 @@ asterix.Pong= {};
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-sh.xcfg = ig.merge( asterix.XConfig, {
+sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
 
   appid: 'pong',
 
@@ -52,13 +52,13 @@ sh.xcfg = ig.merge( asterix.XConfig, {
 
   levels: {
     "gamelevel1" : {
-      tiles: {
+      'tiles' : {
         'arena' : 'lib/game/{{appid}}/levels/arena.json'
       },
-      images: {
+      'images' : {
         'arena' : 'media/{{appid}}/game/arena.png'
       },
-      sprites: {
+      'sprites' : {
         'paddle2' : [ 'media/{{appid}}/game/green_paddle.png', 14, 48, -1 ],
         'paddle1' : [ 'media/{{appid}}/game/red_paddle.png', 14, 48, -1 ],
         'ball' : [ 'media/{{appid}}/game/coin.png', 18, 18, -1]

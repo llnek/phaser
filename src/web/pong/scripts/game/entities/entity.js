@@ -45,13 +45,19 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
 });
 
 Object.defineProperty(png.EntityXXX.prototype, "height", {
-  get: function() { return this.sprite.height; }
+  get: function() {
+    return this.sprite ? this.sprite.height : undef;
+  }
 });
 Object.defineProperty(png.EntityXXX.prototype, "width", {
-  get: function() { return this.sprite.width; }
+  get: function() {
+    return this.sprite ? this.sprite.width : undef;
+  }
 });
 Object.defineProperty(png.EntityXXX.prototype, "color", {
-  get: function() { return this.picColor; }
+  get: function() {
+    return this.picColor;
+  }
 });
 
 

@@ -19,7 +19,7 @@ var echt= global.ZotohLabs.echt;
 // module def
 //////////////////////////////////////////////////////////////////////////////
 
-png.GameArena = asterix.XGame.extend({
+png.GameArena = asterix.XScreen.extends({
 
   //fontScore: sh.newFonFile('impact', 'ocr_white_16_font.png'),
 
@@ -33,9 +33,11 @@ png.GameArena = asterix.XGame.extend({
     var paddImg= sh.main.cache.getImage('game.entity.paddle2');
     var ballImg= sh.main.cache.getImage('game.entity.ball');
     var csts= sh.xcfg.csts;
-    var c= this.getCenter();
-    var z= this.getSize();
+    var c= sh.main.getCenter();
+    var z= sh.main.getSize();
     this.maybeReset();
+    this.doLayout();
+
     var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4,
                                   c.y - paddImg.height / 2, { color: 'X' });
     var p2= null;
@@ -52,17 +54,29 @@ png.GameArena = asterix.XGame.extend({
     case 3:
     break;
     };
+
     this.players= [ null, p1, p2];
     this.spawnBall();
   },
 
   spawnBall: function() {
     var ballImg= sh.main.cache.getImage('game.entity.ball');
-    var c= this.getCenter();
-    this.ball = new EntityBall( c.x - ballImg.width / 2,
+    var c= sh.main.getCenter();
+    this.ball = new png.EntityBall( c.x - ballImg.width / 2,
                                 c.y - ballImg.height / 2, {});
   },
 
+  doLayout: function() {
+    var c= sh.main.getCenter();
+    var s= sh.main.getSize();
+    var csts= sh.xcfg.csts;
+    // background
+    this.map = sh.main.add.tilemap('gamelevel1.tiles.arena');
+    this.map.addTilesetImage('Borders', 'gui.mmenu.border');
+    this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
+    this.map.createLayer('Back',undef, undef, this.group);
+    this.map.createLayer('Front',undef, undef, this.group);
+  },
 
   loseFocus: function() {
   },

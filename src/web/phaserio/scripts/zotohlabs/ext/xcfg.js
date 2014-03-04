@@ -57,10 +57,11 @@ asterix.XConfig = {
       'gui.mmenu.border16': 'media/phaserio/game/cbox-borders_x16.png',
       'gui.mmenu.border8': 'media/phaserio/game/cbox-borders_x8.png',
       */
-      'gui.mmenu.bg' : 'media/{{appid}}/gui/bg.png',
       'gui.mmenu.onep' : 'media/phaserio/btns/{{lang}}/onep_btn.png',
       'gui.mmenu.twop' : 'media/phaserio/btns/{{lang}}/twop_btn.png',
       'gui.mmenu.netp' : 'media/phaserio/btns/{{lang}}/netp_btn.png',
+      'gui.mmenu.bg' : 'media/{{appid}}/gui/bg.png',
+
       'gui.xbxA' : 'media/phaserio/btns/{{lang}}/xbx-A-x32.png',
       'gui.xbxB' : 'media/phaserio/btns/{{lang}}/xbx-B-x32.png',
       'gui.xbxY' : 'media/phaserio/btns/{{lang}}/xbx-Y-x32.png'
