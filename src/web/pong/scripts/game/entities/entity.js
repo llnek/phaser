@@ -11,6 +11,7 @@
 
 (function(undef){ "use strict"; var global= this; var _ = global._ ;
 var asterix= global.ZotohLabs.Asterix;
+var sh= asterix.Shell;
 var png= asterix.Pong;
 var loggr = global.ZotohLabs.logger;
 
@@ -29,17 +30,17 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
   },
 
   create: function() {
-    this.sprite = sh.main.add.sprite(this.start.x, this.start.y, this.key);
-    this.sprite.anchor.setTo(0.5, 0.5);
+    this.sprite = sh.main.add.sprite(this.startPos.x, this.startPos.y, this.key, 0);
+    //this.sprite.anchor.setTo(0.5, 0.5);
     this.sprite.physicsEnabled = true;
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
   },
 
   ctor: function(x,y,options) {
+    this.startPos = { x: x, y: y };
     this.picColor= options.color;
     this.key= options.key;
-    this.start = { x: x, y: y };
   }
 
 });

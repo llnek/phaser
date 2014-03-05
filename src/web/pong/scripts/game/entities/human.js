@@ -40,6 +40,12 @@ png.EntityHuman = png.EntityXXX.extends({
       */
       this.sprite.body.velocity.x = -200;
     }
+  },
+
+  ctor: function(x,y,options) {
+    options=options || {};
+    options.key = 'gamelevel1.images.paddle1';
+    this.parent(x,y,options);
   }
 
 

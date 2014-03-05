@@ -33,9 +33,6 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
     tiles: {
     },
     images: {
-      'game.entity.paddle2' : 'media/{{appid}}/game/green_paddle.png',
-      'game.entity.paddle1' : 'media/{{appid}}/game/red_paddle.png',
-      'game.entity.ball' : 'media/{{appid}}/game/coin.png'
     },
     sounds: {
     },

@@ -28,6 +28,12 @@ png.EntityBall = png.EntityXXX.extends({
     this.parent();
     this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();
     this.sprite.body.velocity.y = 100 * asterix.fns.randomSign();
+  },
+
+  ctor: function(x,y,options) {
+    options=options || {};
+    options.key = 'gamelevel1.images.ball';
+    this.parent(x,y,options);
   }
 
 });

@@ -30,8 +30,8 @@ png.GameArena = asterix.XScreen.extends({
   ball: null,
 
   play: function() {
-    var paddImg= sh.main.cache.getImage('game.entity.paddle2');
-    var ballImg= sh.main.cache.getImage('game.entity.ball');
+    var paddImg= sh.main.cache.getImage('gamelevel1.sprites.paddle2');
+    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
     var csts= sh.xcfg.csts;
     var c= sh.main.getCenter();
     var z= sh.main.getSize();
@@ -56,14 +56,18 @@ png.GameArena = asterix.XScreen.extends({
     };
 
     this.players= [ null, p1, p2];
+    _.each(this.players,function(z) {
+      if (z) { z.create(); }
+      });
     this.spawnBall();
   },
 
   spawnBall: function() {
-    var ballImg= sh.main.cache.getImage('game.entity.ball');
+    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
     var c= sh.main.getCenter();
     this.ball = new png.EntityBall( c.x - ballImg.width / 2,
                                 c.y - ballImg.height / 2, {});
+    this.ball.create();
   },
 
   doLayout: function() {
@@ -75,9 +79,7 @@ png.GameArena = asterix.XScreen.extends({
     this.map.addTilesetImage('Borders', 'gui.mmenu.border');
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
     ml= this.map.createLayer('Back',undef, undef, this.group);
-    ml.resizeWorld();
     ml= this.map.createLayer('Front',undef, undef, this.group);
-    ml.resizeWorld();
   },
 
   loseFocus: function() {
