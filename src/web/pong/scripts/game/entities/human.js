@@ -18,7 +18,7 @@ var loggr= global.ZotohLabs.logger;
 //////////////////////////////////////////////////////////////////////////////
 // module def
 //////////////////////////////////////////////////////////////////////////////
-png.EntityHuman = png.EntityXXX.extends({
+png.EntityHuman = png.EntityPaddle.extends({
 
   update: function() {
     if (sh.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {

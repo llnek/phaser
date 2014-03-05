@@ -53,12 +53,17 @@ sh.xcfg = global.ZotohLabs.klass.merge( asterix.XConfig, {
         'arena' : 'lib/game/{{appid}}/levels/arena.json'
       },
       'images' : {
+        'paddle2' : 'media/{{appid}}/game/green_paddle.png',
+        'paddle1' : 'media/{{appid}}/game/red_paddle.png',
+        'ball' : 'media/{{appid}}/game/coin.png',
         'arena' : 'media/{{appid}}/game/arena.png'
       },
       'sprites' : {
+      /*
         'paddle2' : [ 'media/{{appid}}/game/green_paddle.png', 14, 48, -1 ],
         'paddle1' : [ 'media/{{appid}}/game/red_paddle.png', 14, 48, -1 ],
         'ball' : [ 'media/{{appid}}/game/coin.png', 18, 18, -1]
+        */
       }
     }
   },

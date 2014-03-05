@@ -30,8 +30,8 @@ png.GameArena = asterix.XScreen.extends({
   ball: null,
 
   play: function() {
-    var paddImg= sh.main.cache.getImage('gamelevel1.sprites.paddle2');
-    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
+    var paddImg= sh.main.cache.getImage('gamelevel1.images.paddle2');
+    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
     var csts= sh.xcfg.csts;
     var c= sh.main.getCenter();
     var z= sh.main.getSize();
@@ -39,7 +39,7 @@ png.GameArena = asterix.XScreen.extends({
     this.doLayout();
 
     var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4,
-                                  c.y - paddImg.height / 2, { color: 'X' });
+                                  c.y - paddImg.height / 2 , { color: 'X' });
     var p2= null;
     switch (csts.GAME_MODE) {
     case 1:
@@ -55,19 +55,25 @@ png.GameArena = asterix.XScreen.extends({
     break;
     };
 
+    //sh.phaser.physics.setBoundsToWorld(true,true,true,true);
+    /*
+    sh.phaser.physics.setBounds(csts.TILE, z.y - csts.TILE, 
+                                s.x - csts.TILE*2, s.y- csts.TILE*2, 
+                                false,false,true,true);
+                                */
+
     this.players= [ null, p1, p2];
-    _.each(this.players,function(z) {
-      if (z) { z.create(); }
-      });
+    p2.create(this.group);
+    p1.create(this.group);
     this.spawnBall();
   },
 
   spawnBall: function() {
-    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
+    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
     var c= sh.main.getCenter();
     this.ball = new png.EntityBall( c.x - ballImg.width / 2,
                                 c.y - ballImg.height / 2, {});
-    this.ball.create();
+    this.ball.create(this.group);
   },
 
   doLayout: function() {
