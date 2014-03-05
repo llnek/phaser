@@ -11,7 +11,6 @@
 
 (function (undef) { "use strict"; var global= this; var _ = global._ ;
 var asterix = global.ZotohLabs.Asterix;
-var ttt= asterix.TicTacToe;
 var sh = asterix.Shell;
 var loggr = global.ZotohLabs.logger;
 var echt = global.ZotohLabs.echt;

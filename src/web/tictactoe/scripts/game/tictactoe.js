@@ -390,16 +390,19 @@ ttt.GameArena  = asterix.XScreen.extends({
   },
 
   doLayout: function() {
-    var c= sh.main.getCenter();
+    var ml, c= sh.main.getCenter();
     var s= sh.main.getSize();
     var csts= sh.xcfg.csts;
     // background
     this.map = sh.main.add.tilemap('gamelevel1.tiles.arena');
     this.map.addTilesetImage('Borders', 'gui.mmenu.border');
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
-    this.map.createLayer('Back',undef, undef, this.group);
-    this.map.createLayer('Grid',undef, undef, this.group);
-    this.map.createLayer('Front',undef, undef, this.group);
+    ml= this.map.createLayer('Back',undef, undef, this.group);
+    ml.resizeWorld();
+    ml= this.map.createLayer('Grid',undef, undef, this.group);
+    ml.resizeWorld();
+    ml= this.map.createLayer('Front',undef, undef, this.group);
+    ml.resizeWorld();
 
     var xxx= this.p1ID + " / " + this.p2ID;
     this.scoreHdr = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', xxx, 12, this.group);
