@@ -185,8 +185,21 @@ png.GameArena = asterix.XScreen.extends({
     this.players=[];
   },
 
+  updateEntities: function() {
+    this.players[2].update();
+    this.players[1].update();
+    this.ball.update();
+    /*
+    this.physics.collide(this.players[2], this.ball,
+        this.paddleHitBallHandler, this.paddleHitBallProcess, this);
+    this.physics.collide(this.players[1], this.ball,
+        this.paddleHitBallHandler, this.paddleHitBallProcess, this);
+    */
+  },
+
   update: function() {
     if (this.ball) {
+      this.updateEntities();
       this.checkWinner();
     }
     this.drawGui();

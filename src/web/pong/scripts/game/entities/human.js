@@ -21,7 +21,7 @@ var loggr= global.ZotohLabs.logger;
 png.EntityHuman = png.EntityPaddle.extends({
 
   update: function() {
-    if (sh.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+    if (sh.main.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
       /*
       var py = (this.pos.y + this.size.y) - ig.game.screen.y;
       if (py < ig.system.height) {
@@ -31,7 +31,7 @@ png.EntityHuman = png.EntityPaddle.extends({
       this.sprite.body.velocity.x = 200;
     }
     else
-    if (sh.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+    if (sh.main.input.keyboard.isDown(Phaser.Keyboard.UP)) {
       /*
       var py = this.pos.y - ig.game.screen.y;
       if (py > 0) {
