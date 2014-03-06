@@ -35,14 +35,9 @@ png.GameArena = asterix.XScreen.extends({
     var z= sh.main.getSize();
     this.maybeReset();
 
-<<<<<<< HEAD
     //sprites are always centered internally
     var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4 + paddImg.width/2,
                                   c.y, { color: 'X' });
-=======
-    var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4,
-                                  c.y - paddImg.height / 2 , { color: 'X' });
->>>>>>> 7025b5b89228e40b469211b3ab1f41915e4ec887
     var p2= null;
     switch (csts.GAME_MODE) {
     case 1:
@@ -66,11 +61,8 @@ png.GameArena = asterix.XScreen.extends({
                                 */
 
     this.players= [ null, p1, p2];
-<<<<<<< HEAD
     this.doLayout();
 
-=======
->>>>>>> 7025b5b89228e40b469211b3ab1f41915e4ec887
     p2.create(this.group);
     p1.create(this.group);
     this.spawnBall();
@@ -79,13 +71,8 @@ png.GameArena = asterix.XScreen.extends({
   spawnBall: function() {
     var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
     var c= sh.main.getCenter();
-<<<<<<< HEAD
     // anchored to center internally
     this.ball = new png.EntityBall( c.x, c.y, {});
-=======
-    this.ball = new png.EntityBall( c.x - ballImg.width / 2,
-                                c.y - ballImg.height / 2, {});
->>>>>>> 7025b5b89228e40b469211b3ab1f41915e4ec887
     this.ball.create(this.group);
   },
 
