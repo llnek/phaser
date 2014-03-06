@@ -21,8 +21,6 @@ var echt= global.ZotohLabs.echt;
 
 png.GameArena = asterix.XScreen.extends({
 
-  //fontScore: sh.newFonFile('impact', 'ocr_white_16_font.png'),
-
   scores : { 'O': 0, 'X': 0 },
   MAX_SCORE: 1, //11,
 
@@ -30,44 +28,45 @@ png.GameArena = asterix.XScreen.extends({
   ball: null,
 
   play: function() {
-    var paddImg= sh.main.cache.getImage('gamelevel1.sprites.paddle2');
-    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
+    var paddImg= sh.main.cache.getImage('gamelevel1.images.paddle2');
+    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
     var csts= sh.xcfg.csts;
     var c= sh.main.getCenter();
     var z= sh.main.getSize();
     this.maybeReset();
-    this.doLayout();
 
-    var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4,
-                                  c.y - paddImg.height / 2, { color: 'X' });
+    //sprites are always centered internally
+    var p1 = new png.EntityHuman( csts.TILE + ballImg.width + 4 + paddImg.width/2,
+                                  c.y, { color: 'X' });
     var p2= null;
     switch (csts.GAME_MODE) {
     case 1:
-    p2 = new png.EntityRobot( z.x - ballImg.width - paddImg.width - 4,
-                              c.y - paddImg.height / 2,
+    p2 = new png.EntityRobot( z.x - csts.TILE - 4 - ballImg.width - paddImg.width/2,
+                              c.y,
                               { color: 'O' });
     break;
     case 2:
-    p2 = new png.EntityHuman( z.x - ballImg.width - paddImg.width - 4,
-                              c.y - paddImg.height / 2,
+    p2 = new png.EntityHuman( z.x - csts.TILE - 4 - ballImg.width - paddImg.width/2,
+                              c.y,
                               { color: 'O' });
     case 3:
     break;
     };
 
     this.players= [ null, p1, p2];
-    _.each(this.players,function(z) {
-      if (z) { z.create(); }
-      });
+    this.doLayout();
+
+    p2.create(this.group);
+    p1.create(this.group);
     this.spawnBall();
   },
 
   spawnBall: function() {
-    var ballImg= sh.main.cache.getImage('gamelevel1.sprites.ball');
+    var ballImg= sh.main.cache.getImage('gamelevel1.images.ball');
     var c= sh.main.getCenter();
-    this.ball = new png.EntityBall( c.x - ballImg.width / 2,
-                                c.y - ballImg.height / 2, {});
-    this.ball.create();
+    // anchored to center internally
+    this.ball = new png.EntityBall( c.x, c.y, {});
+    this.ball.create(this.group);
   },
 
   doLayout: function() {
@@ -80,6 +79,62 @@ png.GameArena = asterix.XScreen.extends({
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
     ml= this.map.createLayer('Back',undef, undef, this.group);
     ml= this.map.createLayer('Front',undef, undef, this.group);
+
+    this.score1 = sh.main.add.bitmapText( 0,0, 'font.OCR', '8', 40, this.group);
+    this.score1.tint= 0xda4848;
+    this.score2 = sh.main.add.bitmapText( 0,0, 'font.OCR', '8', 40, this.group);
+    this.score2.tint= 0x6abe61;
+
+    this.status = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '', 12, this.group);
+    this.result = sh.main.add.bitmapText( 0,0, 'font.TinyBoxBB', '', 12, this.group);
+
+    this.guiBtns();
+  },
+
+  guiBtns: function() {
+    var img2= sh.main.cache.getImage('game.arena.replay');
+    var img1= sh.main.cache.getImage('game.arena.menu');
+    var csts = sh.xcfg.csts;
+    var c= sh.main.getCenter();
+    var x,y;
+
+    y = csts.TILE + csts.S_OFF;
+    x = c.x - img1.width/2;
+    this.menuBtn = sh.main.add.button( x, y, 'game.arena.menu', function() {
+      sh.xcfg.smac.settings();
+    }, this, 0,0,0,0,this.group);
+    this.btns.push(this.menuBtn);
+
+    y = (csts.GRID_H - 1) * csts.TILE - csts.S_OFF - img2.height;
+    x = c.x;
+    this.replayBtn = sh.main.add.button( x, y, 'game.arena.replay', function() {
+      sh.xcfg.smac.replay();
+    }, this, 0,0,0,0,this.group);
+    this.replayBtn.visible=false;
+    this.btns.push(this.replayBtn);
+
+    this.drawScores();
+  },
+
+  drawScores: function() {
+    var s2 = this.scores[this.players[2].color];
+    var s1 = this.scores[this.players[1].color];
+    var x, y, csts= sh.xcfg.csts;
+    var c = sh.main.getCenter();
+    var n2 = global.ZotohLabs.prettyNumber(s2,1);
+    var n1 = global.ZotohLabs.prettyNumber(s1,1);
+
+    this.score1.setText(n1);
+    this.score1.updateText();
+    y = csts.TILE + csts.S_OFF;
+    x= c.x - 50 - this.score1.textWidth;
+    this.score1.repos( x,y);
+
+    this.score2.setText(n2);
+    this.score2.updateText();
+    y = csts.TILE + csts.S_OFF;
+    x= c.x + 50;
+    this.score2.repos( x,y);
   },
 
   loseFocus: function() {
@@ -127,6 +182,7 @@ png.GameArena = asterix.XScreen.extends({
     if (this.ball) {
       this.checkWinner();
     }
+    this.drawGui();
   },
 
   checkWinner: function() {
@@ -157,10 +213,7 @@ png.GameArena = asterix.XScreen.extends({
     this.lastWinner = p;
   },
 
-  guiBtns: function() {
-  },
-
-  gui: function() {
+  drawGui: function() {
   },
 
   setGameMode: function(mode) {
