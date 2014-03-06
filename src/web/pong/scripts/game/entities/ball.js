@@ -28,6 +28,9 @@ png.EntityBall = png.EntityXXX.extends({
     this.parent(pg);
     this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();
     this.sprite.body.velocity.y = 100 * asterix.fns.randomSign();
+    this.sprite.body.collideWorldBounds = true;
+    this.sprite.body.setZeroDamping();
+    //this.sprite.body.bounce.setTo(1, 1);
   },
 
   ctor: function(x,y,options) {
