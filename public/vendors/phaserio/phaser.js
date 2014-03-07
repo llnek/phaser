@@ -7,7 +7,7 @@
 *
 * Phaser - http://www.phaser.io
 *
-* v2.0.0 "Aes Sedai" - Built: Thu Mar 06 2014 15:43:00
+* v2.0.0 "Aes Sedai" - Built: Thu Mar 06 2014 23:57:54
 *
 * By Richard Davey http://www.photonstorm.com @photonstorm
 *
@@ -20265,7 +20265,7 @@ PIXI.RenderTexture.tempMatrix = new PIXI.Matrix();
 *
 * Phaser - http://www.phaser.io
 *
-* v2.0.0 "Aes Sedai" - Built: Thu Mar 06 2014 15:43:00
+* v2.0.0 "Aes Sedai" - Built: Thu Mar 06 2014 23:57:54
 *
 * By Richard Davey http://www.photonstorm.com @photonstorm
 *
@@ -23243,8 +23243,8 @@ Phaser.Camera.prototype = {
     /**
     * Tells this camera which sprite to follow.
     * @method Phaser.Camera#follow
-    * @param {Phaser.Sprite} target - The object you want the camera to track. Set to null to not follow anything.
-    * @param {number} [style] Leverage one of the existing "deadzone" presets. If you use a custom deadzone, ignore this parameter and manually specify the deadzone after calling follow().
+    * @param {Phaser.Sprite|Phaser.Image|Phaser.Text} target - The object you want the camera to track. Set to null to not follow anything.
+    * @param {number} [style] - Leverage one of the existing "deadzone" presets. If you use a custom deadzone, ignore this parameter and manually specify the deadzone after calling follow().
     */
     follow: function (target, style) {
 
@@ -38622,6 +38622,19 @@ Phaser.TileSprite = function (game, x, y, width, height, key, frame) {
     this.cameraOffset = new Phaser.Point();
 
     /**
+    * By default Sprites won't add themselves to any physics system and their physics body will be `null`.
+    * To enable them for physics you need to call `game.physics.enable(sprite, system)` where `sprite` is this object 
+    * and `system` is the Physics system you want to use to manage this body. Once enabled you can access all physics related properties via `Sprite.body`.
+    *
+    * Important: Enabling a Sprite for P2 or Ninja physics will automatically set `Sprite.anchor` to 0.5 so the physics body is centered on the Sprite.
+    * If you need a different result then adjust or re-create the Body shape offsets manually, and/or reset the anchor after enabling physics.
+    *
+    * @property {Phaser.Physics.Arcade.Body|Phaser.Physics.P2.Body|Phaser.Physics.Ninja.Body|null} body
+    * @default
+    */
+    this.body = null;
+
+    /**
     * A small internal cache:
     * 0 = previous position.x
     * 1 = previous position.y
@@ -38668,6 +38681,11 @@ Phaser.TileSprite.prototype.preUpdate = function() {
         this._cache[3] = this.game.stage.currentRenderOrderID++;
     }
 
+    if (this.exists && this.body)
+    {
+        this.body.preUpdate();
+    }
+
     //  Update any Children
     for (var i = 0, len = this.children.length; i < len; i++)
     {
@@ -38695,6 +38713,11 @@ Phaser.TileSprite.prototype.update = function() {
 * @memberof Phaser.TileSprite
 */
 Phaser.TileSprite.prototype.postUpdate = function() {
+
+    if (this.exists && this.body)
+    {
+        this.body.postUpdate();
+    }
 
     //  Fixed to Camera?
     if (this._cache[7] === 1)
@@ -38981,6 +39004,53 @@ Object.defineProperty(Phaser.TileSprite.prototype, "fixedToCamera", {
         else
         {
             this._cache[7] = 0;
+        }
+    }
+
+});
+
+/**
+* TileSprite.exists controls if the core game loop and physics update this TileSprite or not.
+* When you set TileSprite.exists to false it will remove its Body from the physics world (if it has one) and also set TileSprite.visible to false.
+* Setting TileSprite.exists to true will re-add the Body to the physics world (if it has a body) and set TileSprite.visible to true.
+*
+* @name Phaser.TileSprite#exists
+* @property {boolean} exists - If the TileSprite is processed by the core game update and physics.
+*/
+Object.defineProperty(Phaser.TileSprite.prototype, "exists", {
+    
+    get: function () {
+
+        return !!this._cache[6];
+
+    },
+
+    set: function (value) {
+
+        if (value)
+        {
+            //  exists = true
+            this._cache[6] = 1;
+
+            if (this.body && this.body.type === Phaser.Physics.P2)
+            {
+                this.body.addToWorld();
+            }
+
+            this.visible = true;
+        }
+        else
+        {
+            //  exists = false
+            this._cache[6] = 0;
+
+            if (this.body && this.body.type === Phaser.Physics.P2)
+            {
+                this.body.removeFromWorld();
+            }
+
+            this.visible = false;
+
         }
     }
 
@@ -45046,6 +45116,7 @@ Phaser.TweenManager.prototype = {
     */
     add: function (tween) {
 
+        tween._manager = this;
         this._add.push(tween);
 
     },
@@ -45059,7 +45130,7 @@ Phaser.TweenManager.prototype = {
     */
     create: function (object) {
 
-        return new Phaser.Tween(object, this.game);
+        return new Phaser.Tween(object, this.game, this);
 
     },
 
@@ -45212,8 +45283,9 @@ Phaser.TweenManager.prototype.constructor = Phaser.TweenManager;
 * @constructor
 * @param {object} object - Target object will be affected by this tween.
 * @param {Phaser.Game} game - Current game instance.
+* @param {Phaser.TweenManager} manager - The TweenManager responsible for looking after this Tween.
 */
-Phaser.Tween = function (object, game) {
+Phaser.Tween = function (object, game, manager) {
 
     /**
     * Reference to the target object.
@@ -45231,7 +45303,7 @@ Phaser.Tween = function (object, game) {
     * @property {Phaser.TweenManager} _manager - Reference to the TweenManager.
     * @private
     */
-    this._manager = this.game.tweens;
+    this._manager = manager;
 
     /**
     * @property {object} _valuesStart - Private value object.
@@ -57910,7 +57982,12 @@ Phaser.Physics.Ninja.prototype = {
 
         if (body1.type !== Phaser.Physics.NINJA || body2.type !== Phaser.Physics.NINJA)
         {
-            return;
+            return false;
+        }
+
+        if (body1.aabb && body2.aabb)
+        {
+            return body1.aabb.collideAABBVsAABB(body2.aabb);
         }
 
         if (body1.aabb && body2.tile)
@@ -58002,35 +58079,6 @@ Phaser.Physics.Ninja.Body = function (system, sprite, type, id, radius) {
     */
     this.shape = null;
 
-    var sx = sprite.x;
-    var sy = sprite.y;
-
-    if (sprite.anchor.x === 0)
-    {
-        sx += (sprite.width * 0.5);
-    }
-
-    if (sprite.anchor.y === 0)
-    {
-        sy += (sprite.height * 0.5);
-    }
-
-    if (type === 1)
-    {
-        this.aabb = new Phaser.Physics.Ninja.AABB(this, sx, sy, sprite.width, sprite.height);
-        this.shape = this.aabb;
-    }
-    else if (type === 2)
-    {
-        this.circle = new Phaser.Physics.Ninja.Circle(this, sx, sy, radius);
-        this.shape = this.circle;
-    }
-    else if (type === 3)
-    {
-        this.tile = new Phaser.Physics.Ninja.Tile(this, sx, sy, sprite.width, sprite.height, id);
-        this.shape = this.tile;
-    }
-
     //  Setting drag to 0 and friction to 0 means you get a normalised speed (px psec)
 
     /**
@@ -58099,7 +58147,40 @@ Phaser.Physics.Ninja.Body = function (system, sprite, type, id, radius) {
     */
     this.wasTouching = { none: true, up: false, down: false, left: false, right: false };
 
+    /**
+    * @property {number} maxSpeed - The maximum speed this body can travel at (taking drag and friction into account)
+    * @default
+    */
     this.maxSpeed = 8;
+
+    var sx = sprite.x;
+    var sy = sprite.y;
+
+    if (sprite.anchor.x === 0)
+    {
+        sx += (sprite.width * 0.5);
+    }
+
+    if (sprite.anchor.y === 0)
+    {
+        sy += (sprite.height * 0.5);
+    }
+
+    if (type === 1)
+    {
+        this.aabb = new Phaser.Physics.Ninja.AABB(this, sx, sy, sprite.width, sprite.height);
+        this.shape = this.aabb;
+    }
+    else if (type === 2)
+    {
+        this.circle = new Phaser.Physics.Ninja.Circle(this, sx, sy, radius);
+        this.shape = this.circle;
+    }
+    else if (type === 3)
+    {
+        this.tile = new Phaser.Physics.Ninja.Tile(this, sx, sy, sprite.width, sprite.height, id);
+        this.shape = this.tile;
+    }
 
 };
 
@@ -58112,18 +58193,6 @@ Phaser.Physics.Ninja.Body.prototype = {
     * @protected
     */
     updateBounds: function (centerX, centerY, scaleX, scaleY) {
-
-        if (scaleX != this._sx || scaleY != this._sy)
-        {
-            // this.width = this.sourceWidth * scaleX;
-            // this.height = this.sourceHeight * scaleY;
-            // this.halfWidth = Math.floor(this.width / 2);
-            // this.halfHeight = Math.floor(this.height / 2);
-            // this._sx = scaleX;
-            // this._sy = scaleY;
-            // this.center.setTo(this.x + this.halfWidth, this.y + this.halfHeight);
-        }
-
     },
 
     /**
@@ -58167,8 +58236,17 @@ Phaser.Physics.Ninja.Body.prototype = {
     */
     postUpdate: function () {
 
-        this.sprite.x = this.shape.pos.x;
-        this.sprite.y = this.shape.pos.y;
+        if (this.sprite.type === Phaser.TILESPRITE)
+        {
+            //  TileSprites don't use their anchor property, so we need to adjust the coordinates
+            this.sprite.x = this.shape.pos.x - this.shape.xw;
+            this.sprite.y = this.shape.pos.y - this.shape.yw;
+        }
+        else
+        {
+            this.sprite.x = this.shape.pos.x;
+            this.sprite.y = this.shape.pos.y;
+        }
 
     },
 
@@ -58343,6 +58421,44 @@ Object.defineProperty(Phaser.Physics.Ninja.Body.prototype, "y", {
 });
 
 /**
+* @name Phaser.Physics.Ninja.Body#width
+* @property {number} width - The width of this Body
+* @readonly
+*/
+Object.defineProperty(Phaser.Physics.Ninja.Body.prototype, "width", {
+    
+    /**
+    * The width of this Body
+    * @method width
+    * @return {number}
+    * @readonly
+    */
+    get: function () {
+        return this.shape.width;
+    }
+
+});
+
+/**
+* @name Phaser.Physics.Ninja.Body#height
+* @property {number} height - The height of this Body
+* @readonly
+*/
+Object.defineProperty(Phaser.Physics.Ninja.Body.prototype, "height", {
+    
+    /**
+    * The height of this Body
+    * @method height
+    * @return {number}
+    * @readonly
+    */
+    get: function () {
+        return this.shape.height;
+    }
+
+});
+
+/**
 * @name Phaser.Physics.Ninja.Body#bottom
 * @property {number} bottom - The bottom value of this Body (same as Body.y + Body.height)
 * @readonly
@@ -58393,40 +58509,80 @@ Object.defineProperty(Phaser.Physics.Ninja.Body.prototype, "right", {
 * @class Phaser.Physics.Ninja.AABB
 * @classdesc Arcade Physics Constructor
 * @constructor
-* @param {Phaser.Physics.Ninja} system - A reference to the physics system.
+* @param {Phaser.Physics.Ninja.Body} body - The body that owns this shape.
 * @param {number} x - The x coordinate to create this shape at.
 * @param {number} y - The y coordinate to create this shape at.
 * @param {number} width - The width of this AABB.
 * @param {number} height - The height of this AABB.
 */
-Phaser.Physics.Ninja.AABB = function (system, x, y, width, height) {
+Phaser.Physics.Ninja.AABB = function (body, x, y, width, height) {
     
-    this.system = system;
+    /**
+    * @property {Phaser.Physics.Ninja.Body} system - A reference to the body that owns this shape.
+    */
+    this.body = body;
+
+    /**
+    * @property {Phaser.Physics.Ninja} system - A reference to the physics system.
+    */
+    this.system = body.system;
+
+    /**
+    * @property {Phaser.Point} pos - The position of this object.
+    */
     this.pos = new Phaser.Point(x, y);
+
+    /**
+    * @property {Phaser.Point} oldpos - The position of this object in the previous update.
+    */
     this.oldpos = new Phaser.Point(x, y);
 
+    /**
+    * @property {number} xw - Half the width.
+    * @readonly
+    */
     this.xw = Math.abs(width / 2);
+
+    /**
+    * @property {number} xw - Half the height.
+    * @readonly
+    */
     this.yw = Math.abs(height / 2);
 
+    /**
+    * @property {number} width - The width.
+    * @readonly
+    */
     this.width = width;
+
+    /**
+    * @property {number} height - The height.
+    * @readonly
+    */
     this.height = height;
 
+    /**
+    * @property {number} oH - Internal var.
+    * @private
+    */
     this.oH = 0;
+
+    /**
+    * @property {number} oV - Internal var.
+    * @private
+    */
     this.oV = 0;
 
-    //  Setting drag to 0 and friction to 0 means you get a normalised speed (px psec)
-    this.drag = 1;
-    this.friction = 0.05;
-    this.gravityScale = 1;
-    this.bounce = 0.3;
+    /**
+    * @property {Phaser.Point} velocity - The velocity of this object.
+    */
     this.velocity = new Phaser.Point();
 
-    //  temp collision values
-    this.px = 0;
-    this.py = 0;
-
-    //  collision mappings
+    /**
+    * @property {object} aabbTileProjections - All of the collision response handlers.
+    */
     this.aabbTileProjections = {};
+
     this.aabbTileProjections[Phaser.Physics.Ninja.Tile.TYPE_FULL] = this.projAABB_Full;
     this.aabbTileProjections[Phaser.Physics.Ninja.Tile.TYPE_45DEG] = this.projAABB_45Deg;
     this.aabbTileProjections[Phaser.Physics.Ninja.Tile.TYPE_CONCAVE] = this.projAABB_Concave;
@@ -58458,8 +58614,8 @@ Phaser.Physics.Ninja.AABB.prototype = {
         var py = this.pos.y;
 
         //  integrate
-        this.pos.x += (this.drag * this.pos.x) - (this.drag * this.oldpos.x);
-        this.pos.y += (this.drag * this.pos.y) - (this.drag * this.oldpos.y) + (this.system.gravity * this.gravityScale);
+        this.pos.x += (this.body.drag * this.pos.x) - (this.body.drag * this.oldpos.x);
+        this.pos.y += (this.body.drag * this.pos.y) - (this.body.drag * this.oldpos.y) + (this.system.gravity * this.body.gravityScale);
 
         //  store
         this.velocity.set(this.pos.x - px, this.pos.y - py);
@@ -58482,45 +58638,270 @@ Phaser.Physics.Ninja.AABB.prototype = {
         var p = this.pos;
         var o = this.oldpos;
 
-        //calc velocity
+        //  Calc velocity
         var vx = p.x - o.x;
         var vy = p.y - o.y;
 
-        //find component of velocity parallel to collision normal
+        //  Find component of velocity parallel to collision normal
         var dp = (vx * dx + vy * dy);
-        var nx = dp * dx;//project velocity onto collision normal
+        var nx = dp * dx;   //project velocity onto collision normal
 
-        var ny = dp * dy;//nx,ny is normal velocity
+        var ny = dp * dy;   //nx,ny is normal velocity
 
-        var tx = vx - nx;//px,py is tangent velocity
+        var tx = vx - nx;   //px,py is tangent velocity
         var ty = vy - ny;
 
-        //we only want to apply collision response forces if the object is travelling into, and not out of, the collision
-        var b, bx, by, f, fx, fy;
+        //  We only want to apply collision response forces if the object is travelling into, and not out of, the collision
+        var b, bx, by, fx, fy;
 
         if (dp < 0)
         {
-            //f = FRICTION;
-            fx = tx * this.friction;
-            fy = ty * this.friction;
+            fx = tx * this.body.friction;
+            fy = ty * this.body.friction;
 
-            b = 1 + this.bounce;
+            b = 1 + this.body.bounce;
 
             bx = (nx * b);
             by = (ny * b);
 
+            if (dx === 1)
+            {
+                this.body.touching.left = true;
+            }
+            else if (dx === -1)
+            {
+                this.body.touching.right = true;
+            }
+
+            if (dy === 1)
+            {
+                this.body.touching.up = true;
+            }
+            else if (dy === -1)
+            {
+                this.body.touching.down = true;
+            }
         }
         else
         {
-            //moving out of collision, do not apply forces
+            //  Moving out of collision, do not apply forces
             bx = by = fx = fy = 0;
         }
 
-        p.x += px;//project object out of collision
+        //  Project object out of collision
+        p.x += px;
         p.y += py;
 
-        o.x += px + bx + fx;//apply bounce+friction impulses which alter velocity
+        //  Apply bounce+friction impulses which alter velocity
+        o.x += px + bx + fx;
         o.y += py + by + fy;
+
+    },
+
+    /**
+    * Process a body collision and apply the resulting forces.
+    *
+    * @method Phaser.Physics.Ninja.AABB#reportCollisionVsBody
+    * @param {number} px - The tangent velocity
+    * @param {number} py - The tangent velocity
+    * @param {number} dx - Collision normal
+    * @param {number} dy - Collision normal
+    * @param {number} obj - Object this AABB collided with
+    */
+    reportCollisionVsBody: function (px, py, dx, dy, obj) {
+
+        //  Here - we check if obj is immovable, etc and then we canswap the p/o values below depending on which is heavy
+        //  But then still need to work out how to split force
+
+        var p = this.pos;
+        var o = this.oldpos;
+
+        //  Calc velocity
+        var vx = p.x - o.x;
+        var vy = p.y - o.y;
+
+        //  Find component of velocity parallel to collision normal
+        var dp = (vx * dx + vy * dy);
+        var nx = dp * dx;   //project velocity onto collision normal
+
+        var ny = dp * dy;   //nx,ny is normal velocity
+
+        var tx = vx - nx;   //px,py is tangent velocity
+        var ty = vy - ny;
+
+        //  We only want to apply collision response forces if the object is travelling into, and not out of, the collision
+        var b, bx, by, fx, fy;
+
+        if (dp < 0)
+        {
+            fx = tx * this.body.friction;
+            fy = ty * this.body.friction;
+
+            b = 1 + this.body.bounce;
+
+            bx = (nx * b);
+            by = (ny * b);
+        }
+        else
+        {
+            //  Moving out of collision, do not apply forces
+            bx = by = fx = fy = 0;
+        }
+
+        //  working version
+        // p.x += px;
+        // p.y += py;
+        // o.x += px + bx + fx;
+        // o.y += py + by + fy;
+
+        //  Project object out of collision (applied to the position value)
+        p.x += px;
+        p.y += py;
+
+        // obj.pos.x += px;
+        // obj.pos.y += py;
+
+
+        //  Apply bounce+friction impulses which alter velocity (applied to old position, thus setting a sort of velocity up)
+        var rx = px + bx + fx;
+        var ry = py + by + fy;
+
+        //  let's pretend obj is immovable
+        // rx *= -1;
+        // ry *= -1;
+
+
+        //  Now let's share the load
+        o.x += rx;
+        o.y += ry;
+
+        //  work out objs velocity
+
+
+        // rx *= -1;
+        // ry *= -1;
+
+        // obj.oldpos.x += rx;
+        // obj.oldpos.y += ry;
+
+
+            // console.log(this.body.sprite.name, 'o.x', rx, ry, obj);
+
+    },
+
+    /**
+    * Collides this AABB against the world bounds.
+    *
+    * @method Phaser.Physics.Ninja.AABB#collideWorldBounds
+    */
+    collideWorldBounds: function () {
+
+        var dx = this.system.bounds.x - (this.pos.x - this.xw);
+
+        if (0 < dx)
+        {
+            this.reportCollisionVsWorld(dx, 0, 1, 0, null);
+        }
+        else
+        {
+            dx = (this.pos.x + this.xw) - this.system.bounds.width;
+
+            if (0 < dx)
+            {
+                this.reportCollisionVsWorld(-dx, 0, -1, 0, null);
+            }
+        }
+
+        var dy = this.system.bounds.y - (this.pos.y - this.yw);
+
+        if (0 < dy)
+        {
+            this.reportCollisionVsWorld(0, dy, 0, 1, null);
+        }
+        else
+        {
+            dy = (this.pos.y + this.yw) - this.system.bounds.height;
+
+            if (0 < dy)
+            {
+                this.reportCollisionVsWorld(0, -dy, 0, -1, null);
+            }
+        }
+
+    },
+
+    /**
+    * Collides this AABB against a AABB.
+    *
+    * @method Phaser.Physics.Ninja.AABB#collideAABBVsAABB
+    * @param {Phaser.Physics.Ninja.AABB} aabb - The AABB to collide against.
+    */
+    collideAABBVsAABB: function (aabb) {
+
+        var pos = this.pos;
+        var c = aabb;
+
+        var tx = c.pos.x;
+        var ty = c.pos.y;
+        var txw = c.xw;
+        var tyw = c.yw;
+
+        var dx = pos.x - tx;//tile->obj delta
+        var px = (txw + this.xw) - Math.abs(dx);//penetration depth in x
+
+        if (0 < px)
+        {
+            var dy = pos.y - ty;//tile->obj delta
+            var py = (tyw + this.yw) - Math.abs(dy);//pen depth in y
+
+            if (0 < py)
+            {
+                //object may be colliding with tile; call tile-specific collision function
+
+                //calculate projection vectors
+                if (px < py)
+                {
+                    //project in x
+                    if (dx < 0)
+                    {
+                        //project to the left
+                        px *= -1;
+                        py = 0;
+                    }
+                    else
+                    {
+                        //proj to right
+                        py = 0;
+                    }
+                }
+                else
+                {
+                    //project in y
+                    if (dy < 0)
+                    {
+                        //project up
+                        px = 0;
+                        py *= -1;
+                    }
+                    else
+                    {
+                        //project down
+                        px = 0;
+                    }
+                }
+
+                // return this.aabbTileProjections[1](px, py, this, c);
+
+                var l = Math.sqrt(px * px + py * py);
+                // this.reportCollisionVsWorld(px, py, px / l, py / l, c);
+                this.reportCollisionVsBody(px, py, px / l, py / l, c);
+
+                return Phaser.Physics.Ninja.AABB.COL_AXIS;
+
+            }
+        }
+
+        return false;
 
     },
 
@@ -58593,114 +58974,6 @@ Phaser.Physics.Ninja.AABB.prototype = {
     },
 
     /**
-    * Collides this AABB against the world bounds.
-    *
-    * @method Phaser.Physics.Ninja.AABB#collideWorldBounds
-    */
-    collideWorldBounds: function () {
-
-        var p = this.pos;
-        var xw = this.xw;
-        var yw = this.yw;
-
-        var XMIN = this.system.bounds.x;
-        var XMAX = this.system.bounds.width;
-        var YMIN = this.system.bounds.y;
-        var YMAX = this.system.bounds.height;
-
-        var dx = this.system.bounds.x - (this.pos.x - this.xw);
-
-        if (0 < dx)
-        {
-            this.reportCollisionVsWorld(dx, 0, 1, 0, null);
-        }
-        else
-        {
-            dx = (this.pos.x + this.xw) - this.system.bounds.width;
-
-            if (0 < dx)
-            {
-                this.reportCollisionVsWorld(-dx, 0, -1, 0, null);
-            }
-        }
-
-        var dy = this.system.bounds.y - (this.pos.y - this.yw);
-
-        if (0 < dy)
-        {
-            this.reportCollisionVsWorld(0, dy, 0, 1, null);
-        }
-        else
-        {
-            dy = (this.pos.y + this.yw) - this.system.bounds.height;
-
-            if (0 < dy)
-            {
-                this.reportCollisionVsWorld(0, -dy, 0, -1, null);
-            }
-        }
-
-    },
-
-    /**
-    * Renders this AABB to the context.
-    *
-    * @method Phaser.Physics.Ninja.AABB#render
-    */
-    render: function (context) {
-        
-        context.beginPath();
-        context.strokeStyle = 'rgb(0,255,0)';
-        context.strokeRect(this.pos.x - this.xw, this.pos.y - this.yw, this.xw * 2, this.yw * 2);
-        context.stroke();
-        context.closePath();
-
-        context.fillStyle = 'rgb(0,255,0)';
-        context.fillRect(this.pos.x, this.pos.y, 2, 2);
-
-        /*
-        if (this.oH == 1)
-        {
-            context.beginPath();
-            context.strokeStyle = 'rgb(255,0,0)';
-            context.moveTo(this.pos.x - this.radius, this.pos.y - this.radius);
-            context.lineTo(this.pos.x - this.radius, this.pos.y + this.radius);
-            context.stroke();
-            context.closePath();
-        }
-        else if (this.oH == -1)
-        {
-            context.beginPath();
-            context.strokeStyle = 'rgb(255,0,0)';
-            context.moveTo(this.pos.x + this.radius, this.pos.y - this.radius);
-            context.lineTo(this.pos.x + this.radius, this.pos.y + this.radius);
-            context.stroke();
-            context.closePath();
-        }
-
-        if (this.oV == 1)
-        {
-            context.beginPath();
-            context.strokeStyle = 'rgb(255,0,0)';
-            context.moveTo(this.pos.x - this.radius, this.pos.y - this.radius);
-            context.lineTo(this.pos.x + this.radius, this.pos.y - this.radius);
-            context.stroke();
-            context.closePath();
-        }
-        else if (this.oV == -1)
-        {
-            context.beginPath();
-            context.strokeStyle = 'rgb(255,0,0)';
-            context.moveTo(this.pos.x - this.radius, this.pos.y + this.radius);
-            context.lineTo(this.pos.x + this.radius, this.pos.y + this.radius);
-            context.stroke();
-            context.closePath();
-        }
-        */
-
-    },
-
-    /**
     * Resolves tile collision.
     *
     * @method Phaser.Physics.Ninja.AABB#resolveTile
@@ -58718,7 +58991,7 @@ Phaser.Physics.Ninja.AABB.prototype = {
         }
         else
         {
-            console.warn("Ninja.AABB.resolveTile was called with an empty (or unknown) tile!: id=" + tile.id + ")");
+            // console.warn("Ninja.AABB.resolveTile was called with an empty (or unknown) tile!: id=" + tile.id + ")");
             return false;
         }
 
@@ -59236,6 +59509,9 @@ Phaser.Physics.Ninja.AABB.prototype = {
 
 /**
 * Ninja Physics Tile constructor.
+* A Tile is defined by its width, height and type. It's type can include slope data, such as 45 degree slopes, or convex slopes.
+* Understand that for any type including a slope (types 2 to 29) the Tile must be SQUARE, i.e. have an equal width and height.
+* Also note that as Tiles are primarily used for levels they have gravity disabled and world bounds collision disabled by default.
 * 
 * Note: This class could be massively optimised and reduced in size. I leave that challenge up to you.
 *
@@ -59344,6 +59620,10 @@ Phaser.Physics.Ninja.Tile = function (body, x, y, width, height, type) {
     */
     this.sy = 0;
 
+    //  By default Tiles disable gravity and world bounds collision
+    this.body.gravityScale = 0;
+    this.body.collideWorldBounds = false;
+
     if (this.id > 0)
     {
         this.setType(this.id);
@@ -59366,7 +59646,7 @@ Phaser.Physics.Ninja.Tile.prototype = {
         var py = this.pos.y;
 
         this.pos.x += (this.body.drag * this.pos.x) - (this.body.drag * this.oldpos.x);
-        this.pos.y += (this.body.drag * this.pos.y) - (this.body.drag * this.oldpos.y);
+        this.pos.y += (this.body.drag * this.pos.y) - (this.body.drag * this.oldpos.y) + (this.system.gravity * this.body.gravityScale);
 
         this.velocity.set(this.pos.x - px, this.pos.y - py);
         this.oldpos.set(px, py);
@@ -59379,6 +59659,114 @@ Phaser.Physics.Ninja.Tile.prototype = {
     * @method Phaser.Physics.Ninja.Tile#collideWorldBounds
     */
     collideWorldBounds: function () {
+
+        var dx = this.system.bounds.x - (this.pos.x - this.xw);
+
+        if (0 < dx)
+        {
+            this.reportCollisionVsWorld(dx, 0, 1, 0, null);
+        }
+        else
+        {
+            dx = (this.pos.x + this.xw) - this.system.bounds.width;
+
+            if (0 < dx)
+            {
+                this.reportCollisionVsWorld(-dx, 0, -1, 0, null);
+            }
+        }
+
+        var dy = this.system.bounds.y - (this.pos.y - this.yw);
+
+        if (0 < dy)
+        {
+            this.reportCollisionVsWorld(0, dy, 0, 1, null);
+        }
+        else
+        {
+            dy = (this.pos.y + this.yw) - this.system.bounds.height;
+
+            if (0 < dy)
+            {
+                this.reportCollisionVsWorld(0, -dy, 0, -1, null);
+            }
+        }
+
+    },
+
+    /**
+    * Process a world collision and apply the resulting forces.
+    *
+    * @method Phaser.Physics.Ninja.Tile#reportCollisionVsWorld
+    * @param {number} px - The tangent velocity
+    * @param {number} py - The tangent velocity
+    * @param {number} dx - Collision normal
+    * @param {number} dy - Collision normal
+    * @param {number} obj - Object this Tile collided with
+    */
+    reportCollisionVsWorld: function (px, py, dx, dy, obj) {
+
+        var p = this.pos;
+        var o = this.oldpos;
+
+        //  Calc velocity
+        var vx = p.x - o.x;
+        var vy = p.y - o.y;
+
+        //  Find component of velocity parallel to collision normal
+        var dp = (vx * dx + vy * dy);
+        var nx = dp * dx;   //project velocity onto collision normal
+
+        var ny = dp * dy;   //nx,ny is normal velocity
+
+        var tx = vx - nx;   //px,py is tangent velocity
+        var ty = vy - ny;
+
+        //  We only want to apply collision response forces if the object is travelling into, and not out of, the collision
+        var b, bx, by, fx, fy;
+
+        if (dp < 0)
+        {
+            fx = tx * this.body.friction;
+            fy = ty * this.body.friction;
+
+            b = 1 + this.body.bounce;
+
+            bx = (nx * b);
+            by = (ny * b);
+
+            if (dx === 1)
+            {
+                this.body.touching.left = true;
+            }
+            else if (dx === -1)
+            {
+                this.body.touching.right = true;
+            }
+
+            if (dy === 1)
+            {
+                this.body.touching.up = true;
+            }
+            else if (dy === -1)
+            {
+                this.body.touching.down = true;
+            }
+        }
+        else
+        {
+            //  Moving out of collision, do not apply forces
+            bx = by = fx = fy = 0;
+        }
+
+        //  Project object out of collision
+        p.x += px;
+        p.y += py;
+
+        //  Apply bounce+friction impulses which alter velocity
+        o.x += px + bx + fx;
+        o.y += py + by + fy;
+
     },
 
     /**
@@ -60066,6 +60454,23 @@ Phaser.Physics.Ninja.Circle.prototype = {
             bx = (nx * b);
             by = (ny * b);
 
+            if (dx === 1)
+            {
+                this.body.touching.left = true;
+            }
+            else if (dx === -1)
+            {
+                this.body.touching.right = true;
+            }
+
+            if (dy === 1)
+            {
+                this.body.touching.up = true;
+            }
+            else if (dy === -1)
+            {
+                this.body.touching.down = true;
+            }
         }
         else
         {
@@ -60090,15 +60495,7 @@ Phaser.Physics.Ninja.Circle.prototype = {
     */
     collideWorldBounds: function () {
 
-        var p = this.pos;
-        var r = this.radius;
-
-        var XMIN = this.system.bounds.x;
-        var XMAX = this.system.bounds.width;
-        var YMIN = this.system.bounds.y;
-        var YMAX = this.system.bounds.height;
-
-        var dx = this.system.bounds.x - (this.pos.x - this.radius);
+        var dx = this.system.bounds.x - (this.pos.x - this.xw);
 
         if (0 < dx)
         {
@@ -60106,7 +60503,7 @@ Phaser.Physics.Ninja.Circle.prototype = {
         }
         else
         {
-            dx = (this.pos.x + this.radius) - this.system.bounds.width;
+            dx = (this.pos.x + this.xw) - this.system.bounds.width;
 
             if (0 < dx)
             {
@@ -60114,7 +60511,7 @@ Phaser.Physics.Ninja.Circle.prototype = {
             }
         }
 
-        var dy = this.system.bounds.y - (this.pos.y - this.radius);
+        var dy = this.system.bounds.y - (this.pos.y - this.yw);
 
         if (0 < dy)
         {
@@ -60122,7 +60519,7 @@ Phaser.Physics.Ninja.Circle.prototype = {
         }
         else
         {
-            dy = (this.pos.y + this.radius) - this.system.bounds.height;
+            dy = (this.pos.y + this.yw) - this.system.bounds.height;
 
             if (0 < dy)
             {
@@ -66808,14 +67205,16 @@ Phaser.Tilemap.prototype = {
     * @param {string} key - The Game.cache key of the image that this Sprite will use.
     * @param {number|string} [frame] - If the Sprite image contains multiple frames you can specify which one to use here.
     * @param {boolean} [exists=true] - The default exists state of the Sprite.
-    * @param {boolean} [autoCull=true] - The default autoCull state of the Sprite. Sprites that are autoCulled are culled from the camera if out of its range.
-    * @param {Phaser.Group} [group] - Optional Group to add the Sprite to. If not specified it will be added to the World group.
+    * @param {boolean} [autoCull=false] - The default autoCull state of the Sprite. Sprites that are autoCulled are culled from the camera if out of its range.
+    * @param {Phaser.Group} [group=Phaser.World] - Group to add the Sprite to. If not specified it will be added to the World group.
+    * @param {object} [objectClass=Phaser.Sprite] - If you wish to create your own class, rather than Phaser.Sprite, pass the class here. Your class must extend Phaser.Sprite and have the same constructor parameters.
     */
-    createFromObjects: function (name, gid, key, frame, exists, autoCull, group) {
+    createFromObjects: function (name, gid, key, frame, exists, autoCull, group, objectClass) {
 
         if (typeof exists === 'undefined') { exists = true; }
-        if (typeof autoCull === 'undefined') { autoCull = true; }
+        if (typeof autoCull === 'undefined') { autoCull = false; }
         if (typeof group === 'undefined') { group = this.game.world; }
+        if (typeof objectClass === 'undefined') { objectClass = Phaser.Sprite; }
 
         if (!this.objects[name])
         {
@@ -66829,17 +67228,21 @@ Phaser.Tilemap.prototype = {
         {
             if (this.objects[name][i].gid === gid)
             {
-                sprite = group.create(this.objects[name][i].x, this.objects[name][i].y, key, frame, exists);
+                sprite = new objectClass(this.game, this.objects[name][i].x, this.objects[name][i].y, key, frame);
 
                 sprite.anchor.setTo(0, 1);
                 sprite.name = this.objects[name][i].name;
                 sprite.visible = this.objects[name][i].visible;
                 sprite.autoCull = autoCull;
+                sprite.exists = exists;
+
+                group.add(sprite);
 
                 for (property in this.objects[name][i].properties)
                 {
                     group.set(sprite, property, this.objects[name][i].properties[property], false, false, 0);
                 }
+
             }
         }
 
