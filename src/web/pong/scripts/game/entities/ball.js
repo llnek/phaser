@@ -21,16 +21,14 @@ var loggr= global.ZotohLabs.logger;
 png.EntityBall = png.EntityXXX.extends({
 
   update: function() {
-
+    //sh.main.physics.arcade.collide(this.sprite, this.screen.boundary);
   },
 
-  create: function(pg) {
-    this.parent(pg);
+  create: function(screen) {
+    this.parent(screen);
     this.sprite.body.velocity.x = 100 * asterix.fns.randomSign();
     this.sprite.body.velocity.y = 100 * asterix.fns.randomSign();
-    this.sprite.body.collideWorldBounds = true;
-    this.sprite.body.setZeroDamping();
-    //this.sprite.body.bounce.setTo(1, 1);
+    this.sprite.body.bounce.setTo(1, 1);
   },
 
   ctor: function(x,y,options) {

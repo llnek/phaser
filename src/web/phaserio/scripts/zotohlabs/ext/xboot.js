@@ -31,7 +31,7 @@ sh.protos['Boot'] = asterix.XState.extends({
 
     // Phaser will automatically pause if the browser tab the game is in loses focus.
     // You can disable that here:
-    //this.stage.disableVisibilityChange = true;
+    this.stage.disableVisibilityChange = true;
 
     this.scale.maxHeight = sh.xcfg.game.size.height * sh.xcfg.game.size.scale;
     this.scale.maxWidth = sh.xcfg.game.size.width * sh.xcfg.game.size.scale;

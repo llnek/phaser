@@ -29,12 +29,14 @@ png.EntityXXX = global.ZotohLabs.klass.extends({
     this.sprite=null;
   },
 
-  create: function(pg) {
-    this.sprite = sh.main.add.sprite(this.startPos.x, this.startPos.y, this.key, 0, pg);
-    //this.sprite.anchor.setTo(0.5, 0.5);
-    this.sprite.physicsEnabled = true;
+  create: function(screen) {
+    this.sprite = sh.main.add.sprite(this.startPos.x, this.startPos.y, this.key, 0, screen.group);
+    this.screen=screen;
+    this.sprite.anchor.setTo(0.5, 0.5);
+    sh.main.physics.enable(this.sprite);
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
+    this.sprite.body.collideWorldBounds = true;
   },
 
   ctor: function(x,y,options) {
@@ -67,10 +69,10 @@ Object.defineProperty(png.EntityXXX.prototype, "color", {
 
 png.EntityPaddle = png.EntityXXX.extends({
 
-  create: function(pg) {
-    this.parent(pg);
-    this.sprite.body.collideWorldBounds = true;
-    //this.sprite.body.bounce.setTo(1, 1);
+  speed: 200,
+
+  create: function(screen) {
+    this.parent(screen);
     this.sprite.body.immovable = true;
   },
 

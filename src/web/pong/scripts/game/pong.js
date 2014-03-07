@@ -26,6 +26,32 @@ png.GameArena = asterix.XScreen.extends({
 
   players: [],
   ball: null,
+  keys: [],
+
+  unbindEvents: function() {
+    _.each(this.keys, function(z) {
+      sh.main.input.keyboard.removeKey(z.key);
+      z.keySignal.detach();
+    });
+    this.keys=[];
+  },
+
+  bindEventsXXX: function(p, up, down) {
+    var sb, k = sh.main.input.keyboard.addKey(down);
+    sb = k.onDown.add(function() { p.moveDown(); }, this);
+    this.keys.push( { key: down, signal: sb } );
+
+    k = sh.main.input.keyboard.addKey(up);
+    sb = k.onDown.add(function() { p.moveUp(); }, this);
+    this.keys.push( { key: up, signal: sb } );
+  },
+
+  bindEvents: function(p1,p2) {
+    this.bindEventsXXX(p1,Phaser.Keyboard.UP, Phaser.Keyboard.DOWN);
+    if (sh.xcfg.csts.GAME_MODE === 2) {
+      this.bindEventsXXX(p2,Phaser.Keyboard.W, Phaser.Keyboard.S);
+    }
+  },
 
   play: function() {
     var paddImg= sh.main.cache.getImage('gamelevel1.images.paddle2');
@@ -53,19 +79,15 @@ png.GameArena = asterix.XScreen.extends({
     break;
     };
 
-    //sh.phaser.physics.setBoundsToWorld(true,true,true,true);
-    /*
-    sh.phaser.physics.setBounds(csts.TILE, z.y - csts.TILE, 
-                                s.x - csts.TILE*2, s.y- csts.TILE*2, 
-                                false,false,true,true);
-                                */
 
     this.players= [ null, p1, p2];
     this.doLayout();
 
-    p2.create(this.group);
-    p1.create(this.group);
+    p2.create(this);
+    p1.create(this);
     this.spawnBall();
+
+    //this.bindEvents(p1,p2);
   },
 
   spawnBall: function() {
@@ -73,7 +95,7 @@ png.GameArena = asterix.XScreen.extends({
     var c= sh.main.getCenter();
     // anchored to center internally
     this.ball = new png.EntityBall( c.x, c.y, {});
-    this.ball.create(this.group);
+    this.ball.create(this);
   },
 
   doLayout: function() {
@@ -85,7 +107,15 @@ png.GameArena = asterix.XScreen.extends({
     this.map.addTilesetImage('Borders', 'gui.mmenu.border');
     this.map.addTilesetImage('BG', 'gamelevel1.images.arena');
     ml= this.map.createLayer('Back',undef, undef, this.group);
-    ml= this.map.createLayer('Front',undef, undef, this.group);
+    ml = this.map.createLayer('Front',undef, undef, this.group);
+    this.boundary = ml;
+    this.map.setCollisionByExclusion([],true, 'Front');
+
+    //sh.phaser.physics.setBoundsToWorld(true,true,true,true);
+    /*
+    sh.main.physics.arcade.bounds.setTo(csts.TILE, s.y - csts.TILE,
+                                s.x - csts.TILE * 2, s.y - csts.TILE * 2);
+                                */
 
     this.score1 = sh.main.add.bitmapText( 0,0, 'font.OCR', '8', 40, this.group);
     this.score1.tint= 0xda4848;
@@ -182,7 +212,10 @@ png.GameArena = asterix.XScreen.extends({
   },
 
   maybeReset: function() {
+    this.unbindEvents();
     this.players=[];
+    this.keys=[];
+    this.boundary= null;
   },
 
   updateEntities: function() {

@@ -13,6 +13,7 @@
 var asterix = global.ZotohLabs.Asterix;
 var png = asterix.Pong;
 var sh = asterix.Shell;
+var echt= global.ZotohLabs.echt;
 var loggr= global.ZotohLabs.logger;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -21,24 +22,24 @@ var loggr= global.ZotohLabs.logger;
 png.EntityHuman = png.EntityPaddle.extends({
 
   update: function() {
-    if (sh.main.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-      /*
-      var py = (this.pos.y + this.size.y) - ig.game.screen.y;
-      if (py < ig.system.height) {
-        this.vel.y = 150;
-      }
-      */
-      this.sprite.body.velocity.x = 200;
+    var bottom = this.sprite.y + this.sprite.height/2;
+    var top = this.sprite.y - this.sprite.height/2;
+    var csts= sh.xcfg.csts;
+    var vy= undef;
+    var kb= sh.main.input.keyboard;
+
+    sh.main.physics.arcade.collide(this.sprite, this.screen.boundary);
+    this.sprite.body.velocity.y = 0;
+
+    if (kb.isDown(Phaser.Keyboard.DOWN) && ! kb.isDown(Phaser.Keyboard.UP)) {
+      vy = this.speed;
     }
-    else
-    if (sh.main.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-      /*
-      var py = this.pos.y - ig.game.screen.y;
-      if (py > 0) {
-        this.vel.y = -150;
-      }
-      */
-      this.sprite.body.velocity.x = -200;
+    if (kb.isDown(Phaser.Keyboard.UP) && ! kb.isDown(Phaser.Keyboard.DOWN)) {
+      vy = - this.speed;
+    }
+
+    if (vy) {
+      this.sprite.body.velocity.y = vy;
     }
   },
 
